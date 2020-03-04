@@ -1,12 +1,28 @@
 type Cell = { value: string; color: string }
 type State = {
   drawing: boolean
-  canvas: Map<string, string>
+  canvas: Map<string, Cell>
+  cellWidth: number
+  cellHeight: number
+  char: string
 }
 
 const $canvas = document.createElement('canvas')
 const ctx = $canvas.getContext('2d')!
-const state = { drawing: false, canvas: new Map<string, Cell>() }
+const state: State = {
+  drawing: false,
+  canvas: new Map(),
+  cellHeight: 0,
+  cellWidth: 0,
+  char: '$',
+}
+
+const measureText = (() => {
+  const memo: { [key: string]: TextMetrics } = {}
+
+  return (char: string) =>
+    char in memo ? memo[char] : (memo[char] = ctx.measureText(char))
+})()
 
 const coords = (event: MouseEvent) => ({
   x: event.pageX - $canvas.offsetLeft,
@@ -22,15 +38,15 @@ const stopDrawing = () => {
 const handleDrawing = (e: MouseEvent) => {
   if (!state.drawing) return
   const { x, y } = coords(e)
-  const realX = Math.round(x / 8)
-  const realY = Math.round(y / 8)
+  const realX = Math.round(x / state.cellWidth)
+  const realY = Math.round(y / state.cellHeight)
   const key = `${realX}.${realY}`
 
   if (state.canvas.has(key)) return
 
   ctx.fillStyle = 'red'
-  ctx.fillText('$', realX * 8, realY * 8)
-  state.canvas.set(key, { value: '$', color: 'red' })
+  ctx.fillText(state.char, realX * state.cellWidth, realY * state.cellHeight)
+  state.canvas.set(key, { value: state.char, color: 'red' })
 }
 
 const init = () => {
@@ -41,6 +57,10 @@ const init = () => {
   $canvas.addEventListener('mousedown', startDrawing)
   $canvas.addEventListener('mouseup', stopDrawing)
   $canvas.addEventListener('mousemove', handleDrawing)
+
+  const metrics = measureText(state.char)
+  state.cellWidth = metrics.width
+  state.cellHeight = metrics.actualBoundingBoxAscent
 
   document.body.append($canvas)
 }
