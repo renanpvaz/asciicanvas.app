@@ -5,9 +5,11 @@ type State = {
   cellWidth: number
   cellHeight: number
   char: string
+  color: string
 }
 
-const $canvas = document.createElement('canvas')
+const $canvas: HTMLCanvasElement = document.createElement('canvas')
+
 const ctx = $canvas.getContext('2d')!
 const state: State = {
   drawing: false,
@@ -15,6 +17,7 @@ const state: State = {
   cellHeight: 0,
   cellWidth: 0,
   char: '$',
+  color: 'black',
 }
 
 const measureText = (() => {
@@ -44,9 +47,9 @@ const handleDrawing = (e: MouseEvent) => {
 
   if (state.canvas.has(key)) return
 
-  ctx.fillStyle = 'red'
+  ctx.fillStyle = state.color
   ctx.fillText(state.char, realX * state.cellWidth, realY * state.cellHeight)
-  state.canvas.set(key, { value: state.char, color: 'red' })
+  state.canvas.set(key, { value: state.char, color: state.color })
 }
 
 const init = () => {
@@ -63,6 +66,19 @@ const init = () => {
   state.cellHeight = metrics.actualBoundingBoxAscent
 
   document.body.append($canvas)
+
+  document
+    .querySelector<HTMLInputElement>('#char')
+    ?.addEventListener(
+      'input',
+      e => (state.char = (<HTMLInputElement>e.target).value),
+    )
+  document
+    .querySelector<HTMLInputElement>('#color')
+    ?.addEventListener(
+      'input',
+      e => (state.color = (<HTMLInputElement>e.target).value),
+    )
 }
 
 document.addEventListener('DOMContentLoaded', init)
