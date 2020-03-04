@@ -20,7 +20,9 @@ const stopDrawing = () => {
 const handleDrawing = (e: MouseEvent) => {
   if (!state.drawing) return
   const { x, y } = coords(e)
-  ctx.fillText('$', x, y)
+  const realX = Math.round(x / 8)
+  const realY = Math.round(y / 8)
+  ctx.fillText('$', realX * 8, realY * 8)
 }
 
 const init = () => {
