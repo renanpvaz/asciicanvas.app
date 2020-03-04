@@ -63,6 +63,19 @@ const handleDrawing = (e: MouseEvent) => {
   state.canvas.set(key, { value: state.char, color: state.color })
 }
 
+const exportAsImg = () => {
+  const element = document.createElement('a')
+  element.setAttribute('href', $canvas.toDataURL('image/png'))
+  element.setAttribute('download', 'untitled.png')
+
+  element.style.display = 'none'
+  document.body.appendChild(element)
+
+  element.click()
+
+  document.body.removeChild(element)
+}
+
 const init = () => {
   const dpr = window.devicePixelRatio || 1
 
@@ -80,6 +93,7 @@ const init = () => {
 
   document.body.append($canvas)
 
+  document.querySelector('#export')?.addEventListener('click', exportAsImg)
   document
     .querySelector<HTMLInputElement>('#char')
     ?.addEventListener(
