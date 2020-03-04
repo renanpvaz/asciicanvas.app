@@ -1,10 +1,12 @@
+type Cell = { value: string; color: string }
 type State = {
   drawing: boolean
+  canvas: Map<string, string>
 }
 
 const $canvas = document.createElement('canvas')
 const ctx = $canvas.getContext('2d')!
-const state = { drawing: false, canvas: new Map<string, string>() }
+const state = { drawing: false, canvas: new Map<string, Cell>() }
 
 const coords = (event: MouseEvent) => ({
   x: event.pageX - $canvas.offsetLeft,
@@ -26,8 +28,9 @@ const handleDrawing = (e: MouseEvent) => {
 
   if (state.canvas.has(key)) return
 
+  ctx.fillStyle = 'red'
   ctx.fillText('$', realX * 8, realY * 8)
-  state.canvas.set(key, '$')
+  state.canvas.set(key, { value: '$', color: 'red' })
 }
 
 const init = () => {
