@@ -44,15 +44,22 @@ const stopDrawing = () => {
 }
 const handleDrawing = (e: MouseEvent) => {
   if (!state.drawing) return
-  const { x, y } = coords(e)
-  const realX = Math.round(x / state.cellWidth)
-  const realY = Math.round(y / state.cellHeight)
+
+  const mousePos = coords(e)
+  const realX = Math.round(mousePos.x / state.cellWidth)
+  const realY = Math.round(mousePos.y / state.cellHeight)
+  const x = realX * state.cellWidth
+  const y = realY * state.cellHeight
   const key = `${realX}.${realY}`
 
-  if (state.canvas.get(key)) return
-
+  ctx.clearRect(
+    x,
+    (realY - 1) * state.cellHeight,
+    state.cellWidth,
+    state.cellHeight,
+  )
   ctx.fillStyle = state.color
-  ctx.fillText(state.char, realX * state.cellWidth, realY * state.cellHeight)
+  ctx.fillText(state.char, x, y)
   state.canvas.set(key, { value: state.char, color: state.color })
 }
 
