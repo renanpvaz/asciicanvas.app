@@ -32,6 +32,10 @@ const coords = (event: MouseEvent) => ({
   y: event.pageY - $canvas.offsetTop,
 })
 
+const setupCanvas = () => {
+  return ctx
+}
+
 const startDrawing = () => {
   state.drawing = true
 }
@@ -45,7 +49,7 @@ const handleDrawing = (e: MouseEvent) => {
   const realY = Math.round(y / state.cellHeight)
   const key = `${realX}.${realY}`
 
-  if (state.canvas.has(key)) return
+  if (state.canvas.get(key)) return
 
   ctx.fillStyle = state.color
   ctx.fillText(state.char, realX * state.cellWidth, realY * state.cellHeight)
@@ -53,9 +57,11 @@ const handleDrawing = (e: MouseEvent) => {
 }
 
 const init = () => {
-  $canvas.width = 500
-  $canvas.height = 500
-  $canvas.style.border = '1px solid'
+  const dpr = window.devicePixelRatio || 1
+
+  $canvas.width = window.innerWidth * dpr
+  $canvas.height = window.innerHeight * dpr
+  ctx.scale(dpr, dpr)
 
   $canvas.addEventListener('mousedown', startDrawing)
   $canvas.addEventListener('mouseup', stopDrawing)
