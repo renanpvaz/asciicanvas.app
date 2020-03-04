@@ -4,7 +4,7 @@ type State = {
 
 const $canvas = document.createElement('canvas')
 const ctx = $canvas.getContext('2d')!
-const state = { drawing: false }
+const state = { drawing: false, canvas: new Map<string, string>() }
 
 const coords = (event: MouseEvent) => ({
   x: event.pageX - $canvas.offsetLeft,
@@ -22,7 +22,12 @@ const handleDrawing = (e: MouseEvent) => {
   const { x, y } = coords(e)
   const realX = Math.round(x / 8)
   const realY = Math.round(y / 8)
+  const key = `${realX}.${realY}`
+
+  if (state.canvas.has(key)) return
+
   ctx.fillText('$', realX * 8, realY * 8)
+  state.canvas.set(key, '$')
 }
 
 const init = () => {
