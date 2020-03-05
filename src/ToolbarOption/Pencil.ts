@@ -20,7 +20,7 @@ const render = (state: State) => {
 export const Pencil: ToolbarOption = {
   name: 'pencil',
   type: 'tool',
-  renderToolBarOption: render,
+  render,
   onMouseDown: (_, { state }) => (state.drawing = true),
   onMouseUp: (_, { state }) => (state.drawing = false),
   onMouseMove: (e: MouseEvent, { state, context }) => {
@@ -44,6 +44,7 @@ export const Pencil: ToolbarOption = {
     )
     context.fillStyle = state.color
     context.fillText(state.char, x, y)
+
     state.canvas.set(key, { value: state.char, color: state.color })
   },
   onClick: () => {},

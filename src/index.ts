@@ -1,8 +1,10 @@
 import { Pencil } from './ToolbarOption/Pencil'
 import { ToolbarOption } from './ToolbarOption'
+import { ColorPicker } from './ToolbarOption/ColorPicker'
+import { Export } from './ToolbarOption/Export'
 
 export type Cell = { value: string; color: string }
-export type Tool = typeof Pencil.name
+export type Tool = 'pencil'
 export type State = {
   drawing: boolean
   canvas: Map<string, Cell>
@@ -10,7 +12,7 @@ export type State = {
   cellHeight: number
   char: string
   color: string
-  selectedTool: Tool
+  selectedTool: string
 }
 
 const $canvas: HTMLCanvasElement = document.createElement('canvas')
@@ -26,6 +28,12 @@ const state: State = {
   selectedTool: 'pencil',
 }
 
+const options = {
+  [Pencil.name]: Pencil,
+  [ColorPicker.name]: ColorPicker,
+  [Export.name]: Export,
+}
+
 const measureText = (() => {
   const memo: { [key: string]: TextMetrics } = {}
 
@@ -33,28 +41,11 @@ const measureText = (() => {
     char in memo ? memo[char] : (memo[char] = ctx.measureText(char))
 })()
 
-const exportAsImg = () => {
-  const element = document.createElement('a')
-  element.setAttribute('href', $canvas.toDataURL('image/png'))
-  element.setAttribute('download', 'untitled.png')
-
-  element.style.display = 'none'
-  document.body.appendChild(element)
-
-  element.click()
-
-  document.body.removeChild(element)
-}
-
-const options = {
-  [Pencil.name]: Pencil,
-}
-
 const registerToolbarOption = (
   $toolbar: HTMLElement,
   option: ToolbarOption,
 ) => {
-  const $toolOption = option.renderToolBarOption(state)
+  const $toolOption = option.render(state, ctx)
 
   $toolbar.appendChild($toolOption)
   $toolOption.addEventListener('click', () => {
@@ -102,11 +93,7 @@ const init = () => {
   state.cellWidth = metrics.width
   state.cellHeight = metrics.actualBoundingBoxAscent
 
-  console.log(metrics.width, metrics.actualBoundingBoxAscent)
-
   document.body.append($canvas)
-
-  document.querySelector('#export')?.addEventListener('click', exportAsImg)
 }
 
 document.addEventListener('DOMContentLoaded', init)
