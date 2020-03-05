@@ -1,11 +1,16 @@
-type Cell = { value: string; color: string }
-type State = {
+import { Pencil } from './ToolbarOption/Pencil'
+import { ToolbarOption } from './ToolbarOption'
+
+export type Cell = { value: string; color: string }
+export type Tool = typeof Pencil.name
+export type State = {
   drawing: boolean
   canvas: Map<string, Cell>
   cellWidth: number
   cellHeight: number
   char: string
   color: string
+  selectedTool: Tool
 }
 
 const $canvas: HTMLCanvasElement = document.createElement('canvas')
@@ -18,6 +23,7 @@ const state: State = {
   cellWidth: 0,
   char: '$',
   color: 'black',
+  selectedTool: 'pencil',
 }
 
 const measureText = (() => {
@@ -26,42 +32,6 @@ const measureText = (() => {
   return (char: string) =>
     char in memo ? memo[char] : (memo[char] = ctx.measureText(char))
 })()
-
-const coords = (event: MouseEvent) => ({
-  x: event.pageX - $canvas.offsetLeft,
-  y: event.pageY - $canvas.offsetTop,
-})
-
-const setupCanvas = () => {
-  return ctx
-}
-
-const startDrawing = () => {
-  state.drawing = true
-}
-const stopDrawing = () => {
-  state.drawing = false
-}
-const handleDrawing = (e: MouseEvent) => {
-  if (!state.drawing) return
-
-  const mousePos = coords(e)
-  const realX = Math.round(mousePos.x / state.cellWidth)
-  const realY = Math.round(mousePos.y / state.cellHeight)
-  const x = realX * state.cellWidth
-  const y = realY * state.cellHeight
-  const key = `${realX}.${realY}`
-
-  ctx.clearRect(
-    x,
-    (realY - 1) * state.cellHeight,
-    state.cellWidth,
-    state.cellHeight,
-  )
-  ctx.fillStyle = state.color
-  ctx.fillText(state.char, x, y)
-  state.canvas.set(key, { value: state.char, color: state.color })
-}
 
 const exportAsImg = () => {
   const element = document.createElement('a')
@@ -76,36 +46,67 @@ const exportAsImg = () => {
   document.body.removeChild(element)
 }
 
+const options = {
+  [Pencil.name]: Pencil,
+}
+
+const registerToolbarOption = (
+  $toolbar: HTMLElement,
+  option: ToolbarOption,
+) => {
+  const $toolOption = option.renderToolBarOption(state)
+
+  $toolbar.appendChild($toolOption)
+  $toolOption.addEventListener('click', () => {
+    if (option.type === 'tool') {
+      state.selectedTool = option.name
+    }
+  })
+}
+
+const initToolbar = () => {
+  const $toolbar = document.createElement('section')
+
+  $toolbar.className = 'toolbar'
+
+  Object.values(options).forEach(option =>
+    registerToolbarOption($toolbar, option),
+  )
+
+  document.body.appendChild($toolbar)
+}
+
+const withToolHandler = (key: 'onMouseUp' | 'onMouseDown' | 'onMouseMove') => (
+  e: MouseEvent,
+) => {
+  const tool = options[state.selectedTool]
+  const handler = tool[key]
+
+  handler && handler(e, { state, context: ctx })
+}
+
 const init = () => {
+  initToolbar()
+
   const dpr = window.devicePixelRatio || 1
 
   $canvas.width = window.innerWidth * dpr
   $canvas.height = window.innerHeight * dpr
   ctx.scale(dpr, dpr)
 
-  $canvas.addEventListener('mousedown', startDrawing)
-  $canvas.addEventListener('mouseup', stopDrawing)
-  $canvas.addEventListener('mousemove', handleDrawing)
+  $canvas.addEventListener('mousedown', withToolHandler('onMouseDown'))
+  $canvas.addEventListener('mouseup', withToolHandler('onMouseUp'))
+  $canvas.addEventListener('mousemove', withToolHandler('onMouseMove'))
 
   const metrics = measureText(state.char)
   state.cellWidth = metrics.width
   state.cellHeight = metrics.actualBoundingBoxAscent
 
+  console.log(metrics.width, metrics.actualBoundingBoxAscent)
+
   document.body.append($canvas)
 
   document.querySelector('#export')?.addEventListener('click', exportAsImg)
-  document
-    .querySelector<HTMLInputElement>('#char')
-    ?.addEventListener(
-      'input',
-      e => (state.char = (<HTMLInputElement>e.target).value),
-    )
-  document
-    .querySelector<HTMLInputElement>('#color')
-    ?.addEventListener(
-      'input',
-      e => (state.color = (<HTMLInputElement>e.target).value),
-    )
 }
 
 document.addEventListener('DOMContentLoaded', init)
