@@ -1,5 +1,5 @@
 import { ToolbarOption } from '../ToolbarOption'
-import { State } from '../State'
+import { State, getRealCoords } from '../State'
 
 const render = (state: State) => {
   const $input = document.createElement('input')
@@ -25,7 +25,12 @@ export const Pencil: ToolbarOption = {
   onMouseUp: (_, { state }) => (state.drawing = false),
   onMouseMove: (e: MouseEvent, { state, canvas }) => {
     if (!state.drawing) return
-    canvas.set(e.x, e.y)
+
+    const { x, y } = getRealCoords(e, state)
+    canvas.set(x, y)
   },
-  onClick: () => {},
+  onClick: (e, { canvas, state }) => {
+    const { x, y } = getRealCoords(e, state)
+    canvas.set(x, y)
+  },
 }

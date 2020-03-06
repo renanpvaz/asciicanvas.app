@@ -4,6 +4,7 @@ import { ColorPicker } from './ToolbarOption/ColorPicker'
 import { Export } from './ToolbarOption/Export'
 import { initialState } from './State'
 import { draw, initCanvas, makeApi } from './Canvas'
+import { Fill } from './ToolbarOption/Fill'
 
 const $canvas = initCanvas()
 
@@ -14,6 +15,7 @@ const options = {
   [Pencil.name]: Pencil,
   [ColorPicker.name]: ColorPicker,
   [Export.name]: Export,
+  [Fill.name]: Fill,
 }
 
 const measureText = (() => {
@@ -49,9 +51,9 @@ const initToolbar = () => {
   document.body.appendChild($toolbar)
 }
 
-const withToolHandler = (key: 'onMouseUp' | 'onMouseDown' | 'onMouseMove') => (
-  e: MouseEvent,
-) => {
+const withToolHandler = (
+  key: 'onMouseUp' | 'onMouseDown' | 'onMouseMove' | 'onClick',
+) => (e: MouseEvent) => {
   const tool = options[state.selectedTool]
   const handler = tool[key]
 
@@ -64,6 +66,7 @@ const init = () => {
   $canvas.addEventListener('mousedown', withToolHandler('onMouseDown'))
   $canvas.addEventListener('mouseup', withToolHandler('onMouseUp'))
   $canvas.addEventListener('mousemove', withToolHandler('onMouseMove'))
+  $canvas.addEventListener('click', withToolHandler('onClick'))
 
   const metrics = measureText(state.char)
 
@@ -78,7 +81,7 @@ const loop = () => {
   requestAnimationFrame(loop)
 }
 
-document
-  .querySelector('#btn')
-  ?.addEventListener('click', () => draw(state, ctx))
+// document
+//   .querySelector('#btn')
+//   ?.addEventListener('click', () => draw(state, ctx))
 document.addEventListener('DOMContentLoaded', init)
