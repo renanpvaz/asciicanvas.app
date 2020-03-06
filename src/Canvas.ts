@@ -13,6 +13,7 @@ const initCanvas = () => {
   $canvas.width = window.innerWidth * dpr
   $canvas.height = window.innerHeight * dpr
   ctx.scale(dpr, dpr)
+  ctx.font = '14px monospace'
 
   document.body.appendChild($canvas)
 
@@ -53,8 +54,9 @@ const draw = (state: State, context: CanvasRenderingContext2D) => {
   for (const key of state.dirtyCells) {
     const cell = state.canvas[key]
 
+    context.clearRect(cell.x, cell.y, state.cellWidth, -state.cellHeight)
     context.fillStyle = state.color
-    context.fillText(state.char, cell.x, cell.y)
+    if (cell.value) context.fillText(cell.value, cell.x, cell.y)
   }
 
   state.dirtyCells = []

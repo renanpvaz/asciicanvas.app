@@ -17,9 +17,6 @@ export const Fill: ToolbarOption = {
   name: 'fill',
   type: 'tool',
   render,
-  onMouseDown: (_, { state }) => (state.drawing = true),
-  onMouseUp: (_, { state }) => (state.drawing = false),
-  onMouseMove: (e: MouseEvent, { state, canvas }) => {},
   onClick: (e: MouseEvent, { state, canvas }) => {
     const { x, y } = getRealCoords(e, state)
     const target = canvas.get(x, y)
