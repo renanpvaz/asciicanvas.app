@@ -1,11 +1,13 @@
 import { State } from './State'
 import { Canvas } from './Canvas'
+import { HistoryApi } from './History'
 
 type ToolEventHandler = (
   e: MouseEvent,
   refs: {
     state: State
     canvas: Canvas
+    history: HistoryApi
   },
 ) => void
 

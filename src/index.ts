@@ -7,11 +7,13 @@ import { draw, initCanvas, makeApi } from './Canvas'
 import { Fill } from './ToolbarOption/Fill'
 import { Eraser } from './ToolbarOption/Eraser'
 import { Brush } from './ToolbarOption/Brush'
+import { history } from './History'
 
 const $canvas = initCanvas()
 
 const ctx = $canvas.getContext('2d')!
 const state = { ...initialState }
+let stopped = false
 
 const options = {
   [Pencil.name]: Pencil,
@@ -61,7 +63,8 @@ const withToolHandler = (
   const tool = options[state.selectedTool]
   const handler = tool[key]
 
-  handler && handler(e, { state, canvas: makeApi(state) })
+  handler &&
+    handler(e, { state, canvas: makeApi(state), history: history(state) })
 }
 
 const init = () => {
@@ -71,6 +74,12 @@ const init = () => {
   $canvas.addEventListener('mouseup', withToolHandler('onMouseUp'))
   $canvas.addEventListener('mousemove', withToolHandler('onMouseMove'))
   $canvas.addEventListener('click', withToolHandler('onClick'))
+  document.addEventListener('keydown', e => {
+    state.keys[e.key] = true
+  })
+  document.addEventListener('keyup', e => {
+    state.keys[e.key] = false
+  })
 
   const metrics = measureText(state.char)
 
@@ -81,11 +90,28 @@ const init = () => {
 }
 
 const loop = () => {
-  draw(state, ctx)
-  requestAnimationFrame(loop)
+  let historyChange = false
+
+  if (state.keys['Meta'] && state.keys['z']) {
+    history(state).back()
+    historyChange = true
+    state.keys = {}
+  } else if (state.keys['Meta'] && state.keys['y'] && state.keys['Shift']) {
+    history(state).forward()
+    historyChange = true
+    state.keys = {}
+  }
+
+  draw(state, ctx, historyChange)
+  if (!stopped) requestAnimationFrame(loop)
 }
 
-// document
-//   .querySelector('#btn')
-//   ?.addEventListener('click', () => draw(state, ctx))
+document
+  .querySelector('#stop')
+  ?.addEventListener('click', () => (stopped = true))
+document
+  .querySelector('#start')
+  ?.addEventListener('click', () => (stopped = false))
+document.querySelector('#loop')?.addEventListener('click', loop)
+
 document.addEventListener('DOMContentLoaded', init)

@@ -1,4 +1,5 @@
-import { State, Cell } from './State'
+import { State } from './State'
+import { Cell } from './Cell'
 
 export type Canvas = {
   get: (x: number, y: number) => Cell | undefined
@@ -30,7 +31,9 @@ const makeApi = (state: State): Canvas => {
     state.canvas[key(x, y)] || { x, y }
 
   const get: Canvas['get'] = (x, y) =>
-    isOutOfBounds({ x, y }) ? undefined : getWithDefault(x, y)
+    isOutOfBounds({ x, y, value: null, color: null })
+      ? undefined
+      : getWithDefault(x, y)
 
   const set: Canvas['set'] = (x, y, char = state.char) => {
     const prevCell = get(x, y)
@@ -50,13 +53,30 @@ const makeApi = (state: State): Canvas => {
   }
 }
 
-const draw = (state: State, context: CanvasRenderingContext2D) => {
+const draw = (
+  state: State,
+  context: CanvasRenderingContext2D,
+  fullRedraw: boolean,
+) => {
+  const drawCell = (cell: Cell) => {
+    if (!cell.value) return
+    context.fillStyle = cell.color
+    context.fillText(cell.value, cell.x, cell.y)
+  }
+
+  if (fullRedraw) {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+    for (const key in state.canvas) {
+      const cell = state.canvas[key]
+      drawCell(cell)
+    }
+    return
+  }
+
   for (const key of state.dirtyCells) {
     const cell = state.canvas[key]
-
     context.clearRect(cell.x, cell.y, state.cellWidth, -state.cellHeight)
-    context.fillStyle = state.color
-    if (cell.value) context.fillText(cell.value, cell.x, cell.y)
+    drawCell(cell)
   }
 
   state.dirtyCells = []

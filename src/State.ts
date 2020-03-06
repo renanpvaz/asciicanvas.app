@@ -1,6 +1,8 @@
-export type Cell = { value?: string; color?: string; x: number; y: number }
+import { History } from './History'
+import { CellMap } from './Cell'
+
 export type Tool = 'pencil'
-export type CellMap = { [key: string]: Cell }
+
 export type State = {
   drawing: boolean
   canvas: CellMap
@@ -10,6 +12,8 @@ export type State = {
   color: string
   selectedTool: string
   dirtyCells: string[]
+  history: History
+  keys: { [key: string]: boolean }
 }
 
 export const getRealCoords = (e: MouseEvent, state: State) => ({
@@ -26,4 +30,10 @@ export const initialState: State = {
   color: 'black',
   selectedTool: 'pencil',
   dirtyCells: [],
+  history: {
+    undo: [],
+    redo: [],
+    index: 0,
+  },
+  keys: {},
 }

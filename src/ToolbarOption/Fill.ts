@@ -1,6 +1,5 @@
 import { ToolbarOption } from '../ToolbarOption'
-import { State, Cell, getRealCoords } from '../State'
-import { Canvas } from '../Canvas'
+import { State, getRealCoords } from '../State'
 
 const render = (state: State) => {
   const $input = document.createElement('button')
@@ -21,7 +20,7 @@ export const Fill: ToolbarOption = {
     const { x, y } = getRealCoords(e, state)
     const target = canvas.get(x, y)
 
-    const fill = (color: string | undefined, x: number, y: number) => {
+    const fill = (color: string | null, x: number, y: number) => {
       const cell = canvas.get(x, y)
 
       if (!cell || cell.color !== color) return

@@ -21,16 +21,20 @@ export const Pencil: ToolbarOption = {
   name: 'pencil',
   type: 'tool',
   render,
-  onMouseDown: (_, { state }) => (state.drawing = true),
-  onMouseUp: (_, { state }) => (state.drawing = false),
+  onMouseDown: (_, { state, history }) => {
+    state.drawing = true
+    history.track()
+  },
+  onMouseUp: (e, { state, history, canvas }) => {
+    const { x, y } = getRealCoords(e, state)
+    canvas.set(x, y)
+    state.drawing = false
+  },
   onMouseMove: (e: MouseEvent, { state, canvas }) => {
     if (!state.drawing) return
 
     const { x, y } = getRealCoords(e, state)
     canvas.set(x, y)
   },
-  onClick: (e, { canvas, state }) => {
-    const { x, y } = getRealCoords(e, state)
-    canvas.set(x, y)
-  },
+  onClick: (e, { canvas, state, history }) => {},
 }
