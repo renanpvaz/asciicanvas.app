@@ -6,6 +6,7 @@ import { initialState } from './State'
 import { draw, initCanvas, makeApi } from './Canvas'
 import { Fill } from './ToolbarOption/Fill'
 import { Eraser } from './ToolbarOption/Eraser'
+import { Brush } from './ToolbarOption/Brush'
 
 const $canvas = initCanvas()
 
@@ -18,6 +19,7 @@ const options = {
   [Export.name]: Export,
   [Fill.name]: Fill,
   [Eraser.name]: Eraser,
+  [Brush.name]: Brush,
 }
 
 const measureText = (() => {
