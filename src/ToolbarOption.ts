@@ -1,10 +1,11 @@
-import { State } from '.'
+import { State } from './State'
+import { Canvas } from './Canvas'
 
 type ToolEventHandler = (
   e: MouseEvent,
   refs: {
     state: State
-    context: CanvasRenderingContext2D
+    canvas: Canvas
   },
 ) => void
 

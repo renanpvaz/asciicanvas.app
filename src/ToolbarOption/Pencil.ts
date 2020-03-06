@@ -1,5 +1,5 @@
 import { ToolbarOption } from '../ToolbarOption'
-import { State } from '..'
+import { State } from '../State'
 
 const render = (state: State) => {
   const $input = document.createElement('input')
@@ -23,29 +23,9 @@ export const Pencil: ToolbarOption = {
   render,
   onMouseDown: (_, { state }) => (state.drawing = true),
   onMouseUp: (_, { state }) => (state.drawing = false),
-  onMouseMove: (e: MouseEvent, { state, context }) => {
+  onMouseMove: (e: MouseEvent, { state, canvas }) => {
     if (!state.drawing) return
-
-    const mousePos = {
-      x: e.pageX - document.body.offsetLeft,
-      y: e.pageY - document.body.offsetTop,
-    }
-    const realX = Math.round(mousePos.x / state.cellWidth)
-    const realY = Math.round(mousePos.y / state.cellHeight)
-    const x = realX * state.cellWidth
-    const y = realY * state.cellHeight
-    const key = `${realX}.${realY}`
-
-    context.clearRect(
-      x,
-      (realY - 1) * state.cellHeight,
-      state.cellWidth,
-      state.cellHeight,
-    )
-    context.fillStyle = state.color
-    context.fillText(state.char, x, y)
-
-    state.canvas.set(key, { value: state.char, color: state.color })
+    canvas.set(e.x, e.y)
   },
   onClick: () => {},
 }
