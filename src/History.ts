@@ -4,7 +4,7 @@ import { State } from './State'
 export type History = {
   undo: CellMap[]
   redo: CellMap[]
-  index: number
+  updated: boolean
 }
 
 type EntryType = 'undo' | 'redo'
@@ -22,11 +22,13 @@ const history = (state: State): HistoryApi => {
       track(type === 'undo' ? 'redo' : 'undo')
       const entry = entries.pop()
       state.canvas = entry || {}
+      state.history.updated = true
     }
   }
 
   const track = (type: EntryType) => {
     state.history[type].push({ ...state.canvas })
+    state.history.updated = false
   }
 
   const back = () => save('undo')

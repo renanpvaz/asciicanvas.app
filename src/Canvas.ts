@@ -53,18 +53,14 @@ const makeApi = (state: State): Canvas => {
   }
 }
 
-const draw = (
-  state: State,
-  context: CanvasRenderingContext2D,
-  fullRedraw: boolean,
-) => {
+const draw = (state: State, context: CanvasRenderingContext2D) => {
   const drawCell = (cell: Cell) => {
     if (!cell.value) return
     context.fillStyle = cell.color
     context.fillText(cell.value, cell.x, cell.y)
   }
 
-  if (fullRedraw) {
+  if (state.history.updated) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
     for (const key in state.canvas) {
       const cell = state.canvas[key]

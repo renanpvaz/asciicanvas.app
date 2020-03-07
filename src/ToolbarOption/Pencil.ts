@@ -23,7 +23,6 @@ export const Pencil: ToolbarOption = {
   render,
   onMouseDown: (_, { state, history }) => {
     state.drawing = true
-    history.track()
   },
   onMouseUp: (e, { state, history, canvas }) => {
     const { x, y } = getRealCoords(e, state)

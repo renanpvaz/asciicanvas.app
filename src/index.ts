@@ -63,14 +63,17 @@ const withToolHandler = (
   const tool = options[state.selectedTool]
   const handler = tool[key]
 
-  handler &&
+  if (handler)
     handler(e, { state, canvas: makeApi(state), history: history(state) })
 }
 
 const init = () => {
   initToolbar()
 
-  $canvas.addEventListener('mousedown', withToolHandler('onMouseDown'))
+  $canvas.addEventListener('mousedown', e => {
+    withToolHandler('onMouseDown')(e)
+    history(state).track()
+  })
   $canvas.addEventListener('mouseup', withToolHandler('onMouseUp'))
   $canvas.addEventListener('mousemove', withToolHandler('onMouseMove'))
   $canvas.addEventListener('click', withToolHandler('onClick'))
@@ -89,20 +92,27 @@ const init = () => {
   loop()
 }
 
-const loop = () => {
-  let historyChange = false
+const shortcuts: [string, () => void][] = [
+  ['Meta+Shift+z', () => history(state).forward()],
+  ['Meta+z', () => history(state).back()],
+]
 
-  if (state.keys['Meta'] && state.keys['z']) {
-    history(state).back()
-    historyChange = true
-    state.keys = {}
-  } else if (state.keys['Meta'] && state.keys['y'] && state.keys['Shift']) {
-    history(state).forward()
-    historyChange = true
-    state.keys = {}
+const modifierKeys = ['Shift', 'Meta', 'Ctrl']
+
+const loop = () => {
+  const shortcut = shortcuts.find(([keys]) =>
+    keys.split('+').every(key => state.keys[key]),
+  )
+
+  if (shortcut) {
+    shortcut[1]()
+    state.keys = modifierKeys.reduce(
+      (acc, key) => ({ ...acc, [key]: state.keys[key] }),
+      {},
+    )
   }
 
-  draw(state, ctx, historyChange)
+  draw(state, ctx)
   if (!stopped) requestAnimationFrame(loop)
 }
 

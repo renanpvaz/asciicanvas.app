@@ -33,7 +33,7 @@ export const initialState: State = {
   history: {
     undo: [],
     redo: [],
-    index: 0,
+    updated: false,
   },
   keys: {},
 }
