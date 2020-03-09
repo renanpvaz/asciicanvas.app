@@ -1,9 +1,12 @@
 import { State } from './State'
-import { Cell } from './Cell'
+import { Cell, CellMap } from './Cell'
 
 export type Canvas = {
   get: (x: number, y: number) => Cell | undefined
   set: (x: number, y: number, char?: string) => void
+  setLayer: (x: number, y: number, layer: string) => void
+  clearLayer: (id: string) => void
+  applyLayer: (id: string) => void
 }
 
 const initCanvas = () => {
@@ -35,7 +38,7 @@ const makeApi = (state: State): Canvas => {
       ? undefined
       : getWithDefault(x, y)
 
-  const set: Canvas['set'] = (x, y, char = state.char) => {
+  const set = (x: number, y: number, char: string = state.char) => {
     const prevCell = get(x, y)
     const equal =
       prevCell && prevCell.value === char && prevCell.color === state.color
@@ -47,9 +50,47 @@ const makeApi = (state: State): Canvas => {
     }
   }
 
+  const setLayer = (x: number, y: number, layer: string) => {
+    if (layer in state.layers) {
+      const k = key(x, y)
+
+      state.layers[layer].data[k] = {
+        value: state.char,
+        color: state.color,
+        x,
+        y,
+      }
+    }
+  }
+
+  const clearLayer = (id: string) => {
+    const layer = state.layers[id]
+    const cells = layer.data
+
+    for (const k in cells) {
+      const prevCell = get(cells[k].x, cells[k].y)
+      cells[k] = prevCell!
+    }
+  }
+
+  const applyLayer = (id: string) => {
+    const layer = state.layers[id]
+    const cells = layer.data
+
+    for (const k in cells) {
+      const cell = cells[k]
+      if (cell.value) state.canvas[k] = cell
+    }
+
+    delete state.layers[id]
+  }
+
   return {
     get,
     set,
+    setLayer,
+    clearLayer,
+    applyLayer,
   }
 }
 
@@ -69,9 +110,18 @@ const draw = (state: State, context: CanvasRenderingContext2D) => {
     return
   }
 
+  for (const id in state.layers) {
+    const layer = state.layers[id]
+    for (const key in layer.data) {
+      const cell = layer.data[key]
+      context.clearRect(cell.x, cell.y + 2, state.cellWidth, -state.cellHeight)
+      drawCell(cell)
+    }
+  }
+
   for (const key of state.dirtyCells) {
     const cell = state.canvas[key]
-    context.clearRect(cell.x, cell.y, state.cellWidth, -state.cellHeight)
+    context.clearRect(cell.x, cell.y + 2, state.cellWidth, -state.cellHeight)
     drawCell(cell)
   }
 

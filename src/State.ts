@@ -1,11 +1,13 @@
 import { History } from './History'
 import { CellMap } from './Cell'
+import { Layer } from './Layer'
 
 export type Tool = 'pencil'
 
 export type State = {
   drawing: boolean
   canvas: CellMap
+  layers: { [id: string]: Layer }
   cellWidth: number
   cellHeight: number
   char: string
@@ -24,6 +26,7 @@ export const getRealCoords = (e: MouseEvent, state: State) => ({
 export const initialState: State = {
   drawing: false,
   canvas: {},
+  layers: {},
   cellHeight: 0,
   cellWidth: 0,
   char: '$',

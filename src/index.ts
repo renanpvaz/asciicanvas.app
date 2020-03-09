@@ -8,6 +8,7 @@ import { Fill } from './ToolbarOption/Fill'
 import { Eraser } from './ToolbarOption/Eraser'
 import { Brush } from './ToolbarOption/Brush'
 import { history } from './History'
+import { Line } from './ToolbarOption/Line'
 
 const $canvas = initCanvas()
 
@@ -22,6 +23,7 @@ const options = {
   [Fill.name]: Fill,
   [Eraser.name]: Eraser,
   [Brush.name]: Brush,
+  [Line.name]: Line,
 }
 
 const measureText = (() => {
@@ -87,7 +89,7 @@ const init = () => {
   const metrics = measureText(state.char)
 
   state.cellWidth = metrics.width
-  state.cellHeight = metrics.actualBoundingBoxAscent
+  state.cellHeight = metrics.actualBoundingBoxAscent * 1.5
 
   loop()
 }
