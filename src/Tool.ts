@@ -11,9 +11,8 @@ type ToolEventHandler = (
   },
 ) => void
 
-export type ToolbarOption = {
+export type Tool = {
   name: string
-  type: 'tool' | 'option'
   render: (state: State, context: CanvasRenderingContext2D) => HTMLElement
   onMouseDown?: ToolEventHandler
   onMouseUp?: ToolEventHandler

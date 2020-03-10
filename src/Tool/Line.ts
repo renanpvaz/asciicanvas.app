@@ -1,4 +1,4 @@
-import { ToolbarOption } from '../ToolbarOption'
+import { Tool } from '../Tool'
 import { State, getRealCoords } from '../State'
 import { Cell } from '../Cell'
 import { addLayer } from '../Layer'
@@ -44,9 +44,8 @@ const render = (state: State) => {
 let p0: Cell
 let id: string
 
-export const Line: ToolbarOption = {
+export const Line: Tool = {
   name: 'line',
-  type: 'tool',
   render,
   onMouseDown: (e, { state }) => {
     const { x, y } = getRealCoords(e, state)

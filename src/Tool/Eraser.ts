@@ -1,4 +1,4 @@
-import { ToolbarOption } from '../ToolbarOption'
+import { Tool } from '../Tool'
 import { State, getRealCoords } from '../State'
 
 const render = (state: State) => {
@@ -12,9 +12,8 @@ const render = (state: State) => {
   return $btn
 }
 
-export const Eraser: ToolbarOption = {
+export const Eraser: Tool = {
   name: 'eraser',
-  type: 'tool',
   render,
   onMouseDown: (_, { state }) => (state.drawing = true),
   onMouseUp: (_, { state }) => (state.drawing = false),

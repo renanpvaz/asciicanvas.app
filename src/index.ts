@@ -1,12 +1,12 @@
-import { Pencil } from './ToolbarOption/Pencil'
-import { ToolbarOption } from './ToolbarOption'
+import { Pencil } from './Tool/Pencil'
+import { Tool } from './Tool'
 import { initialState } from './State'
 import { draw, initCanvas, makeApi } from './Canvas'
-import { Fill } from './ToolbarOption/Fill'
-import { Eraser } from './ToolbarOption/Eraser'
-import { Brush } from './ToolbarOption/Brush'
+import { Fill } from './Tool/Fill'
+import { Eraser } from './Tool/Eraser'
+import { Brush } from './Tool/Brush'
 import { history } from './History'
-import { Line } from './ToolbarOption/Line'
+import { Line } from './Tool/Line'
 
 const $canvas = initCanvas()
 
@@ -29,17 +29,12 @@ const measureText = (() => {
     char in memo ? memo[char] : (memo[char] = ctx.measureText(char))
 })()
 
-const registerToolbarOption = (
-  $toolbar: HTMLElement,
-  option: ToolbarOption,
-) => {
+const registerToolbarOption = ($toolbar: HTMLElement, option: Tool) => {
   const $toolOption = option.render(state, ctx)
 
   $toolbar.appendChild($toolOption)
   $toolOption.addEventListener('click', () => {
-    if (option.type === 'tool') {
-      state.selectedTool = option.name
-    }
+    state.selectedTool = option.name
   })
 }
 

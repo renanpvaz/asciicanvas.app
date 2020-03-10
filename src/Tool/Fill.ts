@@ -1,4 +1,4 @@
-import { ToolbarOption } from '../ToolbarOption'
+import { Tool } from '../Tool'
 import { State, getRealCoords } from '../State'
 
 const render = (state: State) => {
@@ -12,9 +12,8 @@ const render = (state: State) => {
   return $input
 }
 
-export const Fill: ToolbarOption = {
+export const Fill: Tool = {
   name: 'fill',
-  type: 'tool',
   render,
   onClick: (e: MouseEvent, { state, canvas }) => {
     const { x, y } = getRealCoords(e, state)

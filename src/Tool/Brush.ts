@@ -1,4 +1,4 @@
-import { ToolbarOption } from '../ToolbarOption'
+import { Tool } from '../Tool'
 import { State, getRealCoords } from '../State'
 
 const render = (state: State) => {
@@ -12,9 +12,8 @@ const render = (state: State) => {
   return $input
 }
 
-export const Brush: ToolbarOption = {
+export const Brush: Tool = {
   name: 'brush',
-  type: 'tool',
   render,
   onMouseDown: (_, { state }) => (state.drawing = true),
   onMouseUp: (_, { state }) => (state.drawing = false),
