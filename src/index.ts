@@ -1,7 +1,5 @@
 import { Pencil } from './ToolbarOption/Pencil'
 import { ToolbarOption } from './ToolbarOption'
-import { ColorPicker } from './ToolbarOption/ColorPicker'
-import { Export } from './ToolbarOption/Export'
 import { initialState } from './State'
 import { draw, initCanvas, makeApi } from './Canvas'
 import { Fill } from './ToolbarOption/Fill'
@@ -18,8 +16,6 @@ let stopped = false
 
 const options = {
   [Pencil.name]: Pencil,
-  [ColorPicker.name]: ColorPicker,
-  [Export.name]: Export,
   [Fill.name]: Fill,
   [Eraser.name]: Eraser,
   [Brush.name]: Brush,
@@ -45,6 +41,19 @@ const registerToolbarOption = (
       state.selectedTool = option.name
     }
   })
+}
+
+const exportAsImg = () => {
+  const element = document.createElement('a')
+  element.setAttribute('href', $canvas.toDataURL('image/png'))
+  element.setAttribute('download', 'untitled.png')
+
+  element.style.display = 'none'
+  document.body.appendChild(element)
+
+  element.click()
+
+  document.body.removeChild(element)
 }
 
 const initToolbar = () => {
@@ -125,5 +134,9 @@ document
   .querySelector('#start')
   ?.addEventListener('click', () => (stopped = false))
 document.querySelector('#loop')?.addEventListener('click', loop)
+document.querySelector('#color')?.addEventListener('change', e => {
+  state.color = (<HTMLInputElement>e.target).value
+})
+document.querySelector('#export')?.addEventListener('click', exportAsImg)
 
 document.addEventListener('DOMContentLoaded', init)
