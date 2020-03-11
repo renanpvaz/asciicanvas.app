@@ -29,12 +29,15 @@ const measureText = (() => {
     char in memo ? memo[char] : (memo[char] = ctx.measureText(char))
 })()
 
-const registerToolbarOption = ($toolbar: HTMLElement, option: Tool) => {
-  const $toolOption = option.render(state, ctx)
+const registerTool = ($toolbar: HTMLElement, tool: Tool) => {
+  const $tool = document.createElement('button')
 
-  $toolbar.appendChild($toolOption)
-  $toolOption.addEventListener('click', () => {
-    state.selectedTool = option.name
+  $tool.className = 'tool'
+  $tool.textContent = tool.icon
+
+  $toolbar.appendChild($tool)
+  $tool.addEventListener('click', () => {
+    state.selectedTool = tool.name
   })
 }
 
@@ -56,9 +59,7 @@ const initToolbar = () => {
 
   $toolbar.className = 'toolbar'
 
-  Object.values(options).forEach(option =>
-    registerToolbarOption($toolbar, option),
-  )
+  Object.values(options).forEach(option => registerTool($toolbar, option))
 
   document.body.appendChild($toolbar)
 }
@@ -142,6 +143,9 @@ document
 document.querySelector('#loop')?.addEventListener('click', loop)
 document.querySelector('#color')?.addEventListener('change', e => {
   state.color = (<HTMLInputElement>e.target).value
+})
+document.querySelector('#char')?.addEventListener('change', e => {
+  state.char = (<HTMLInputElement>e.target).value
 })
 document.querySelector('#export')?.addEventListener('click', exportAsImg)
 

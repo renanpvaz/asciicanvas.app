@@ -10,7 +10,7 @@ type ToolEventHandler = (context: {
 
 export type Tool = {
   name: string
-  render: (state: State, context: CanvasRenderingContext2D) => HTMLElement
+  icon: string
   onPaint: ToolEventHandler
   onPointerUp?: ToolEventHandler
   onPointerDown?: ToolEventHandler

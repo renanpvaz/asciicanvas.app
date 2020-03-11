@@ -30,23 +30,12 @@ const walkGrid = (state: State, p0: Cell, p1: Cell) => {
   return points
 }
 
-const render = (state: State) => {
-  const $btn = document.createElement('button')
-
-  $btn.className = 'tool'
-  $btn.textContent = 'Ln'
-
-  $btn.addEventListener('click', e => (state.selectedTool = 'line'))
-
-  return $btn
-}
-
 let p0: Cell
 let id: string
 
 export const Line: Tool = {
   name: 'line',
-  render,
+  icon: '📏',
   onPointerDown: ({ x, y, state }) => {
     p0 = <Cell>{ x, y }
     id = addLayer(state)

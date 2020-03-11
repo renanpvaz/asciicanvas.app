@@ -1,20 +1,9 @@
 import { Tool } from '../Tool'
 import { State, getRealCoords } from '../State'
 
-const render = (state: State) => {
-  const $input = document.createElement('button')
-
-  $input.className = 'tool'
-  $input.textContent = 'Fill'
-
-  $input.addEventListener('click', e => (state.selectedTool = 'fill'))
-
-  return $input
-}
-
 export const Fill: Tool = {
   name: 'fill',
-  render,
+  icon: '🚰',
   onPaint: ({ x, y, state, canvas }) => {
     const target = canvas.get(x, y)
 
