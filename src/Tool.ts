@@ -1,21 +1,17 @@
 import { State } from './State'
 import { Canvas } from './Canvas'
-import { HistoryApi } from './History'
 
-type ToolEventHandler = (
-  e: MouseEvent,
-  refs: {
-    state: State
-    canvas: Canvas
-    history: HistoryApi
-  },
-) => void
+type ToolEventHandler = (context: {
+  state: State
+  canvas: Canvas
+  x: number
+  y: number
+}) => void
 
 export type Tool = {
   name: string
   render: (state: State, context: CanvasRenderingContext2D) => HTMLElement
-  onMouseDown?: ToolEventHandler
-  onMouseUp?: ToolEventHandler
-  onMouseMove?: ToolEventHandler
-  onClick?: ToolEventHandler
+  onPaint: ToolEventHandler
+  onPointerUp?: ToolEventHandler
+  onPointerDown?: ToolEventHandler
 }

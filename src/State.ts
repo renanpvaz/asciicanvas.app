@@ -5,7 +5,7 @@ import { Layer } from './Layer'
 export type Tool = 'pencil'
 
 export type State = {
-  drawing: boolean
+  pressing: boolean
   canvas: CellMap
   layers: { [id: string]: Layer }
   cellWidth: number
@@ -24,7 +24,7 @@ export const getRealCoords = (e: MouseEvent, state: State) => ({
 })
 
 export const initialState: State = {
-  drawing: false,
+  pressing: false,
   canvas: {},
   layers: {},
   cellHeight: 0,

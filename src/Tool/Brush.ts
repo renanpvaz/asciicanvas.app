@@ -15,22 +15,7 @@ const render = (state: State) => {
 export const Brush: Tool = {
   name: 'brush',
   render,
-  onMouseDown: (_, { state }) => (state.drawing = true),
-  onMouseUp: (_, { state }) => (state.drawing = false),
-  onMouseMove: (e: MouseEvent, { state, canvas }) => {
-    if (!state.drawing) return
-
-    const { x, y } = getRealCoords(e, state)
-
-    canvas.set(x, y)
-    canvas.set(x + state.cellWidth, y)
-    canvas.set(x - state.cellWidth, y)
-    canvas.set(x, y + state.cellHeight)
-    canvas.set(x, y - state.cellHeight)
-  },
-  onClick: (e, { canvas, state }) => {
-    const { x, y } = getRealCoords(e, state)
-
+  onPaint: ({ x, y, state, canvas }) => {
     canvas.set(x, y)
     canvas.set(x + state.cellWidth, y)
     canvas.set(x - state.cellWidth, y)

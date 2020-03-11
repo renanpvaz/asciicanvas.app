@@ -1,6 +1,6 @@
 import { Pencil } from './Tool/Pencil'
 import { Tool } from './Tool'
-import { initialState } from './State'
+import { initialState, getRealCoords } from './State'
 import { draw, initCanvas, makeApi } from './Canvas'
 import { Fill } from './Tool/Fill'
 import { Eraser } from './Tool/Eraser'
@@ -63,26 +63,37 @@ const initToolbar = () => {
   document.body.appendChild($toolbar)
 }
 
-const withToolHandler = (
-  key: 'onMouseUp' | 'onMouseDown' | 'onMouseMove' | 'onClick',
-) => (e: MouseEvent) => {
+const useToolHandler = (
+  key: 'onPointerDown' | 'onPointerUp' | 'onPaint',
+  e: MouseEvent,
+) => {
   const tool = options[state.selectedTool]
   const handler = tool[key]
 
   if (handler)
-    handler(e, { state, canvas: makeApi(state), history: history(state) })
+    handler({
+      ...getRealCoords(e, state),
+      state,
+      canvas: makeApi(state),
+    })
 }
 
 const init = () => {
   initToolbar()
 
   $canvas.addEventListener('mousedown', e => {
-    withToolHandler('onMouseDown')(e)
+    state.pressing = true
+    useToolHandler('onPointerDown', e)
     history(state).track()
   })
-  $canvas.addEventListener('mouseup', withToolHandler('onMouseUp'))
-  $canvas.addEventListener('mousemove', withToolHandler('onMouseMove'))
-  $canvas.addEventListener('click', withToolHandler('onClick'))
+  $canvas.addEventListener('mouseup', e => {
+    state.pressing = false
+    useToolHandler('onPointerUp', e)
+    useToolHandler('onPaint', e)
+  })
+  $canvas.addEventListener('mousemove', e => {
+    if (state.pressing) useToolHandler('onPaint', e)
+  })
   document.addEventListener('keydown', e => {
     state.keys[e.key] = true
   })

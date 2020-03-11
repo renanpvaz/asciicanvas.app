@@ -20,19 +20,5 @@ const render = (state: State) => {
 export const Pencil: Tool = {
   name: 'pencil',
   render,
-  onMouseDown: (_, { state, history }) => {
-    state.drawing = true
-  },
-  onMouseUp: (e, { state, history, canvas }) => {
-    const { x, y } = getRealCoords(e, state)
-    canvas.set(x, y)
-    state.drawing = false
-  },
-  onMouseMove: (e: MouseEvent, { state, canvas }) => {
-    if (!state.drawing) return
-
-    const { x, y } = getRealCoords(e, state)
-    canvas.set(x, y)
-  },
-  onClick: (e, { canvas, state, history }) => {},
+  onPaint: ({ x, y, canvas }) => canvas.set(x, y),
 }

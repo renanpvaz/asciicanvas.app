@@ -15,8 +15,7 @@ const render = (state: State) => {
 export const Fill: Tool = {
   name: 'fill',
   render,
-  onClick: (e: MouseEvent, { state, canvas }) => {
-    const { x, y } = getRealCoords(e, state)
+  onPaint: ({ x, y, state, canvas }) => {
     const target = canvas.get(x, y)
 
     const fill = (color: string | null, x: number, y: number) => {

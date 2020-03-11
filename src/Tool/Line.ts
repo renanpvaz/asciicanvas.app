@@ -47,21 +47,18 @@ let id: string
 export const Line: Tool = {
   name: 'line',
   render,
-  onMouseDown: (e, { state }) => {
-    const { x, y } = getRealCoords(e, state)
+  onPointerDown: ({ x, y, state }) => {
     p0 = <Cell>{ x, y }
     id = addLayer(state)
-    state.drawing = true
+    state.pressing = true
   },
-  onMouseUp: (e, { state, canvas }) => {
-    state.drawing = false
-    console.log({ ...state.canvas })
+  onPointerUp: ({ x, y, state, canvas }) => {
+    state.pressing = false
     canvas.applyLayer(id)
-    console.log({ ...state.canvas })
   },
-  onMouseMove: (e: MouseEvent, { state, canvas }) => {
-    const p1 = <Cell>getRealCoords(e, state)
-    if (p0 && p1 && state.drawing) {
+  onPaint: ({ x, y, state, canvas }) => {
+    const p1 = <Cell>{ x, y }
+    if (p0 && p1 && state.pressing) {
       canvas.clearLayer(id)
       walkGrid(state, p0, p1).forEach(point =>
         canvas.setLayer(point.x, point.y, id),
