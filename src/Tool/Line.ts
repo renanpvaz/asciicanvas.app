@@ -1,7 +1,6 @@
 import { Tool } from '../Tool'
-import { State, getRealCoords } from '../State'
+import { State } from '../State'
 import { Cell } from '../Cell'
-import { addLayer } from '../Layer'
 
 const walkGrid = (state: State, p0: Cell, p1: Cell) => {
   const dx = p1.x - p0.x,
@@ -32,27 +31,25 @@ const walkGrid = (state: State, p0: Cell, p1: Cell) => {
 
 type LineState = {
   start?: Cell
-  id?: string
 }
 
 export const Line: Tool<LineState> = {
   name: 'line',
   icon: '📏',
   state: {},
-  onPointerDown: ({ x, y, state }, lineState) => {
-    lineState.id = addLayer(state)
+  onPointerDown: ({ x, y }, lineState) => {
     lineState.start = <Cell>{ x, y }
   },
-  onPointerUp: ({ canvas }, lineState) => {
-    canvas.applyLayer(lineState.id!)
+  onPointerUp: ({ canvas }) => {
+    canvas.applyPreview()
   },
-  onPaint: ({ x, y, state, canvas }, { id, start }) => {
+  onPaint: ({ x, y, state, canvas }, { start }) => {
     const end = <Cell>{ x, y }
 
-    if (start && id) {
-      canvas.clearLayer(id)
+    if (start) {
+      canvas.clearPreview()
       walkGrid(state, start, end).forEach(point =>
-        canvas.setLayer(point.x, point.y, id),
+        canvas.setPreview(point.x, point.y),
       )
     }
   },

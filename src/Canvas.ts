@@ -1,12 +1,12 @@
 import { State } from './State'
-import { Cell, CellMap } from './Cell'
+import { Cell } from './Cell'
 
 export type Canvas = {
   get: (x: number, y: number) => Cell | undefined
   set: (x: number, y: number, char?: string) => void
-  setLayer: (x: number, y: number, layer: string) => void
-  clearLayer: (id: string) => void
-  applyLayer: (id: string) => void
+  setPreview: (x: number, y: number) => void
+  clearPreview: () => void
+  applyPreview: () => void
 }
 
 const initCanvas = () => {
@@ -50,22 +50,19 @@ const makeApi = (state: State): Canvas => {
     }
   }
 
-  const setLayer = (x: number, y: number, layer: string) => {
-    if (layer in state.layers) {
-      const k = key(x, y)
+  const setPreview = (x: number, y: number) => {
+    const k = key(x, y)
 
-      state.layers[layer].data[k] = {
-        value: state.char,
-        color: state.color,
-        x,
-        y,
-      }
+    state.preview[k] = {
+      value: state.char,
+      color: state.color,
+      x,
+      y,
     }
   }
 
-  const clearLayer = (id: string) => {
-    const layer = state.layers[id]
-    const cells = layer.data
+  const clearPreview = () => {
+    const cells = state.preview
 
     for (const k in cells) {
       const prevCell = get(cells[k].x, cells[k].y)
@@ -73,24 +70,23 @@ const makeApi = (state: State): Canvas => {
     }
   }
 
-  const applyLayer = (id: string) => {
-    const layer = state.layers[id]
-    const cells = layer.data
+  const applyPreview = () => {
+    const cells = state.preview
 
     for (const k in cells) {
       const cell = cells[k]
       if (cell.value) state.canvas[k] = cell
     }
 
-    delete state.layers[id]
+    state.preview = {}
   }
 
   return {
     get,
     set,
-    setLayer,
-    clearLayer,
-    applyLayer,
+    setPreview,
+    clearPreview,
+    applyPreview,
   }
 }
 
@@ -110,13 +106,10 @@ const draw = (state: State, context: CanvasRenderingContext2D) => {
     return
   }
 
-  for (const id in state.layers) {
-    const layer = state.layers[id]
-    for (const key in layer.data) {
-      const cell = layer.data[key]
-      context.clearRect(cell.x, cell.y + 2, state.cellWidth, -state.cellHeight)
-      drawCell(cell)
-    }
+  for (const key in state.preview) {
+    const cell = state.preview[key]
+    context.clearRect(cell.x, cell.y + 2, state.cellWidth, -state.cellHeight)
+    drawCell(cell)
   }
 
   for (const key of state.dirtyCells) {

@@ -1,5 +1,4 @@
 import { Tool } from '../Tool'
-import { State, getRealCoords } from '../State'
 
 export const Fill: Tool = {
   name: 'fill',

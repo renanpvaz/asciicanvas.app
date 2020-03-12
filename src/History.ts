@@ -1,4 +1,4 @@
-import { CellMap, Cell } from './Cell'
+import { CellMap } from './Cell'
 import { State } from './State'
 
 export type History = {

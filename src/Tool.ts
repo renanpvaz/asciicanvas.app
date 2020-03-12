@@ -22,11 +22,9 @@ type ToolOptions<S> = {
   onPaint: ToolEventHandler<S>
   onPointerUp?: ToolEventHandler<S>
   onPointerDown?: ToolEventHandler<S>
-  state: S
 }
 
-export type Tool<S = null> = S extends null
-  ? Omit<ToolOptions<null>, 'state'>
-  : ToolOptions<S>
+export type Tool<S = null> = ToolOptions<S> &
+  (S extends null ? { state?: null } : { state: S })
 
-export const tools = [Pencil, Line, Brush, Eraser, Fill]
+export const tools: Tool<any>[] = [Pencil, Line, Brush, Eraser, Fill]
