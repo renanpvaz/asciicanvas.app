@@ -16,7 +16,7 @@ type ToolEventHandler<S> = (
   localState: S,
 ) => void
 
-export interface Tool<S = null> {
+type ToolOptions<S> = {
   name: string
   icon: string
   onPaint: ToolEventHandler<S>
@@ -24,5 +24,9 @@ export interface Tool<S = null> {
   onPointerDown?: ToolEventHandler<S>
   state: S
 }
+
+export type Tool<S = null> = S extends null
+  ? Omit<ToolOptions<null>, 'state'>
+  : ToolOptions<S>
 
 export const tools = [Pencil, Line, Brush, Eraser, Fill]
