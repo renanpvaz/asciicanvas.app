@@ -1,26 +1,13 @@
-import { Pencil } from './Tool/Pencil'
-import { Tool } from './Tool'
+import { Tool, tools } from './Tool'
 import { initialState, getRealCoords } from './State'
 import { draw, initCanvas, makeApi } from './Canvas'
-import { Fill } from './Tool/Fill'
-import { Eraser } from './Tool/Eraser'
-import { Brush } from './Tool/Brush'
 import { history } from './History'
-import { Line } from './Tool/Line'
 
 const $canvas = initCanvas()
 
 const ctx = $canvas.getContext('2d')!
 const state = { ...initialState }
 let stopped = false
-
-const options = {
-  [Pencil.name]: Pencil,
-  [Fill.name]: Fill,
-  [Eraser.name]: Eraser,
-  [Brush.name]: Brush,
-  [Line.name]: Line,
-}
 
 const measureText = (() => {
   const memo: { [key: string]: TextMetrics } = {}
@@ -29,7 +16,7 @@ const measureText = (() => {
     char in memo ? memo[char] : (memo[char] = ctx.measureText(char))
 })()
 
-const registerTool = ($toolbar: HTMLElement, tool: Tool) => {
+const registerTool = ($toolbar: HTMLElement, tool: Tool<any>) => {
   const $tool = document.createElement('button')
 
   $tool.className = 'tool'
@@ -37,7 +24,7 @@ const registerTool = ($toolbar: HTMLElement, tool: Tool) => {
 
   $toolbar.appendChild($tool)
   $tool.addEventListener('click', () => {
-    state.selectedTool = tool.name
+    state.tool = tool
   })
 }
 
@@ -59,7 +46,7 @@ const initToolbar = () => {
 
   $toolbar.className = 'toolbar'
 
-  Object.values(options).forEach(option => registerTool($toolbar, option))
+  Object.values(tools).forEach(option => registerTool($toolbar, option))
 
   document.body.appendChild($toolbar)
 }
@@ -68,15 +55,17 @@ const useToolHandler = (
   key: 'onPointerDown' | 'onPointerUp' | 'onPaint',
   e: MouseEvent,
 ) => {
-  const tool = options[state.selectedTool]
-  const handler = tool[key]
+  const handler = state.tool[key]
 
   if (handler)
-    handler({
-      ...getRealCoords(e, state),
-      state,
-      canvas: makeApi(state),
-    })
+    handler(
+      {
+        ...getRealCoords(e, state),
+        state,
+        canvas: makeApi(state),
+      },
+      state.tool.state,
+    )
 }
 
 const init = () => {

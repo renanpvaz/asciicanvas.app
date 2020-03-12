@@ -30,26 +30,28 @@ const walkGrid = (state: State, p0: Cell, p1: Cell) => {
   return points
 }
 
-let p0: Cell
-let id: string
+type LineState = {
+  start?: Cell
+  id?: string
+}
 
-export const Line: Tool = {
+export const Line: Tool<LineState> = {
   name: 'line',
   icon: '📏',
-  onPointerDown: ({ x, y, state }) => {
-    p0 = <Cell>{ x, y }
-    id = addLayer(state)
-    state.pressing = true
+  state: {},
+  onPointerDown: ({ x, y, state }, lineState) => {
+    lineState.id = addLayer(state)
+    lineState.start = <Cell>{ x, y }
   },
-  onPointerUp: ({ x, y, state, canvas }) => {
-    state.pressing = false
-    canvas.applyLayer(id)
+  onPointerUp: ({ canvas }, lineState) => {
+    canvas.applyLayer(lineState.id!)
   },
-  onPaint: ({ x, y, state, canvas }) => {
-    const p1 = <Cell>{ x, y }
-    if (p0 && p1 && state.pressing) {
+  onPaint: ({ x, y, state, canvas }, { id, start }) => {
+    const end = <Cell>{ x, y }
+
+    if (start && id) {
       canvas.clearLayer(id)
-      walkGrid(state, p0, p1).forEach(point =>
+      walkGrid(state, start, end).forEach(point =>
         canvas.setLayer(point.x, point.y, id),
       )
     }

@@ -1,8 +1,8 @@
 import { History } from './History'
 import { CellMap } from './Cell'
 import { Layer } from './Layer'
-
-export type Tool = 'pencil'
+import { Tool } from './Tool'
+import { Pencil } from './Tool/Pencil'
 
 export type State = {
   pressing: boolean
@@ -16,6 +16,7 @@ export type State = {
   dirtyCells: string[]
   history: History
   keys: { [key: string]: boolean }
+  tool: Tool
 }
 
 export const getRealCoords = (e: MouseEvent, state: State) => ({
@@ -39,4 +40,5 @@ export const initialState: State = {
     updated: false,
   },
   keys: {},
+  tool: Pencil,
 }

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"tsc --watch\" \"parcel index.html\""
+    "start": "concurrently \"tsc --watch\" \"parcel index.html\"",
+    "test": "tsc --version"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +14,7 @@
     "concurrently": "^5.1.0",
     "parcel-bundler": "^1.12.4",
     "prettier": "^1.19.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.7.5"
   },
   "prettier": {
     "singleQuote": true,

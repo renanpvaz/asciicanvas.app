@@ -4,6 +4,7 @@ import { State, getRealCoords } from '../State'
 export const Fill: Tool = {
   name: 'fill',
   icon: '🚰',
+  state: null,
   onPaint: ({ x, y, state, canvas }) => {
     const target = canvas.get(x, y)
 
