@@ -24,7 +24,11 @@ const registerTool = ($toolbar: HTMLElement, tool: Tool<any>) => {
 
   $toolbar.appendChild($tool)
   $tool.addEventListener('click', () => {
+    state.$toolRef?.classList.toggle('tool--active')
+    $tool.classList.toggle('tool--active')
+
     state.tool = tool
+    state.$toolRef = $tool
   })
 }
 

@@ -16,6 +16,7 @@ export type State = {
   history: History
   keys: { [key: string]: boolean }
   tool: Tool<any>
+  $toolRef: HTMLButtonElement | null
 }
 
 export const getRealCoords = (e: MouseEvent, state: State) => ({
@@ -40,4 +41,5 @@ export const initialState: State = {
   },
   keys: {},
   tool: Pencil,
+  $toolRef: null,
 }
