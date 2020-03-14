@@ -5,6 +5,7 @@ import { Fill } from './Tool/Fill'
 import { Eraser } from './Tool/Eraser'
 import { Brush } from './Tool/Brush'
 import { Line } from './Tool/Line'
+import { Square } from './Tool/Square'
 
 type ToolEventHandler<S> = (
   context: {
@@ -27,4 +28,4 @@ type ToolOptions<S> = {
 export type Tool<S = null> = ToolOptions<S> &
   (S extends null ? { state?: null } : { state: S })
 
-export const tools: Tool<any>[] = [Pencil, Line, Brush, Eraser, Fill]
+export const tools: Tool<any>[] = [Pencil, Line, Brush, Eraser, Fill, Square]
