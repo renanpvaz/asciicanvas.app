@@ -33,9 +33,16 @@ type LineState = {
   start?: Cell
 }
 
+const icon = `
+  <svg x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;">
+    <path d="M349.091,0v124.516L124.516,349.091H0V512h162.909V387.484l224.574-224.574H512V0H349.091z M54.303,457.696v-54.303
+      h54.303v54.303H54.303z M457.696,108.605h-54.303V54.303h54.303V108.605z"/>
+  </svg>
+`
+
 export const Line: Tool<LineState> = {
   name: 'line',
-  icon: '📏',
+  icon,
   state: {},
   onPointerDown: ({ x, y }, lineState) => {
     lineState.start = <Cell>{ x, y }

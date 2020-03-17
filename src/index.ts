@@ -16,20 +16,22 @@ const measureText = (() => {
     char in memo ? memo[char] : (memo[char] = ctx.measureText(char))
 })()
 
+const selectTool = ($el: HTMLButtonElement, tool: Tool) => {
+  state.$toolRef?.classList.toggle('tool--active')
+  $el.classList.toggle('tool--active')
+
+  state.tool = tool
+  state.$toolRef = $el
+}
+
 const registerTool = ($toolbar: HTMLElement, tool: Tool<any>) => {
   const $tool = document.createElement('button')
 
   $tool.className = 'tool'
-  $tool.textContent = tool.icon
+  $tool.innerHTML = tool.icon
 
   $toolbar.appendChild($tool)
-  $tool.addEventListener('click', () => {
-    state.$toolRef?.classList.toggle('tool--active')
-    $tool.classList.toggle('tool--active')
-
-    state.tool = tool
-    state.$toolRef = $tool
-  })
+  $tool.addEventListener('click', () => selectTool($tool, tool))
 }
 
 const exportAsImg = () => {
@@ -52,6 +54,7 @@ const initToolbar = () => {
 
   Object.values(tools).forEach(option => registerTool($toolbar, option))
 
+  selectTool(<HTMLButtonElement>$toolbar.children[0], tools[0])
   document.body.appendChild($toolbar)
 }
 

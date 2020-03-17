@@ -36,9 +36,17 @@ const walkUntilMeet = (p0: Cell, p1: Cell, state: State): Cell[] => {
   return cells
 }
 
+const icon = `
+  <svg x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;">
+    <path d="M466.052,374.155V45.948H137.847V0H0v137.847h45.948v328.205h328.205V512H512V374.155H466.052z M91.897,91.897H45.948
+      V45.948h45.948V91.897z M420.103,374.153h-45.948v0.001v45.948H91.898V137.847h45.948v-45.95h282.256V374.153z M466.052,466.052
+      h-45.948v-45.948h45.948V466.052z"/>
+  </svg>
+`
+
 export const Square: Tool<{ start?: Cell }> = {
   name: 'square',
-  icon: '□',
+  icon,
   state: {},
   onPointerDown: ({ x, y, canvas }, squareState) => {
     squareState.start = <Cell>{ x, y }

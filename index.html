@@ -4,17 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Space+Mono&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <button id="stop">stop</button>
-    <button id="start">start</button>
-    <button id="loop">loop</button>
-    <button id="export">export</button>
-    <input id="char" type="text" maxlength="1" />
-    <input id="color" type="color" />
     <style>
       * {
         box-sizing: border-box;
+      }
+
+      input,
+      button {
+        outline: 0;
+        cursor: pointer;
       }
 
       body {
@@ -27,27 +31,108 @@
         position: relative;
       }
 
+      .menu {
+        z-index: 1;
+        display: flex;
+        background: #262626;
+        position: fixed;
+        top: 0;
+        height: 32px;
+        width: 100vw;
+        border-bottom: 1px solid white;
+      }
+
+      .menu::before {
+        content: '';
+        display: inline-block;
+        width: 38px;
+        height: 38px;
+        border-right: 1px solid white;
+      }
+
+      .menu-button {
+        background: 0;
+        border: 0;
+        color: white;
+        text-transform: uppercase;
+        font-family: 'Space Mono', monospace;
+        height: 100%;
+      }
+
+      .menu-button + .menu-button {
+        border-left: 1px solid white;
+      }
+
+      .char-input {
+        width: 32px;
+        border: 0;
+        background: transparent;
+        color: white;
+        text-align: center;
+        font-size: 14px;
+        font-family: monospace;
+      }
+
+      .color-picker {
+        width: 32px;
+        border: 0;
+      }
+
       .toolbar {
         display: flex;
         flex-direction: column;
         position: fixed;
         z-index: 1;
-        top: 100px;
-        left: 10px;
+        top: 32px;
+        height: 100vh;
+        background: #262626;
       }
 
       .tool {
-        max-width: 32px;
-        height: 32px;
-        border: 1px solid;
+        width: 38px;
+        height: 38px;
+        padding: 8px;
         text-align: center;
+        cursor: pointer;
+        outline: 0;
+        border: 0;
+        background: #262626;
+        fill: white;
+      }
+
+      .tool > svg {
+        height: 18px;
       }
 
       .tool--active {
-        background: lightblue;
+        background: #49aaff;
+        fill: white;
+      }
+
+      .tool:hover,
+      .menu-button:hover {
+        background-color: #3d3f44;
       }
     </style>
-
+    <header class="menu">
+      <button class="menu-button" id="stop">stop</button>
+      <button class="menu-button" id="start">start</button>
+      <button class="menu-button" id="loop">loop</button>
+      <button class="menu-button" id="export">export</button>
+      <input
+        class="menu-button char-input"
+        id="char"
+        type="text"
+        maxlength="1"
+        value="$"
+      />
+      <input
+        class="menu-button color-picker"
+        id="color"
+        type="color"
+        value="#ff0000"
+      />
+    </header>
     <script src="./src/index.ts"></script>
   </body>
 </html>

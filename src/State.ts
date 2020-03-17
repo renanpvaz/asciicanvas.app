@@ -31,7 +31,7 @@ export const initialState: State = {
   cellHeight: 0,
   cellWidth: 0,
   char: '$',
-  color: 'black',
+  color: 'red',
   selectedTool: 'pencil',
   dirtyCells: [],
   history: {
