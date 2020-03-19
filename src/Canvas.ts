@@ -1,4 +1,4 @@
-import { State } from './State'
+import { State, getRealCoords } from './State'
 import { Cell } from './Cell'
 
 export type Canvas = {
@@ -22,6 +22,39 @@ const initCanvas = () => {
   document.body.appendChild($canvas)
 
   return $canvas
+}
+
+export const neighbors = ({ x, y }: Cell, state: State): Cell[] => [
+  <Cell>{ x: x + state.cellWidth, y },
+  <Cell>{ x: x - state.cellWidth, y },
+  <Cell>{ x, y: y + state.cellHeight },
+  <Cell>{ x, y: y - state.cellHeight },
+]
+
+export const getNNeighbors = (n: number, center: Cell, state: State) => {
+  if (n === 1) return [center]
+  if (n === 2) return [center, ...neighbors(center, state)]
+
+  const cells = []
+  const { sin, acos } = Math
+  const radius = n * state.cellWidth
+
+  for (let x = center.x - radius; x < center.x + radius; x += state.cellWidth) {
+    const yspan = getRealCoords(
+      0,
+      radius * sin(acos((center.x - x) / radius)),
+      state,
+    ).y
+    for (
+      let y = center.y - yspan;
+      y < center.y + yspan;
+      y += state.cellHeight
+    ) {
+      cells.push(<Cell>getRealCoords(x, y, state))
+    }
+  }
+
+  return cells
 }
 
 const isOutOfBounds = ({ x, y }: Cell): boolean =>

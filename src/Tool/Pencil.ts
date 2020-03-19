@@ -1,4 +1,6 @@
 import { Tool } from '../Tool'
+import { getNNeighbors } from '../Canvas'
+import { Cell } from '../Cell'
 
 const icon = `
   <svg x="0px" y="0px" viewBox="0 0 383.947 383.947" style="enable-background:new 0 0 383.947 383.947;">
@@ -11,5 +13,10 @@ const icon = `
 export const Pencil: Tool = {
   name: 'pencil',
   icon,
-  onPaint: ({ x, y, canvas }) => canvas.set(x, y),
+  sizeable: true,
+  onPaint: ({ x, y, canvas, state }) => {
+    getNNeighbors(state.size || 0, <Cell>{ x, y }, state).forEach(cell =>
+      canvas.set(cell.x, cell.y),
+    )
+  },
 }

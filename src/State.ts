@@ -17,11 +17,12 @@ export type State = {
   keys: { [key: string]: boolean }
   tool: Tool<any>
   $toolRef: HTMLButtonElement | null
+  size: number | null
 }
 
-export const getRealCoords = (e: MouseEvent, state: State) => ({
-  x: Math.round(e.x / state.cellWidth) * state.cellWidth,
-  y: Math.round(e.y / state.cellHeight) * state.cellHeight,
+export const getRealCoords = (x: number, y: number, state: State) => ({
+  x: Math.round(x / state.cellWidth) * state.cellWidth,
+  y: Math.round(y / state.cellHeight) * state.cellHeight,
 })
 
 export const initialState: State = {
@@ -31,7 +32,7 @@ export const initialState: State = {
   cellHeight: 0,
   cellWidth: 0,
   char: '$',
-  color: 'red',
+  color: '#d238a8',
   selectedTool: 'pencil',
   dirtyCells: [],
   history: {
@@ -42,4 +43,5 @@ export const initialState: State = {
   keys: {},
   tool: Pencil,
   $toolRef: null,
+  size: 1,
 }

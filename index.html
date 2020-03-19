@@ -86,6 +86,8 @@
         top: 32px;
         height: 100vh;
         background: #262626;
+        border-bottom: 1px solid white;
+        margin-bottom: 10px;
       }
 
       .tool {
@@ -105,13 +107,28 @@
       }
 
       .tool--active {
-        background: #49aaff;
+        background: #d238a8;
         fill: white;
+      }
+
+      .toolbar-options {
+        display: flex;
+        border-top: 1px solid white;
+        padding: 16px 0;
       }
 
       .tool:hover,
       .menu-button:hover {
         background-color: #3d3f44;
+      }
+
+      .size-handle {
+        writing-mode: bt-lr; /* IE */
+        -webkit-appearance: slider-vertical; /* WebKit */
+        width: 8px;
+        height: 175px;
+        padding: 0 5px;
+        margin: 0 auto;
       }
     </style>
     <header class="menu">
@@ -130,7 +147,7 @@
         class="menu-button color-picker"
         id="color"
         type="color"
-        value="#ff0000"
+        value="#d238a8"
       />
     </header>
     <script src="./src/index.ts"></script>

@@ -19,6 +19,7 @@ type ToolEventHandler<S> = (
 type ToolOptions<S> = {
   name: string
   icon: string
+  sizeable?: boolean
   onPaint: ToolEventHandler<S>
   onPointerUp?: ToolEventHandler<S>
   onPointerDown?: ToolEventHandler<S>

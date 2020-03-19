@@ -47,13 +47,32 @@ const exportAsImg = () => {
   document.body.removeChild(element)
 }
 
+const initSizeHandle = () => {
+  const $input = document.createElement('input')
+
+  $input.className = 'size-handle'
+  $input.value = '1'
+  $input.type = 'range'
+  $input.max = '10'
+  $input.min = '1'
+  $input.step = '1'
+  $input.setAttribute('orient', 'vertical')
+  $input.addEventListener('change', () => (state.size = +$input.value))
+
+  return $input
+}
+
 const initToolbar = () => {
   const $toolbar = document.createElement('section')
+  const $toolbarOptions = document.createElement('footer')
 
   $toolbar.className = 'toolbar'
+  $toolbarOptions.className = 'toolbar-options'
 
   Object.values(tools).forEach(option => registerTool($toolbar, option))
 
+  $toolbarOptions.appendChild(initSizeHandle())
+  $toolbar.appendChild($toolbarOptions)
   selectTool(<HTMLButtonElement>$toolbar.children[0], tools[0])
   document.body.appendChild($toolbar)
 }
@@ -67,7 +86,7 @@ const useToolHandler = (
   if (handler)
     handler(
       {
-        ...getRealCoords(e, state),
+        ...getRealCoords(e.x, e.y, state),
         state,
         canvas: makeApi(state),
       },
