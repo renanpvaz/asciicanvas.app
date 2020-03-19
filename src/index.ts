@@ -22,6 +22,14 @@ const selectTool = ($el: HTMLButtonElement, tool: Tool) => {
 
   state.tool = tool
   state.$toolRef = $el
+
+  if (!state.$toolRef) return
+
+  const svg = state.$toolRef.firstElementChild
+  const xml = new XMLSerializer().serializeToString(svg!)
+  const svg64 = btoa(xml)
+
+  $canvas.style.cursor = `url('${`data:image/svg+xml;base64,${svg64}`}'), auto`
 }
 
 const registerTool = ($toolbar: HTMLElement, tool: Tool<any>) => {
