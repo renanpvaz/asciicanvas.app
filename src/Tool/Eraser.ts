@@ -1,4 +1,6 @@
 import { Tool } from '../Tool'
+import { getNNeighbors } from '../Canvas'
+import { Cell } from '../Cell'
 
 const icon = `
   <svg enable-background="new 0 0 467.765 467.765" viewBox="0 0 467.765 467.765">
@@ -9,5 +11,6 @@ const icon = `
 export const Eraser: Tool = {
   name: 'eraser',
   icon,
-  onPaint: ({ x, y, canvas }) => canvas.set(x, y, ''),
+  onPaint: ({ x, y, canvas, state }) =>
+    canvas.setAll(getNNeighbors(state.size || 0, <Cell>{ x, y }, state), ''),
 }

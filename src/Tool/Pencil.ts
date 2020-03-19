@@ -14,9 +14,6 @@ export const Pencil: Tool = {
   name: 'pencil',
   icon,
   sizeable: true,
-  onPaint: ({ x, y, canvas, state }) => {
-    getNNeighbors(state.size || 0, <Cell>{ x, y }, state).forEach(cell =>
-      canvas.set(cell.x, cell.y),
-    )
-  },
+  onPaint: ({ x, y, canvas, state }) =>
+    canvas.setAll(getNNeighbors(state.size || 0, <Cell>{ x, y }, state)),
 }

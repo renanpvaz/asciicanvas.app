@@ -4,6 +4,7 @@ import { Cell } from './Cell'
 export type Canvas = {
   get: (x: number, y: number) => Cell | undefined
   set: (x: number, y: number, char?: string) => void
+  setAll: (cells: Cell[], char?: string) => void
   setPreview: (x: number, y: number) => void
   clearPreview: () => void
   applyPreview: () => void
@@ -83,6 +84,9 @@ const makeApi = (state: State): Canvas => {
     }
   }
 
+  const setAll = (cells: Cell[], char?: string) =>
+    cells.forEach(c => set(c.x, c.y, char))
+
   const setPreview = (x: number, y: number) => {
     const k = key(x, y)
 
@@ -120,6 +124,7 @@ const makeApi = (state: State): Canvas => {
     setPreview,
     clearPreview,
     applyPreview,
+    setAll,
   }
 }
 
