@@ -23,6 +23,19 @@ const initCanvas = (state: State) => {
   return $canvas
 }
 
+export const measureText = (fontSize: number) => {
+  const context = document.createElement('canvas').getContext('2d')!
+
+  context.font = `${fontSize}px monospace`
+
+  const metrics = context.measureText('$')
+
+  return {
+    width: metrics.width,
+    height: metrics.actualBoundingBoxAscent * 1.5,
+  }
+}
+
 export const neighbors = ({ x, y }: Cell, state: State): Cell[] => [
   <Cell>{ x: x + state.cellWidth, y },
   <Cell>{ x: x - state.cellWidth, y },
@@ -126,7 +139,7 @@ const makeApi = (state: State): Canvas => {
   }
 }
 
-const drawGrid = (state: State): string => {
+const drawGrid = (state: State, targetCtx: CanvasRenderingContext2D) => {
   const $gridCanvas = document.createElement('canvas')
   const ctx = $gridCanvas.getContext('2d')!
 
@@ -148,11 +161,12 @@ const drawGrid = (state: State): string => {
     ctx.stroke()
   }
 
-  return $gridCanvas.toDataURL()
+  targetCtx.canvas.style.backgroundImage = `url('${$gridCanvas.toDataURL()}')`
 }
 
 const draw = (state: State, context: CanvasRenderingContext2D) => {
   context.textBaseline = 'top'
+  context.font = `${state.fontSize}px monospace`
 
   const drawCell = (cell: Cell) => {
     if (!cell.value) return

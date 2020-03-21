@@ -18,11 +18,12 @@ export type State = {
   tool: Tool<any>
   $toolRef: HTMLButtonElement | null
   size: number | null
+  fontSize: number
 }
 
 export const getRealCoords = (x: number, y: number, state: State) => ({
-  x: Math.round(x / state.cellWidth) * state.cellWidth,
-  y: Math.round(y / state.cellHeight) * state.cellHeight,
+  x: Math.floor(x / state.cellWidth) * state.cellWidth,
+  y: Math.floor(y / state.cellHeight) * state.cellHeight,
 })
 
 export const initialState: State = {
@@ -44,4 +45,5 @@ export const initialState: State = {
   tool: Pencil,
   $toolRef: null,
   size: 1,
+  fontSize: 14,
 }

@@ -1,5 +1,5 @@
-import { initialState, getRealCoords } from './State'
-import { draw, initCanvas, makeApi, drawGrid } from './Canvas'
+import { initialState, getRealCoords, State } from './State'
+import { draw, initCanvas, makeApi, drawGrid, measureText } from './Canvas'
 import { history } from './History'
 import { renderToolbar } from './Toolbar'
 import { renderMenus } from './Menu'
@@ -9,13 +9,6 @@ const state = { ...initialState }
 const $canvas = initCanvas(state)
 const ctx = $canvas.getContext('2d')!
 let stopped = false
-
-const measureText = (() => {
-  const memo: { [key: string]: TextMetrics } = {}
-
-  return (char: string) =>
-    char in memo ? memo[char] : (memo[char] = ctx.measureText(char))
-})()
 
 const useToolHandler = (
   key: 'onPointerDown' | 'onPointerUp' | 'onPaint',
@@ -37,7 +30,7 @@ const useToolHandler = (
 const init = () => {
   document.body.appendChild(
     html('main', {}, [
-      renderMenus(state),
+      renderMenus(state, ctx),
       html('div', { className: 'content' }, [
         renderToolbar(state),
         html('div', { className: 'canvas-container' }, [$canvas]),
@@ -65,12 +58,11 @@ const init = () => {
     state.keys[e.key] = false
   })
 
-  const metrics = measureText(state.char)
+  const { width, height } = measureText(14)
+  state.cellWidth = width
+  state.cellHeight = height
 
-  state.cellWidth = metrics.width
-  state.cellHeight = metrics.actualBoundingBoxAscent * 1.5
-
-  $canvas.style.backgroundImage = `url('${drawGrid(state)}')`
+  drawGrid(state, ctx)
   loop()
 }
 

@@ -1,5 +1,6 @@
 import { html } from './util'
 import { State } from './State'
+import { drawGrid, measureText } from './Canvas'
 
 const exportAsImg = () => {
   const element = document.createElement('a')
@@ -17,15 +18,32 @@ const exportAsImg = () => {
   document.body.removeChild(element)
 }
 
-const renderMenus = (state: State) =>
+const renderMenus = (state: State, ctx: CanvasRenderingContext2D) =>
   html('header', { className: 'menu' }, [
     html('button', { className: 'menu-button', onclick: exportAsImg }, [
       'export',
     ]),
     html('input', {
       className: 'menu-button char-input',
+      type: 'number',
+      value: '14',
+      onchange: e => {
+        const fontSize = +(<HTMLInputElement>e.target).value
+        const { width, height } = measureText(fontSize)
+
+        state.canvas = {}
+        state.fontSize = fontSize
+        state.cellWidth = width
+        state.cellHeight = height
+
+        drawGrid(state, ctx)
+      },
+    }),
+    html('input', {
+      className: 'menu-button char-input',
       maxLength: 1,
       value: '$',
+      onchange: e => (state.char = (<HTMLInputElement>e.target).value),
     }),
     html('input', {
       className: 'menu-button color-picker',
