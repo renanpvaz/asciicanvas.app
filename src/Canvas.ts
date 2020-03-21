@@ -10,7 +10,7 @@ export type Canvas = {
   applyPreview: () => void
 }
 
-const initCanvas = () => {
+const initCanvas = (state: State) => {
   const $canvas = document.createElement('canvas')
   const ctx = $canvas.getContext('2d')!
   const dpr = window.devicePixelRatio || 1
@@ -126,7 +126,34 @@ const makeApi = (state: State): Canvas => {
   }
 }
 
+const drawGrid = (state: State): string => {
+  const $gridCanvas = document.createElement('canvas')
+  const ctx = $gridCanvas.getContext('2d')!
+
+  $gridCanvas.width = 600
+  $gridCanvas.height = 400
+  ctx.strokeStyle = '#7b7b7b'
+  ctx.lineWidth = 0.5
+
+  for (let x = 0; x < 600; x += state.cellWidth) {
+    ctx.beginPath()
+    ctx.moveTo(x, 0)
+    ctx.lineTo(x, 400)
+    ctx.stroke()
+  }
+  for (let y = 0; y < 400; y += state.cellHeight) {
+    ctx.beginPath()
+    ctx.moveTo(0, y)
+    ctx.lineTo(600, y)
+    ctx.stroke()
+  }
+
+  return $gridCanvas.toDataURL()
+}
+
 const draw = (state: State, context: CanvasRenderingContext2D) => {
+  context.textBaseline = 'top'
+
   const drawCell = (cell: Cell) => {
     if (!cell.value) return
     context.fillStyle = cell.color
@@ -144,17 +171,17 @@ const draw = (state: State, context: CanvasRenderingContext2D) => {
 
   for (const key in state.preview) {
     const cell = state.preview[key]
-    context.clearRect(cell.x, cell.y + 2, state.cellWidth, -state.cellHeight)
+    context.clearRect(cell.x, cell.y, state.cellWidth, state.cellHeight)
     drawCell(cell)
   }
 
   for (const key of state.dirtyCells) {
     const cell = state.canvas[key]
-    context.clearRect(cell.x, cell.y + 2, state.cellWidth, -state.cellHeight)
+    context.clearRect(cell.x, cell.y, state.cellWidth, state.cellHeight)
     drawCell(cell)
   }
 
   state.dirtyCells = []
 }
 
-export { initCanvas, makeApi, draw, key }
+export { initCanvas, makeApi, draw, drawGrid, key }

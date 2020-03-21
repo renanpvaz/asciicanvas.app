@@ -1,14 +1,13 @@
 import { initialState, getRealCoords } from './State'
-import { draw, initCanvas, makeApi } from './Canvas'
+import { draw, initCanvas, makeApi, drawGrid } from './Canvas'
 import { history } from './History'
 import { renderToolbar } from './Toolbar'
 import { renderMenus } from './Menu'
 import { html } from './util'
 
-const $canvas = initCanvas()
-
-const ctx = $canvas.getContext('2d')!
 const state = { ...initialState }
+const $canvas = initCanvas(state)
+const ctx = $canvas.getContext('2d')!
 let stopped = false
 
 const measureText = (() => {
@@ -71,6 +70,7 @@ const init = () => {
   state.cellWidth = metrics.width
   state.cellHeight = metrics.actualBoundingBoxAscent * 1.5
 
+  $canvas.style.backgroundImage = `url('${drawGrid(state)}')`
   loop()
 }
 
