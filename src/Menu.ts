@@ -1,24 +1,5 @@
 import { html } from './util'
-
-// <header class="menu">
-//     <button class="menu-button" id="stop">stop</button>
-//     <button class="menu-button" id="start">start</button>
-//     <button class="menu-button" id="loop">loop</button>
-//     <button class="menu-button" id="export">export</button>
-//     <input
-//     class="menu-button char-input"
-//     id="char"
-//     type="text"
-//     maxlength="1"
-//     value="$"
-//     />
-//     <input
-//     class="menu-button color-picker"
-//     id="color"
-//     type="color"
-//     value="#d238a8"
-//     />
-// </header>
+import { State } from './State'
 
 const exportAsImg = () => {
   const element = document.createElement('a')
@@ -36,7 +17,7 @@ const exportAsImg = () => {
   document.body.removeChild(element)
 }
 
-const renderMenus = () =>
+const renderMenus = (state: State) =>
   html('header', { className: 'menu' }, [
     html('button', { className: 'menu-button', onclick: exportAsImg }, [
       'export',
@@ -50,6 +31,7 @@ const renderMenus = () =>
       className: 'menu-button color-picker',
       type: 'color',
       value: '#d238a8',
+      onchange: e => (state.color = (<HTMLInputElement>e.target).value),
     }),
   ])
 

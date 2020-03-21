@@ -15,12 +15,10 @@ const initCanvas = () => {
   const ctx = $canvas.getContext('2d')!
   const dpr = window.devicePixelRatio || 1
 
-  $canvas.width = window.innerWidth * dpr
-  $canvas.height = window.innerHeight * dpr
+  $canvas.width = 600
+  $canvas.height = 400
   ctx.scale(dpr, dpr)
   ctx.font = '14px monospace'
-
-  document.body.appendChild($canvas)
 
   return $canvas
 }

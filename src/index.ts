@@ -3,6 +3,7 @@ import { draw, initCanvas, makeApi } from './Canvas'
 import { history } from './History'
 import { renderToolbar } from './Toolbar'
 import { renderMenus } from './Menu'
+import { html } from './util'
 
 const $canvas = initCanvas()
 
@@ -26,7 +27,7 @@ const useToolHandler = (
   if (handler)
     handler(
       {
-        ...getRealCoords(e.x, e.y, state),
+        ...getRealCoords(e.x - 32, e.y - 32, state),
         state,
         canvas: makeApi(state),
       },
@@ -35,8 +36,15 @@ const useToolHandler = (
 }
 
 const init = () => {
-  document.body.appendChild(renderToolbar(state))
-  document.body.appendChild(renderMenus())
+  document.body.appendChild(
+    html('main', {}, [
+      renderMenus(state),
+      html('div', { className: 'content' }, [
+        renderToolbar(state),
+        html('div', { className: 'canvas-container' }, [$canvas]),
+      ]),
+    ]),
+  )
 
   $canvas.addEventListener('mousedown', e => {
     state.pressing = true
