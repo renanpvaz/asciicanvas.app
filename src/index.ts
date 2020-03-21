@@ -1,7 +1,7 @@
-import { Tool, tools } from './Tool'
 import { initialState, getRealCoords } from './State'
 import { draw, initCanvas, makeApi } from './Canvas'
 import { history } from './History'
+import { renderToolbar } from './Toolbar'
 
 const $canvas = initCanvas()
 
@@ -16,32 +16,6 @@ const measureText = (() => {
     char in memo ? memo[char] : (memo[char] = ctx.measureText(char))
 })()
 
-const selectTool = ($el: HTMLButtonElement, tool: Tool) => {
-  state.$toolRef?.classList.toggle('tool--active')
-  $el.classList.toggle('tool--active')
-
-  state.tool = tool
-  state.$toolRef = $el
-
-  if (!state.$toolRef) return
-
-  const svg = state.$toolRef.firstElementChild
-  const xml = new XMLSerializer().serializeToString(svg!)
-  const svg64 = btoa(xml)
-
-  $canvas.style.cursor = `url('${`data:image/svg+xml;base64,${svg64}`}'), auto`
-}
-
-const registerTool = ($toolbar: HTMLElement, tool: Tool<any>) => {
-  const $tool = document.createElement('button')
-
-  $tool.className = 'tool'
-  $tool.innerHTML = tool.icon
-
-  $toolbar.appendChild($tool)
-  $tool.addEventListener('click', () => selectTool($tool, tool))
-}
-
 const exportAsImg = () => {
   const element = document.createElement('a')
   element.setAttribute('href', $canvas.toDataURL('image/png'))
@@ -53,36 +27,6 @@ const exportAsImg = () => {
   element.click()
 
   document.body.removeChild(element)
-}
-
-const initSizeHandle = () => {
-  const $input = document.createElement('input')
-
-  $input.className = 'size-handle'
-  $input.value = '1'
-  $input.type = 'range'
-  $input.max = '10'
-  $input.min = '1'
-  $input.step = '1'
-  $input.setAttribute('orient', 'vertical')
-  $input.addEventListener('change', () => (state.size = +$input.value))
-
-  return $input
-}
-
-const initToolbar = () => {
-  const $toolbar = document.createElement('section')
-  const $toolbarOptions = document.createElement('footer')
-
-  $toolbar.className = 'toolbar'
-  $toolbarOptions.className = 'toolbar-options'
-
-  Object.values(tools).forEach(option => registerTool($toolbar, option))
-
-  $toolbarOptions.appendChild(initSizeHandle())
-  $toolbar.appendChild($toolbarOptions)
-  selectTool(<HTMLButtonElement>$toolbar.children[0], tools[0])
-  document.body.appendChild($toolbar)
 }
 
 const useToolHandler = (
@@ -103,7 +47,7 @@ const useToolHandler = (
 }
 
 const init = () => {
-  initToolbar()
+  document.body.appendChild(renderToolbar(state))
 
   $canvas.addEventListener('mousedown', e => {
     state.pressing = true
