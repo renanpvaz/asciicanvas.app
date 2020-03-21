@@ -22,8 +22,8 @@ export type State = {
 }
 
 export const getRealCoords = (x: number, y: number, state: State) => ({
-  x: Math.floor(x / state.cellWidth) * state.cellWidth,
-  y: Math.floor(y / state.cellHeight) * state.cellHeight,
+  x: Math.floor(x / state.cellWidth),
+  y: Math.floor(y / state.cellHeight),
 })
 
 export const initialState: State = {

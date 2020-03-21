@@ -31,10 +31,10 @@ const renderMenus = (state: State, ctx: CanvasRenderingContext2D) =>
         const fontSize = +(<HTMLInputElement>e.target).value
         const { width, height } = measureText(fontSize)
 
-        state.canvas = {}
         state.fontSize = fontSize
         state.cellWidth = width
         state.cellHeight = height
+        state.history.updated = true
 
         drawGrid(state, ctx)
       },

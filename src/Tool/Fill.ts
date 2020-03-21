@@ -21,10 +21,10 @@ export const Fill: Tool = {
       canvas.set(x, y)
 
       const fillNeighbors = () => {
-        fill(color, x + state.cellWidth, y)
-        fill(color, x - state.cellWidth, y)
-        fill(color, x, y + state.cellHeight)
-        fill(color, x, y - state.cellHeight)
+        fill(color, x + 1, y)
+        fill(color, x - 1, y)
+        fill(color, x, y + 1)
+        fill(color, x, y - 1)
       }
 
       if (state.dirtyCells.length > 1000) {

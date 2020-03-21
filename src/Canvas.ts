@@ -1,4 +1,4 @@
-import { State, getRealCoords } from './State'
+import { State } from './State'
 import { Cell } from './Cell'
 
 export type Canvas = {
@@ -13,11 +13,9 @@ export type Canvas = {
 const initCanvas = (state: State) => {
   const $canvas = document.createElement('canvas')
   const ctx = $canvas.getContext('2d')!
-  const dpr = window.devicePixelRatio || 1
 
   $canvas.width = 600
   $canvas.height = 400
-  ctx.scale(dpr, dpr)
   ctx.font = '14px monospace'
 
   return $canvas
@@ -37,32 +35,23 @@ export const measureText = (fontSize: number) => {
 }
 
 export const neighbors = ({ x, y }: Cell, state: State): Cell[] => [
-  <Cell>{ x: x + state.cellWidth, y },
-  <Cell>{ x: x - state.cellWidth, y },
-  <Cell>{ x, y: y + state.cellHeight },
-  <Cell>{ x, y: y - state.cellHeight },
+  <Cell>{ x: x + 1, y },
+  <Cell>{ x: x - 1, y },
+  <Cell>{ x, y: y + 1 },
+  <Cell>{ x, y: y - 1 },
 ]
 
-export const getNNeighbors = (n: number, center: Cell, state: State) => {
-  if (n === 1) return [center]
-  if (n === 2) return [center, ...neighbors(center, state)]
+export const getNNeighbors = (radius: number, center: Cell, state: State) => {
+  if (radius === 1) return [center]
+  if (radius === 2) return [center, ...neighbors(center, state)]
 
-  const cells = []
+  const cells: Cell[] = []
   const { sin, acos } = Math
-  const radius = n * state.cellWidth
 
-  for (let x = center.x - radius; x < center.x + radius; x += state.cellWidth) {
-    const yspan = getRealCoords(
-      0,
-      radius * sin(acos((center.x - x) / radius)),
-      state,
-    ).y
-    for (
-      let y = center.y - yspan;
-      y < center.y + yspan;
-      y += state.cellHeight
-    ) {
-      cells.push(<Cell>getRealCoords(x, y, state))
+  for (let x = center.x - radius; x < center.x + radius; x++) {
+    const yspan = radius * sin(acos((center.x - x) / radius)) * 0.5
+    for (let y = center.y - yspan; y < center.y + yspan; y++) {
+      cells.push(<Cell>{ x, y: Math.round(y) })
     }
   }
 
@@ -171,7 +160,20 @@ const draw = (state: State, context: CanvasRenderingContext2D) => {
   const drawCell = (cell: Cell) => {
     if (!cell.value) return
     context.fillStyle = cell.color
-    context.fillText(cell.value, cell.x, cell.y)
+    context.fillText(
+      cell.value,
+      cell.x * state.cellWidth,
+      cell.y * state.cellHeight,
+    )
+  }
+
+  const clearCell = (cell: Cell) => {
+    context.clearRect(
+      cell.x * state.cellWidth,
+      cell.y * state.cellHeight,
+      state.cellWidth,
+      state.cellHeight,
+    )
   }
 
   if (state.history.updated) {
@@ -185,13 +187,13 @@ const draw = (state: State, context: CanvasRenderingContext2D) => {
 
   for (const key in state.preview) {
     const cell = state.preview[key]
-    context.clearRect(cell.x, cell.y, state.cellWidth, state.cellHeight)
+    clearCell(cell)
     drawCell(cell)
   }
 
   for (const key of state.dirtyCells) {
     const cell = state.canvas[key]
-    context.clearRect(cell.x, cell.y, state.cellWidth, state.cellHeight)
+    clearCell(cell)
     drawCell(cell)
   }
 

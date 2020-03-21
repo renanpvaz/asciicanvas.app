@@ -1,27 +1,26 @@
 import { Tool } from '../Tool'
-import { State } from '../State'
 import { Cell } from '../Cell'
 
-const walkGrid = (state: State, p0: Cell, p1: Cell) => {
-  const dx = p1.x - p0.x,
-    dy = p1.y - p0.y
-  const nx = Math.abs(dx),
-    ny = Math.abs(dy)
-  const sign_x = dx > 0 ? state.cellWidth : -state.cellWidth,
-    sign_y = dy > 0 ? state.cellHeight : -state.cellHeight
+const walkGrid = (p0: Cell, p1: Cell) => {
+  const dx = p1.x - p0.x
+  const dy = p1.y - p0.y
+
+  const nx = Math.abs(dx)
+  const ny = Math.abs(dy)
+
+  const sign_x = dx > 0 ? 1 : -1
+  const sign_y = dy > 0 ? 1 : -1
 
   const p = { x: p0.x, y: p0.y }
   const points = [{ x: p.x, y: p.y }]
 
   for (let ix = 0, iy = 0; ix < nx || iy < ny; ) {
     if ((0.5 + ix) / nx < (0.5 + iy) / ny) {
-      // next step is horizontal
       p.x += sign_x
-      ix += state.cellWidth
+      ix += 1
     } else {
-      // next step is vertical
       p.y += sign_y
-      iy += state.cellHeight
+      iy += 1
     }
     points.push({ x: p.x, y: p.y })
   }
@@ -50,14 +49,12 @@ export const Line: Tool<LineState> = {
   onPointerUp: ({ canvas }) => {
     canvas.applyPreview()
   },
-  onPaint: ({ x, y, state, canvas }, { start }) => {
+  onPaint: ({ x, y, canvas }, { start }) => {
     const end = <Cell>{ x, y }
 
     if (start) {
       canvas.clearPreview()
-      walkGrid(state, start, end).forEach(point =>
-        canvas.setPreview(point.x, point.y),
-      )
+      walkGrid(start, end).forEach(point => canvas.setPreview(point.x, point.y))
     }
   },
 }

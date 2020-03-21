@@ -2,11 +2,8 @@ import { Tool } from '../Tool'
 import { Cell } from '../Cell'
 import { State } from '../State'
 
-const walkUntilMeet = (p0: Cell, p1: Cell, state: State): Cell[] => {
+const walkUntilMeet = (p0: Cell, p1: Cell): Cell[] => {
   const cells: Cell[] = [p0, p1]
-
-  const unit = (axis: 'x' | 'y') =>
-    axis === 'x' ? state.cellWidth : state.cellHeight
 
   const go = (aAxis: 'x' | 'y', bAxis: 'x' | 'y') => {
     let didMeet = false
@@ -21,10 +18,8 @@ const walkUntilMeet = (p0: Cell, p1: Cell, state: State): Cell[] => {
       const didAMeet = a[aAxis] === b[aAxis]
       const didBMeet = a[bAxis] === b[bAxis]
 
-      if (!didAMeet)
-        cells.push((a = <Cell>{ ...a, [aAxis]: a[aAxis] + unit(aAxis) * incA }))
-      if (!didBMeet)
-        cells.push((b = <Cell>{ ...b, [bAxis]: b[bAxis] + unit(bAxis) * incB }))
+      if (!didAMeet) cells.push((a = <Cell>{ ...a, [aAxis]: a[aAxis] + incA }))
+      if (!didBMeet) cells.push((b = <Cell>{ ...b, [bAxis]: b[bAxis] + incB }))
 
       didMeet = didAMeet && didBMeet
     }
@@ -55,11 +50,11 @@ export const Square: Tool<{ start?: Cell }> = {
   onPointerUp: ({ canvas }) => {
     canvas.applyPreview()
   },
-  onPaint: ({ x, y, canvas, state }, squareState) => {
+  onPaint: ({ x, y, canvas }, squareState) => {
     const end = <Cell>{ x, y }
     canvas.clearPreview()
 
-    for (const cell of walkUntilMeet(squareState.start!, end, state)) {
+    for (const cell of walkUntilMeet(squareState.start!, end)) {
       canvas.setPreview(cell.x, cell.y)
     }
   },
