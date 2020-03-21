@@ -2,6 +2,7 @@ import { initialState, getRealCoords } from './State'
 import { draw, initCanvas, makeApi } from './Canvas'
 import { history } from './History'
 import { renderToolbar } from './Toolbar'
+import { renderMenus } from './Menu'
 
 const $canvas = initCanvas()
 
@@ -15,19 +16,6 @@ const measureText = (() => {
   return (char: string) =>
     char in memo ? memo[char] : (memo[char] = ctx.measureText(char))
 })()
-
-const exportAsImg = () => {
-  const element = document.createElement('a')
-  element.setAttribute('href', $canvas.toDataURL('image/png'))
-  element.setAttribute('download', 'untitled.png')
-
-  element.style.display = 'none'
-  document.body.appendChild(element)
-
-  element.click()
-
-  document.body.removeChild(element)
-}
 
 const useToolHandler = (
   key: 'onPointerDown' | 'onPointerUp' | 'onPaint',
@@ -48,6 +36,7 @@ const useToolHandler = (
 
 const init = () => {
   document.body.appendChild(renderToolbar(state))
+  document.body.appendChild(renderMenus())
 
   $canvas.addEventListener('mousedown', e => {
     state.pressing = true
@@ -100,20 +89,5 @@ const loop = () => {
   draw(state, ctx)
   if (!stopped) requestAnimationFrame(loop)
 }
-
-document
-  .querySelector('#stop')
-  ?.addEventListener('click', () => (stopped = true))
-document
-  .querySelector('#start')
-  ?.addEventListener('click', () => (stopped = false))
-document.querySelector('#loop')?.addEventListener('click', loop)
-document.querySelector('#color')?.addEventListener('change', e => {
-  state.color = (<HTMLInputElement>e.target).value
-})
-document.querySelector('#char')?.addEventListener('change', e => {
-  state.char = (<HTMLInputElement>e.target).value
-})
-document.querySelector('#export')?.addEventListener('click', exportAsImg)
 
 document.addEventListener('DOMContentLoaded', init)

@@ -30,30 +30,22 @@ const selectTool = ($el: HTMLButtonElement, tool: Tool, state: State) => {
 const renderToolbar = (state: State) =>
   html('section', { className: 'toolbar' }, [
     ...tools.map(tool =>
-      html(
-        'button',
-        {
-          className: 'tool',
-          innerHTML: tool.icon,
-          onclick: e => selectTool(<HTMLButtonElement>e.target, tool, state),
-        },
-        [],
-      ),
+      html('button', {
+        className: 'tool',
+        innerHTML: tool.icon,
+        onclick: e => selectTool(<HTMLButtonElement>e.target, tool, state),
+      }),
     ),
     html('footer', { className: 'toolbar-options' }, [
-      html(
-        'input',
-        {
-          className: 'size-handle',
-          value: '1',
-          type: 'range',
-          max: '10',
-          min: '1',
-          step: '1',
-          onchange: e => (state.size = +(<HTMLInputElement>e.target).value),
-        },
-        [],
-      ),
+      html('input', {
+        className: 'size-handle',
+        value: '1',
+        type: 'range',
+        max: '10',
+        min: '1',
+        step: '1',
+        onchange: e => (state.size = +(<HTMLInputElement>e.target).value),
+      }),
     ]),
   ])
 

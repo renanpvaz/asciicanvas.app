@@ -46,7 +46,7 @@
         content: '';
         display: inline-block;
         width: 38px;
-        height: 38px;
+        height: 32px;
         border-right: 1px solid white;
       }
 
@@ -87,6 +87,7 @@
         height: 100vh;
         background: #262626;
         border-bottom: 1px solid white;
+        border-right: 1px solid white;
         margin-bottom: 10px;
       }
 
@@ -139,25 +140,7 @@
         pointer-events: none;
       }
     </style>
-    <header class="menu">
-      <button class="menu-button" id="stop">stop</button>
-      <button class="menu-button" id="start">start</button>
-      <button class="menu-button" id="loop">loop</button>
-      <button class="menu-button" id="export">export</button>
-      <input
-        class="menu-button char-input"
-        id="char"
-        type="text"
-        maxlength="1"
-        value="$"
-      />
-      <input
-        class="menu-button color-picker"
-        id="color"
-        type="color"
-        value="#d238a8"
-      />
-    </header>
+
     <script src="./src/index.ts"></script>
   </body>
 </html>
