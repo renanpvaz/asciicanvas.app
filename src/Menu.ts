@@ -21,6 +21,12 @@ const exportAsImg = () => {
 const renderMenus = (state: State, ctx: CanvasRenderingContext2D) =>
   html('header', { className: 'menu' }, [
     html('button', { className: 'menu-button', onclick: exportAsImg }, [
+      'file',
+    ]),
+    html('button', { className: 'menu-button', onclick: exportAsImg }, [
+      'edit',
+    ]),
+    html('button', { className: 'menu-button', onclick: exportAsImg }, [
       'export',
     ]),
     html('input', {

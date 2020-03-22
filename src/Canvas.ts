@@ -58,8 +58,11 @@ export const getNNeighbors = (radius: number, center: Cell, state: State) => {
   return cells
 }
 
-const isOutOfBounds = ({ x, y }: Cell): boolean =>
-  x > window.innerWidth || x < 0 || y > window.innerHeight || y < 0
+const isOutOfBounds = ({ x, y }: Cell, state: State): boolean =>
+  x > 600 / state.cellWidth ||
+  x < 0 ||
+  y > window.innerHeight / state.cellHeight ||
+  y < 0
 
 const key = (x: number, y: number) => `${x},${y}`
 
@@ -68,7 +71,7 @@ const makeApi = (state: State): Canvas => {
     state.canvas[key(x, y)] || { x, y }
 
   const get: Canvas['get'] = (x, y) =>
-    isOutOfBounds({ x, y, value: null, color: null })
+    isOutOfBounds({ x, y, value: null, color: null }, state)
       ? undefined
       : getWithDefault(x, y)
 
@@ -168,12 +171,13 @@ const draw = (state: State, context: CanvasRenderingContext2D) => {
   }
 
   const clearCell = (cell: Cell) => {
-    context.clearRect(
-      cell.x * state.cellWidth,
-      cell.y * state.cellHeight,
-      state.cellWidth,
-      state.cellHeight,
-    )
+    if (cell)
+      context.clearRect(
+        cell.x * state.cellWidth,
+        cell.y * state.cellHeight,
+        state.cellWidth,
+        state.cellHeight,
+      )
   }
 
   if (state.history.updated) {
