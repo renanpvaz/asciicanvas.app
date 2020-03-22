@@ -5,7 +5,7 @@ export type Canvas = {
   get: (x: number, y: number) => Cell | undefined
   set: (x: number, y: number, char?: string) => void
   setAll: (cells: Cell[], char?: string) => void
-  setPreview: (x: number, y: number) => void
+  setPreview: (x: number, y: number, char?: string) => void
   clearPreview: () => void
   applyPreview: () => void
 }
@@ -87,11 +87,11 @@ const makeApi = (state: State): Canvas => {
   const setAll = (cells: Cell[], char?: string) =>
     cells.forEach(c => set(c.x, c.y, char))
 
-  const setPreview = (x: number, y: number) => {
+  const setPreview = (x: number, y: number, char: string = state.char) => {
     const k = key(x, y)
 
     state.preview[k] = {
-      value: state.char,
+      value: char,
       color: state.color,
       x,
       y,

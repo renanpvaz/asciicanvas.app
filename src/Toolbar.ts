@@ -6,8 +6,9 @@ import { Line } from './Tool/Line'
 import { Eraser } from './Tool/Eraser'
 import { Fill } from './Tool/Fill'
 import { Square } from './Tool/Square'
+import { Text } from './Tool/Text'
 
-const tools: Tool<any>[] = [Pencil, Line, Eraser, Fill, Square]
+const tools: Tool<any>[] = [Pencil, Line, Eraser, Fill, Square, Text]
 
 const selectTool = ($el: HTMLButtonElement, tool: Tool, state: State) => {
   state.$toolRef?.classList.toggle('tool--active')
