@@ -10,12 +10,24 @@ export type Canvas = {
   applyPreview: () => void
 }
 
-const initCanvas = (state: State) => {
+const createCanvas = (width: number, height: number) => {
   const $canvas = document.createElement('canvas')
   const ctx = $canvas.getContext('2d')!
+  const dpr = window.devicePixelRatio || 1
 
-  $canvas.width = 600
-  $canvas.height = 400
+  $canvas.width = width * dpr
+  $canvas.height = height * dpr
+  $canvas.style.width = `${width}px`
+  $canvas.style.height = `${height}px`
+  ctx.scale(dpr, dpr)
+
+  return $canvas
+}
+
+const initCanvas = () => {
+  const $canvas = createCanvas(600, 400)
+  const ctx = $canvas.getContext('2d')!
+
   ctx.font = '14px monospace'
 
   return $canvas
@@ -132,11 +144,9 @@ const makeApi = (state: State): Canvas => {
 }
 
 const drawGrid = (state: State, targetCtx: CanvasRenderingContext2D) => {
-  const $gridCanvas = document.createElement('canvas')
+  const $gridCanvas = createCanvas(600, 400)
   const ctx = $gridCanvas.getContext('2d')!
 
-  $gridCanvas.width = 600
-  $gridCanvas.height = 400
   ctx.strokeStyle = '#7b7b7b'
   ctx.lineWidth = 0.5
 
