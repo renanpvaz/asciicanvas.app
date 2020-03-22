@@ -25,7 +25,6 @@ const renderMenus = (state: State, ctx: CanvasRenderingContext2D) =>
     ]),
     html('input', {
       className: 'menu-button char-input',
-      type: 'number',
       value: '14',
       onchange: e => {
         const fontSize = +(<HTMLInputElement>e.target).value

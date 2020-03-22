@@ -65,6 +65,7 @@
         text-transform: uppercase;
         font-family: 'Space Mono', monospace;
         height: 100%;
+        line-height: 31px;
       }
 
       .menu-button + .menu-button {
@@ -121,7 +122,7 @@
         padding: 16px 0;
       }
 
-      .tool:hover,
+      .tool:not(.tool--active):hover,
       .menu-button:hover {
         background-color: #3d3f44;
       }
