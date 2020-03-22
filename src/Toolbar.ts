@@ -10,31 +10,22 @@ import { Text } from './Tool/Text'
 
 const tools: Tool<any>[] = [Pencil, Line, Eraser, Fill, Square, Text]
 
-const selectTool = ($el: HTMLButtonElement, tool: Tool, state: State) => {
-  state.$toolRef?.classList.toggle('tool--active')
-  $el.classList.toggle('tool--active')
-
-  state.tool = tool
-  state.$toolRef = $el
-
-  if (!state.$toolRef) return
-
-  const svg = state.$toolRef.firstElementChild
-  const xml = new XMLSerializer().serializeToString(svg!)
-  const svg64 = btoa(xml)
-
-  document.querySelector(
-    'canvas',
-  )!.style.cursor = `url('${`data:image/svg+xml;base64,${svg64}`}'), auto`
-}
-
-const renderToolbar = (state: State) =>
+const renderToolbar = (state: State, ctx: CanvasRenderingContext2D) =>
   html('section', { className: 'toolbar' }, [
     ...tools.map(tool =>
       html('button', {
         className: 'tool',
         innerHTML: tool.icon,
-        onclick: e => selectTool(<HTMLButtonElement>e.target, tool, state),
+        onclick: e => {
+          const $el = <HTMLButtonElement>e.target
+
+          state.$toolRef?.classList.toggle('tool--active')
+          $el.classList.toggle('tool--active')
+
+          state.tool = tool
+          state.$toolRef = $el
+          ctx.canvas.style.cursor = tool.cursor || 'default'
+        },
       }),
     ),
     html('footer', { className: 'toolbar-options' }, [

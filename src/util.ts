@@ -17,4 +17,15 @@ const html = <K extends keyof HTMLElementTagNameMap>(
   return $el
 }
 
-export { html }
+const htmlRaw = (raw: string) =>
+  html('div', { innerHTML: raw }).firstElementChild!
+
+const makeCursorFromSvg = (rawSvg: string) => {
+  const svg = htmlRaw(rawSvg)
+  const xml = new XMLSerializer().serializeToString(svg!)
+  const svg64 = btoa(xml)
+
+  return `url('${`data:image/svg+xml;base64,${svg64}`}'), auto`
+}
+
+export { html, htmlRaw, makeCursorFromSvg }

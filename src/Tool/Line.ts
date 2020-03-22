@@ -43,6 +43,7 @@ export const Line: Tool<LineState> = {
   name: 'line',
   icon,
   state: {},
+  cursor: 'crosshair',
   onPointerDown: ({ x, y }, lineState) => {
     lineState.start = <Cell>{ x, y }
   },

@@ -43,6 +43,7 @@ export const Square: Tool<{ start?: Cell }> = {
   name: 'square',
   icon,
   state: {},
+  cursor: 'crosshair',
   onPointerDown: ({ x, y, canvas }, squareState) => {
     squareState.start = <Cell>{ x, y }
     canvas.setPreview(x, y)

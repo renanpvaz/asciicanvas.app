@@ -1,5 +1,6 @@
 import { State } from './State'
 import { Canvas } from './Canvas'
+import { htmlRaw } from './util'
 
 type ToolEventHandler<T, S> = (
   context: {
@@ -14,6 +15,7 @@ type ToolMouseEventHandler<S> = ToolEventHandler<{ x: number; y: number }, S>
 type ToolOptions<S> = {
   name: string
   icon: string
+  cursor?: string
   sizeable?: boolean
   onPaint?: ToolMouseEventHandler<S>
   onPointerUp?: ToolMouseEventHandler<S>

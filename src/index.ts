@@ -32,7 +32,7 @@ const init = () => {
     html('main', {}, [
       renderMenus(state, ctx),
       html('div', { className: 'content' }, [
-        renderToolbar(state),
+        renderToolbar(state, ctx),
         html('div', { className: 'canvas-container' }, [$canvas]),
       ]),
     ]),

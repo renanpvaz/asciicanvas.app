@@ -1,4 +1,5 @@
 import { Tool } from '../Tool'
+import { makeCursorFromSvg } from '../util'
 
 const icon = `
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="18" height="18" enable-background="new 0 0 467.766 467.766" height="512" viewBox="0 0 467.766 467.766">
@@ -10,6 +11,7 @@ const icon = `
 export const Fill: Tool = {
   name: 'fill',
   icon,
+  cursor: makeCursorFromSvg(icon),
   onPaint: ({ x, y, state, canvas }) => {
     const target = canvas.get(x, y)
 
