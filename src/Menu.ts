@@ -22,12 +22,29 @@ const renderMenus = (state: State, ctx: CanvasRenderingContext2D) =>
   html('header', { className: 'menu' }, [
     html('button', { className: 'menu-button', onclick: exportAsImg }, [
       'file',
+      html('ul', { className: 'menu-list' }, [
+        html('li', { className: 'menu-item' }, [
+          html('span', {}, ['New']),
+          html('small', {}, ['Cmd+Z']),
+        ]),
+        html('li', { className: 'menu-item' }, [
+          html('span', {}, ['Export']),
+          html('small', {}, ['Cmd+Shift+Z']),
+        ]),
+      ]),
     ]),
     html('button', { className: 'menu-button', onclick: exportAsImg }, [
       'edit',
-    ]),
-    html('button', { className: 'menu-button', onclick: exportAsImg }, [
-      'export',
+      html('ul', { className: 'menu-list' }, [
+        html('li', { className: 'menu-item' }, [
+          html('span', {}, ['Undo']),
+          html('small', {}, ['Cmd+Z']),
+        ]),
+        html('li', { className: 'menu-item' }, [
+          html('span', {}, ['Redo']),
+          html('small', {}, ['Cmd+Shift+Z']),
+        ]),
+      ]),
     ]),
     html('input', {
       className: 'menu-button char-input',
