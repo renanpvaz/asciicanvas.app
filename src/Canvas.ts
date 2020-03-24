@@ -105,12 +105,13 @@ const makeApi = (state: State): Canvas => {
   const setPreview = (x: number, y: number, char: string = state.char) => {
     const k = key(x, y)
 
-    state.preview[k] = {
-      value: char,
-      color: state.color,
-      x,
-      y,
-    }
+    if (!isOutOfBounds(<Cell>{ x, y }, state))
+      state.preview[k] = {
+        value: char,
+        color: state.color,
+        x,
+        y,
+      }
   }
 
   const clearPreview = () => {

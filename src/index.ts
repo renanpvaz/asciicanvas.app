@@ -6,7 +6,7 @@ import { renderMenus } from './Menu'
 import { html } from './util'
 
 const state = { ...initialState }
-const $canvas = initCanvas(state)
+const $canvas = initCanvas()
 const ctx = $canvas.getContext('2d')!
 let stopped = false
 

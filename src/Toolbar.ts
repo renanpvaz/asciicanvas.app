@@ -7,8 +7,9 @@ import { Eraser } from './Tool/Eraser'
 import { Fill } from './Tool/Fill'
 import { Square } from './Tool/Square'
 import { Text } from './Tool/Text'
+import { Ellipse } from './Tool/Ellipse'
 
-const tools: Tool<any>[] = [Pencil, Line, Eraser, Fill, Square, Text]
+const tools: Tool<any>[] = [Pencil, Line, Eraser, Fill, Square, Ellipse, Text]
 
 const renderToolbar = (state: State, ctx: CanvasRenderingContext2D) =>
   html('section', { className: 'toolbar' }, [
