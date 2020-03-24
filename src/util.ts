@@ -17,8 +17,8 @@ const html = <K extends keyof HTMLElementTagNameMap>(
   return $el
 }
 
-const htmlRaw = (raw: string) =>
-  html('div', { innerHTML: raw }).firstElementChild!
+const htmlRaw = (raw: string): HTMLElement =>
+  html('div', { innerHTML: raw }).firstElementChild as HTMLElement
 
 const makeCursorFromSvg = (rawSvg: string) => {
   const svg = htmlRaw(rawSvg)

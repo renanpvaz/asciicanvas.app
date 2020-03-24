@@ -48,7 +48,6 @@
         background: #161616;
         height: 32px;
         width: 100vw;
-        border-bottom: 1px solid white;
       }
 
       .menu::before {
@@ -69,11 +68,16 @@
         background: #161616;
         z-index: 1;
         margin: 0;
-        text-transform: capitalize;
+        text-transform: none;
         white-space: nowrap;
         border: 1px solid white;
         border-top: 0;
         box-shadow: 2px 2px 0px 0px black;
+      }
+
+      .menu-list--right {
+        left: 99%;
+        bottom: 50%;
       }
 
       .menu-item {
@@ -84,7 +88,7 @@
         padding: 0 8px;
       }
 
-      .menu-button:hover .menu-list {
+      .menu-container:hover > .menu-list {
         display: block;
       }
 

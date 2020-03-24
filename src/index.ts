@@ -30,13 +30,14 @@ const useToolHandler = (
 const init = () => {
   document.body.appendChild(
     html('main', {}, [
-      renderMenus(state, ctx),
+      renderMenus(state, ctx, history(state)),
       html('div', { className: 'content' }, [
         renderToolbar(state, ctx),
         html('div', { className: 'canvas-container' }, [$canvas]),
       ]),
     ]),
   )
+  ;(<HTMLButtonElement>document.querySelector('.tool')).click()
 
   $canvas.addEventListener('mousedown', e => {
     state.pressing = true
