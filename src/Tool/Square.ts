@@ -41,7 +41,7 @@ const icon = `
 
 export const Square: Tool<{ start?: Cell }> = {
   name: 'square',
-  icon,
+  icon: { x: 0, y: -216 },
   state: {},
   cursor: 'crosshair',
   onPointerDown: ({ x, y, canvas }, squareState) => {

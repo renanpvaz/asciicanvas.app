@@ -10,6 +10,7 @@
     />
   </head>
   <body>
+    <!-- <img src="sprite.png" alt="" /> -->
     <style>
       * {
         box-sizing: border-box;
@@ -23,7 +24,6 @@
 
       body {
         margin: 0;
-        background: #272727;
       }
 
       main {
@@ -45,7 +45,6 @@
 
       .menu {
         display: flex;
-        background: #161616;
         height: 32px;
         width: 100vw;
       }
@@ -55,7 +54,6 @@
         display: inline-block;
         width: 38px;
         height: 32px;
-        border-right: 1px solid white;
       }
 
       .menu-list {
@@ -65,12 +63,11 @@
         bottom: 0;
         left: 0;
         transform: translateY(100%);
-        background: #161616;
+        background: white;
         z-index: 1;
         margin: 0;
         text-transform: none;
         white-space: nowrap;
-        border: 1px solid white;
         border-top: 0;
         box-shadow: 2px 2px 0px 0px black;
       }
@@ -95,7 +92,6 @@
       .menu-button {
         background: 0;
         border: 0;
-        color: white;
         text-transform: uppercase;
         font-family: 'Space Mono', monospace;
         height: 100%;
@@ -103,19 +99,10 @@
         position: relative;
       }
 
-      .menu-button:not(:hover) {
-        border-bottom: 1px solid white;
-      }
-
-      .menu-button + .menu-button {
-        border-left: 1px solid white;
-      }
-
       .char-input {
         width: 32px;
         border: 0;
         background: transparent;
-        color: white;
         text-align: center;
         font-size: 14px;
       }
@@ -129,20 +116,24 @@
         display: flex;
         flex-direction: column;
         height: calc(100vh - 32px);
-        background: #161616;
-        border-right: 1px solid white;
+        background: white;
       }
 
       .tool {
-        width: 38px;
-        height: 38px;
+        --icon-x: 0;
+        --icon-y: 0;
+        width: 36px;
+        height: 36px;
         padding: 8px;
         text-align: center;
         cursor: pointer;
         outline: 0;
         border: 0;
-        background: #161616;
-        fill: white;
+        background: white;
+        background-image: url('sprite.png');
+        background-position: var(--icon-x) var(--icon-y);
+        image-rendering: pixelated;
+        border-radius: 50%;
       }
 
       .tool > svg {
@@ -150,27 +141,25 @@
       }
 
       .tool--active {
-        background: #d238a8;
-        fill: white;
+        background-color: #fbff7a;
       }
 
       .toolbar-options {
         display: flex;
-        border-top: 1px solid white;
         padding: 16px 0;
       }
 
       .tool:not(.tool--active):hover,
       .menu-button:hover,
       .menu-item:hover {
-        background-color: #3d3f44;
+        background-color: #dcdcdc;
       }
 
       .size-handle {
         writing-mode: bt-lr; /* IE */
         -webkit-appearance: slider-vertical; /* WebKit */
         width: 8px;
-        height: 175px;
+        height: 130px;
         padding: 0 5px;
         margin: 0 auto;
       }

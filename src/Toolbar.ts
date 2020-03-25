@@ -9,14 +9,17 @@ import { Square } from './Tool/Square'
 import { Text } from './Tool/Text'
 import { Ellipse } from './Tool/Ellipse'
 
-const tools: Tool<any>[] = [Pencil, Line, Eraser, Fill, Square, Ellipse, Text]
+const tools: Tool<any>[] = [Pencil, Eraser, Fill, Text, Line, Square, Ellipse]
 
 const renderToolbar = (state: State, ctx: CanvasRenderingContext2D) =>
   html('section', { className: 'toolbar' }, [
     ...tools.map(tool =>
       html('button', {
         className: 'tool',
-        innerHTML: tool.icon,
+        style: {
+          '--icon-x': `${tool.icon.x}px`,
+          '--icon-y': `${tool.icon.y}px`,
+        },
         onclick: e => {
           const $el = <HTMLButtonElement>e.target
 

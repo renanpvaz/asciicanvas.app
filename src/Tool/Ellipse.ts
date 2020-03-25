@@ -9,7 +9,7 @@ const icon = `
 
 export const Ellipse: Tool<{ start?: Cell }> = {
   name: 'ellipse',
-  icon,
+  icon: { x: 0, y: -180 },
   state: {},
   cursor: 'crosshair',
   onPointerDown: ({ x, y, canvas }, squareState) => {

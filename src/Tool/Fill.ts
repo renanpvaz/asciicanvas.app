@@ -10,7 +10,7 @@ const icon = `
 
 export const Fill: Tool = {
   name: 'fill',
-  icon,
+  icon: { x: 0, y: -144 },
   cursor: makeCursorFromSvg(icon),
   onPaint: ({ x, y, state, canvas }) => {
     const target = canvas.get(x, y)

@@ -8,7 +8,10 @@ const html = <K extends keyof HTMLElementTagNameMap>(
   const $el = document.createElement(tag)
   const { style = {}, ...attrs } = attributes
 
-  Object.assign($el.style, style)
+  for (let prop in style) {
+    $el.style.setProperty(prop, style[prop]!)
+  }
+
   Object.assign($el, attrs)
   children?.forEach(c =>
     $el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c),

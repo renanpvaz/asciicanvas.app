@@ -10,7 +10,7 @@ const icon = `
 
 export const Eraser: Tool = {
   name: 'eraser',
-  icon,
+  icon: { x: 0, y: -36 },
   onPaint: ({ x, y, canvas, state }) =>
     canvas.setAll(getNNeighbors(state.size || 0, <Cell>{ x, y }, state), ''),
 }

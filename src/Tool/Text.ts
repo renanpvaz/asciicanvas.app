@@ -14,7 +14,7 @@ const icon = `
 
 export const Text: Tool<TextState> = {
   name: 'text',
-  icon,
+  icon: { x: 0, y: -108 },
   cursor: 'text',
   state: { active: false },
   onPointerUp: ({ x, y, state, canvas }, textState) => {

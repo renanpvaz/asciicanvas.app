@@ -14,7 +14,7 @@ type ToolMouseEventHandler<S> = ToolEventHandler<{ x: number; y: number }, S>
 
 type ToolOptions<S> = {
   name: string
-  icon: string
+  icon: { x: number; y: number }
   cursor?: string
   sizeable?: boolean
   onPaint?: ToolMouseEventHandler<S>

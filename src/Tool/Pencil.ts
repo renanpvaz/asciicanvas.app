@@ -13,7 +13,7 @@ const icon = `
 
 export const Pencil: Tool = {
   name: 'pencil',
-  icon,
+  icon: { x: 0, y: 0 },
   sizeable: true,
   cursor: makeCursorFromSvg(icon),
   onPaint: ({ x, y, canvas, state }) => {

@@ -41,7 +41,7 @@ const icon = `
 
 export const Line: Tool<LineState> = {
   name: 'line',
-  icon,
+  icon: { x: 0, y: -72 },
   state: {},
   cursor: 'crosshair',
   onPointerDown: ({ x, y }, lineState) => {
