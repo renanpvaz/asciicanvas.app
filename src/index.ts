@@ -10,23 +10,6 @@ const $canvas = initCanvas()
 const ctx = $canvas.getContext('2d')!
 let stopped = false
 
-const useToolHandler = (
-  key: 'onPointerDown' | 'onPointerUp' | 'onPaint',
-  e: MouseEvent,
-) => {
-  const handler = state.tool[key]
-
-  if (handler)
-    handler(
-      {
-        ...getRealCoords(e.x - 32, e.y - 32, state),
-        state,
-        canvas: makeApi(state),
-      },
-      state.tool.state,
-    )
-}
-
 const init = () => {
   document.body.appendChild(
     html('main', {}, [
@@ -39,18 +22,60 @@ const init = () => {
   )
   ;(<HTMLButtonElement>document.querySelector('.tool')).click()
 
-  $canvas.addEventListener('mousedown', e => {
+  const offsetX = $canvas.offsetLeft
+  const offsetY = $canvas.offsetTop
+
+  console.log(offsetX, offsetY)
+
+  const useToolHandler = (
+    key: 'onPointerDown' | 'onPointerUp' | 'onPaint',
+    coords: { x: number; y: number },
+  ) => {
+    const handler = state.tool[key]
+
+    if (handler)
+      handler(
+        {
+          ...getRealCoords(coords.x - offsetX, coords.y - offsetY, state),
+          state,
+          canvas: makeApi(state),
+        },
+        state.tool.state,
+      )
+  }
+
+  const handleMouseDown = (coords: { x: number; y: number }) => {
     state.pressing = true
-    useToolHandler('onPointerDown', e)
+    useToolHandler('onPointerDown', coords)
     history(state).track()
-  })
-  $canvas.addEventListener('mouseup', e => {
+  }
+  const handleMouseUp = (coords: { x: number; y: number }) => {
     state.pressing = false
-    useToolHandler('onPointerUp', e)
-    useToolHandler('onPaint', e)
-  })
+    useToolHandler('onPointerUp', coords)
+    useToolHandler('onPaint', coords)
+  }
+  const handleMouseMove = (coords: { x: number; y: number }) => {
+    if (state.pressing) useToolHandler('onPaint', coords)
+  }
+
+  $canvas.addEventListener('mousedown', e => handleMouseDown(e))
+  $canvas.addEventListener('mouseup', e => handleMouseUp(e))
   $canvas.addEventListener('mousemove', e => {
-    if (state.pressing) useToolHandler('onPaint', e)
+    handleMouseMove(e)
+    e.stopPropagation()
+  })
+
+  const getTouchCoords = (e: TouchEvent) => ({
+    x: e.touches[0].pageX,
+    y: e.touches[0].pageY,
+  })
+
+  $canvas.addEventListener('touchstart', e =>
+    handleMouseDown(getTouchCoords(e)),
+  )
+  $canvas.addEventListener('touchend', e => handleMouseUp(getTouchCoords(e)))
+  $canvas.addEventListener('touchmove', e => {
+    handleMouseMove(getTouchCoords(e))
   })
   document.addEventListener('keydown', e => {
     state.keys[e.key] = true
@@ -91,4 +116,6 @@ const loop = () => {
   if (!stopped) requestAnimationFrame(loop)
 }
 
+window.addEventListener('load', () => window.scrollTo(0, 0))
 document.addEventListener('DOMContentLoaded', init)
+document.addEventListener('touchmove', e => e.preventDefault())

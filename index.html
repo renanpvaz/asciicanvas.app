@@ -2,7 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, minimal-ui"
+    />
     <title>Document</title>
     <link
       href="https://fonts.googleapis.com/css?family=Space+Mono&display=swap"
@@ -27,7 +31,6 @@
       }
 
       main {
-        height: 100vh;
         display: flex;
         flex-direction: column;
       }
@@ -49,13 +52,6 @@
         width: 100vw;
       }
 
-      .menu::before {
-        content: '';
-        display: inline-block;
-        width: 38px;
-        height: 32px;
-      }
-
       .menu-list {
         display: none;
         position: absolute;
@@ -70,6 +66,7 @@
         white-space: nowrap;
         border-top: 0;
         box-shadow: 2px 2px 0px 0px black;
+        border: 1px solid gray;
       }
 
       .menu-list--right {
@@ -166,6 +163,22 @@
 
       svg {
         pointer-events: none;
+      }
+
+      @media (max-width: 767px) {
+        html,
+        body {
+          overflow: hidden;
+        }
+
+        .toolbar {
+          flex-direction: row;
+          height: 36px;
+          position: fixed;
+          left: 50%;
+          bottom: 0;
+          transform: translateX(-50%);
+        }
       }
     </style>
 

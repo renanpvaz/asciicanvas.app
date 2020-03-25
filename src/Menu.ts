@@ -64,7 +64,7 @@ const renderMenus = (
           html('span', {}, ['Export']),
           html('small', {}, [
             htmlRaw(`
-              <svg width="10" height="11" viewBox="0 0 10 11" style="fill:white;display:inline-block;vertical-align:middle">
+              <svg width="10" height="11" viewBox="0 0 10 11" style="display:inline-block;vertical-align:middle">
                 <path d="M7.5 4.33L0 8.66L0 0z"></path>
               </svg>
             `),
