@@ -6,12 +6,10 @@ import { renderMenus } from './Menu'
 import { html, isMobile } from './util'
 
 const state = { ...initialState }
-const $canvas = initCanvas()
+const $canvas = initCanvas(state)
 const ctx = $canvas.getContext('2d')!
 
 let stopped = false
-
-console.log(isMobile())
 
 const init = () => {
   document.body.appendChild(

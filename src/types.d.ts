@@ -7,3 +7,7 @@ interface CSSStyleDeclaration {
   '--icon-x'?: string
   '--icon-y'?: string
 }
+
+interface Navigator {
+  share?: (opts: any) => void
+}

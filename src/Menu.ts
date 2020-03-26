@@ -3,6 +3,20 @@ import { State } from './State'
 import { drawGrid, measureText, key } from './Canvas'
 import { HistoryApi } from './History'
 
+const canvasToString = (state: State) => {
+  let text = ''
+
+  for (let y = 0; y < state.height; y++) {
+    for (let x = 0; x < state.width; x++) {
+      const cell = state.canvas[key(x, y)]
+      text += cell?.value || ' '
+    }
+    text += '\n'
+  }
+
+  return text
+}
+
 const exportAsImg = () => {
   const element = document.createElement('a')
   element.setAttribute(
@@ -20,22 +34,11 @@ const exportAsImg = () => {
 }
 
 const exportAsText = (state: State) => {
-  let text = ''
-
-  for (let y = 0; y < 400; y++) {
-    for (let x = 0; x < 600; x++) {
-      const cell = state.canvas[key(x, y)]
-      text += cell?.value || ' '
-    }
-    text += '\n'
-  }
-
-  console.log(text)
-
   var element = document.createElement('a')
   element.setAttribute(
     'href',
-    'data:text/plain;charset=utf-8,' + encodeURIComponent(text),
+    'data:text/plain;charset=utf-8,' +
+      encodeURIComponent(canvasToString(state)),
   )
   element.setAttribute('download', 'untitled.txt')
 
@@ -45,6 +48,25 @@ const exportAsText = (state: State) => {
   element.click()
 
   document.body.removeChild(element)
+}
+
+const copyContents = (state: State) => {
+  var textArea = document.createElement('textarea')
+  textArea.value = canvasToString(state)
+
+  textArea.style.top = '0'
+  textArea.style.left = '0'
+  textArea.style.position = 'fixed'
+
+  document.body.appendChild(textArea)
+  textArea.focus()
+  textArea.select()
+
+  try {
+    document.execCommand('copy')
+  } catch (err) {}
+
+  document.body.removeChild(textArea)
 }
 
 const renderMenus = (
@@ -58,8 +80,32 @@ const renderMenus = (
       html('ul', { className: 'menu-list' }, [
         html('li', { className: 'menu-item' }, [
           html('span', {}, ['New']),
-          html('small', {}, ['Cmd+Z']),
+          html('small', {}, ['Cmd+N']),
         ]),
+        html(
+          'li',
+          {
+            className: 'menu-item',
+            onclick: () => {
+              if (navigator.share)
+                navigator.share({
+                  title: 'My awesome post!',
+                  text:
+                    'This post may or may not contain the answer to the universe',
+                  url: window.location.href,
+                })
+            },
+          },
+          [html('span', {}, ['Share'])],
+        ),
+        html(
+          'li',
+          {
+            className: 'menu-item',
+            onclick: () => copyContents(state),
+          },
+          [html('span', {}, ['Copy'])],
+        ),
         html('li', { className: 'menu-item menu-container' }, [
           html('span', {}, ['Export']),
           html('small', {}, [

@@ -1,5 +1,4 @@
 import { Tool } from '../Tool'
-import { Cell } from '../Cell'
 import { html } from '../util'
 
 type TextState = {

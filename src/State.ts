@@ -19,6 +19,8 @@ export type State = {
   $toolRef: HTMLButtonElement | null
   size: number | null
   fontSize: number
+  width: number
+  height: number
 }
 
 export const getRealCoords = (x: number, y: number, state: State) => ({
@@ -46,4 +48,6 @@ export const initialState: State = {
   $toolRef: null,
   size: 1,
   fontSize: 14,
+  width: 600,
+  height: 443,
 }

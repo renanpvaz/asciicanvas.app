@@ -24,8 +24,8 @@ const createCanvas = (width: number, height: number) => {
   return $canvas
 }
 
-const initCanvas = () => {
-  const $canvas = createCanvas(600, 400)
+const initCanvas = (state: State) => {
+  const $canvas = createCanvas(state.width, state.height)
   const ctx = $canvas.getContext('2d')!
 
   ctx.font = '14px monospace'
@@ -71,7 +71,7 @@ export const getNNeighbors = (radius: number, center: Cell, state: State) => {
 }
 
 const isOutOfBounds = ({ x, y }: Cell, state: State): boolean =>
-  x > 600 / state.cellWidth ||
+  x > state.width / state.cellWidth ||
   x < 0 ||
   y > window.innerHeight / state.cellHeight ||
   y < 0
@@ -145,22 +145,22 @@ const makeApi = (state: State): Canvas => {
 }
 
 const drawGrid = (state: State, targetCtx: CanvasRenderingContext2D) => {
-  const $gridCanvas = createCanvas(600, 400)
+  const $gridCanvas = createCanvas(state.width, state.height)
   const ctx = $gridCanvas.getContext('2d')!
 
   ctx.strokeStyle = '#7b7b7b'
   ctx.lineWidth = 0.5
 
-  for (let x = 0; x < 600; x += state.cellWidth) {
+  for (let x = 0; x < state.width; x += state.cellWidth) {
     ctx.beginPath()
     ctx.moveTo(x, 0)
-    ctx.lineTo(x, 400)
+    ctx.lineTo(x, state.height)
     ctx.stroke()
   }
-  for (let y = 0; y < 400; y += state.cellHeight) {
+  for (let y = 0; y < state.height; y += state.cellHeight) {
     ctx.beginPath()
     ctx.moveTo(0, y)
-    ctx.lineTo(600, y)
+    ctx.lineTo(state.width, y)
     ctx.stroke()
   }
 
