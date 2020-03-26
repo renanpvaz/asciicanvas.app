@@ -5,12 +5,6 @@ type TextState = {
   active: boolean
 }
 
-const icon = `
-  <svg x="0px" y="0px" width="18" height="20">
-     <text x="50%" y="70%" dominant-baseline="middle" text-anchor="middle" font-size="20" font-family="serif">T</text>
-  </svg>
-`
-
 export const Text: Tool<TextState> = {
   name: 'text',
   icon: { x: 0, y: -108 },
