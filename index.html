@@ -119,18 +119,26 @@
       .tool {
         --icon-x: 0;
         --icon-y: 0;
-        width: 36px;
-        height: 36px;
-        padding: 8px;
+        width: 42px;
+        height: 42px;
+        padding: 0;
         text-align: center;
         cursor: pointer;
         outline: 0;
         border: 0;
         background: white;
+
+        border-radius: 50%;
+      }
+
+      .tool::before {
+        content: '';
+        display: inline-block;
+        width: 36px;
+        height: 36px;
         background-image: url('sprite.png');
         background-position: var(--icon-x) var(--icon-y);
         image-rendering: pixelated;
-        border-radius: 50%;
       }
 
       .tool > svg {
@@ -152,6 +160,24 @@
         background-color: #dcdcdc;
       }
 
+      input[type='range']::-webkit-slider-thumb {
+        -webkit-appearance: none;
+      }
+
+      input[type='range']:focus {
+        outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+      }
+
+      input[type='range']::-ms-track {
+        width: 100%;
+        cursor: pointer;
+
+        /* Hides the slider so custom styles can be added */
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+      }
+
       .size-handle {
         writing-mode: bt-lr; /* IE */
         -webkit-appearance: slider-vertical; /* WebKit */
@@ -159,6 +185,26 @@
         height: 130px;
         padding: 0 5px;
         margin: 0 auto;
+      }
+
+      input[type='range']::-ms-track {
+        background: linear-gradient(85deg, white 50%, rgb(197, 197, 197) 50%);
+      }
+      input[type='range']::-moz-range-track {
+        background: linear-gradient(85deg, white 50%, rgb(197, 197, 197) 50%);
+      }
+      input[type='range']::-webkit-slider-runnable-track {
+        background: linear-gradient(85deg, white 50%, rgb(197, 197, 197) 50%);
+      }
+
+      input[type='range']::-ms-thumb {
+        transform: translateX(5px);
+      }
+      input[type='range']::-moz-range-thumb {
+        transform: translateX(5px);
+      }
+      input[type='range']::-webkit-slider-thumb {
+        transform: translateX(5px);
       }
 
       svg {
@@ -176,8 +222,31 @@
           height: 36px;
           position: fixed;
           left: 50%;
-          bottom: 0;
+          bottom: 16px;
           transform: translateX(-50%);
+        }
+
+        .size-handle-wrapper {
+          padding: 0 10px;
+          position: fixed;
+          top: 120px;
+          left: 0;
+          transition: transform ease 0.5s;
+          z-index: 1;
+          transform: scale(1.5) translateX(-50%);
+        }
+
+        .size-handle-wrapper:hover {
+          pointer-events: all;
+          transform: scale(1.5) translateX(0);
+        }
+
+        .size-handle {
+          pointer-events: none;
+        }
+
+        .size-handle-wrapper:hover > .size-handle {
+          pointer-events: all;
         }
       }
     </style>

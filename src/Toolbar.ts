@@ -1,4 +1,4 @@
-import { html } from './util'
+import { html, isMobile } from './util'
 import { Tool } from './Tool'
 import { State } from './State'
 import { Pencil } from './Tool/Pencil'
@@ -33,15 +33,17 @@ const renderToolbar = (state: State, ctx: CanvasRenderingContext2D) =>
       }),
     ),
     html('footer', { className: 'toolbar-options' }, [
-      html('input', {
-        className: 'size-handle',
-        value: '1',
-        type: 'range',
-        max: '10',
-        min: '1',
-        step: '1',
-        onchange: e => (state.size = +(<HTMLInputElement>e.target).value),
-      }),
+      isMobile()
+        ? ''
+        : html('input', {
+            className: 'size-handle',
+            value: '1',
+            type: 'range',
+            max: '10',
+            min: '1',
+            step: '1',
+            onchange: e => (state.size = +(<HTMLInputElement>e.target).value),
+          }),
     ]),
   ])
 

@@ -31,4 +31,6 @@ const makeCursorFromSvg = (rawSvg: string) => {
   return `url('${`data:image/svg+xml;base64,${svg64}`}'), auto`
 }
 
-export { html, htmlRaw, makeCursorFromSvg }
+const isMobile = () => window.innerWidth < 767
+
+export { html, htmlRaw, makeCursorFromSvg, isMobile }

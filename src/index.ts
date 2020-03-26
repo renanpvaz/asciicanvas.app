@@ -3,12 +3,15 @@ import { draw, initCanvas, makeApi, drawGrid, measureText } from './Canvas'
 import { history } from './History'
 import { renderToolbar } from './Toolbar'
 import { renderMenus } from './Menu'
-import { html } from './util'
+import { html, isMobile } from './util'
 
 const state = { ...initialState }
 const $canvas = initCanvas()
 const ctx = $canvas.getContext('2d')!
+
 let stopped = false
+
+console.log(isMobile())
 
 const init = () => {
   document.body.appendChild(
@@ -17,6 +20,20 @@ const init = () => {
       html('div', { className: 'content' }, [
         renderToolbar(state, ctx),
         html('div', { className: 'canvas-container' }, [$canvas]),
+        isMobile()
+          ? html('div', { className: 'size-handle-wrapper' }, [
+              html('input', {
+                className: 'size-handle',
+                value: '1',
+                type: 'range',
+                max: '10',
+                min: '1',
+                step: '1',
+                onchange: e =>
+                  (state.size = +(<HTMLInputElement>e.target).value),
+              }),
+            ])
+          : '',
       ]),
     ]),
   )
@@ -24,8 +41,6 @@ const init = () => {
 
   const offsetX = $canvas.offsetLeft
   const offsetY = $canvas.offsetTop
-
-  console.log(offsetX, offsetY)
 
   const useToolHandler = (
     key: 'onPointerDown' | 'onPointerUp' | 'onPaint',
@@ -58,25 +73,28 @@ const init = () => {
     if (state.pressing) useToolHandler('onPaint', coords)
   }
 
-  $canvas.addEventListener('mousedown', e => handleMouseDown(e))
-  $canvas.addEventListener('mouseup', e => handleMouseUp(e))
-  $canvas.addEventListener('mousemove', e => {
-    handleMouseMove(e)
-    e.stopPropagation()
-  })
-
   const getTouchCoords = (e: TouchEvent) => ({
-    x: e.touches[0].pageX,
-    y: e.touches[0].pageY,
+    x: e.changedTouches[0].pageX,
+    y: e.changedTouches[0].pageY,
   })
 
-  $canvas.addEventListener('touchstart', e =>
-    handleMouseDown(getTouchCoords(e)),
-  )
-  $canvas.addEventListener('touchend', e => handleMouseUp(getTouchCoords(e)))
-  $canvas.addEventListener('touchmove', e => {
-    handleMouseMove(getTouchCoords(e))
-  })
+  if (isMobile()) {
+    $canvas.addEventListener('touchstart', e =>
+      handleMouseDown(getTouchCoords(e)),
+    )
+    $canvas.addEventListener('touchend', e => handleMouseUp(getTouchCoords(e)))
+    $canvas.addEventListener('touchmove', e =>
+      handleMouseMove(getTouchCoords(e)),
+    )
+  } else {
+    $canvas.addEventListener('mousedown', e => handleMouseDown(e))
+    $canvas.addEventListener('mouseup', e => handleMouseUp(e))
+    $canvas.addEventListener('mousemove', e => {
+      handleMouseMove(e)
+      e.stopPropagation()
+    })
+  }
+
   document.addEventListener('keydown', e => {
     state.keys[e.key] = true
   })
@@ -118,4 +136,3 @@ const loop = () => {
 
 window.addEventListener('load', () => window.scrollTo(0, 0))
 document.addEventListener('DOMContentLoaded', init)
-document.addEventListener('touchmove', e => e.preventDefault())
