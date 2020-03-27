@@ -3,7 +3,7 @@ import { draw, initCanvas, makeApi, drawGrid, measureText } from './Canvas'
 import { history } from './History'
 import { renderToolbar } from './Toolbar'
 import { renderMenus } from './Menu'
-import { html, isMobile } from './util'
+import { html, isMobile, createSelection } from './util'
 
 const state = { ...initialState }
 const $canvas = initCanvas(state)
@@ -134,3 +134,20 @@ const loop = () => {
 
 window.addEventListener('load', () => window.scrollTo(0, 0))
 document.addEventListener('DOMContentLoaded', init)
+document.addEventListener('paste', event => {
+  const $prev = document.querySelector('#text-edit')
+
+  if ($prev) $prev.remove()
+
+  let paste = (event.clipboardData || window.clipboardData)!.getData('text')
+
+  createSelection({
+    x: 0,
+    y: 0,
+    state,
+    text: paste,
+    canvas: makeApi(state),
+  })
+
+  event.preventDefault()
+})

@@ -11,3 +11,7 @@ interface CSSStyleDeclaration {
 interface Navigator {
   share?: (opts: any) => void
 }
+
+interface Window {
+  clipboardData: DataTransfer | null
+}
