@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently \"tsc --watch\" \"parcel index.html\"",
-    "build": "parcel build -d docs index.html",
+    "build": "parcel build -d ./ index.html",
     "test": "tsc --version"
   },
   "keywords": [],
