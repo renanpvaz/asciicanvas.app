@@ -7,14 +7,13 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, minimal-ui"
     />
-    <title>Document</title>
+    <title>aͣscͨiͥiͥcͨaͣnvͮaͣs</title>
     <link
       href="https://fonts.googleapis.com/css?family=Space+Mono&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
-    <!-- <img src="sprite.png" alt="" /> -->
     <style>
       * {
         box-sizing: border-box;
@@ -50,6 +49,7 @@
         display: flex;
         height: 32px;
         width: 100vw;
+        padding: 0 8px;
       }
 
       .menu-list {
@@ -118,8 +118,6 @@
       }
 
       .tool {
-        --icon-x: 0;
-        --icon-y: 0;
         width: 42px;
         height: 42px;
         padding: 0;
@@ -128,18 +126,8 @@
         outline: 0;
         border: 0;
         background: white;
-
-        border-radius: 50%;
-      }
-
-      .tool::before {
-        content: '';
-        display: inline-block;
-        width: 36px;
-        height: 36px;
-        background-image: url('sprite.png');
-        background-position: var(--icon-x) var(--icon-y);
         image-rendering: pixelated;
+        border-radius: 50%;
       }
 
       .tool > svg {

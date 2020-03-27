@@ -1,9 +1,10 @@
 import { Tool } from '../Tool'
 import { Cell } from '../Cell'
+import icon from '../../assets/ellipse.png'
 
 export const Ellipse: Tool<{ start?: Cell }> = {
   name: 'ellipse',
-  icon: { x: 0, y: -180 },
+  icon,
   state: {},
   cursor: 'crosshair',
   onPointerDown: ({ x, y, canvas }, squareState) => {

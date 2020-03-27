@@ -1,9 +1,11 @@
 import { Tool } from '../Tool'
 import { makeCursorFromSvg } from '../util'
+import icon from '../../assets/bucket.png'
 
 export const Fill: Tool = {
   name: 'fill',
-  icon: { x: 0, y: -144 },
+  icon,
+  cursor: `url('${icon}'), default`,
   onPaint: ({ x, y, state, canvas }) => {
     const target = canvas.get(x, y)
 

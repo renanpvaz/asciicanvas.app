@@ -1,5 +1,6 @@
 import { Tool } from '../Tool'
 import { Cell } from '../Cell'
+import icon from '../../assets/line.png'
 
 const walkGrid = (p0: Cell, p1: Cell) => {
   const dx = p1.x - p0.x
@@ -34,7 +35,7 @@ type LineState = {
 
 export const Line: Tool<LineState> = {
   name: 'line',
-  icon: { x: 0, y: -72 },
+  icon,
   state: {},
   cursor: 'crosshair',
   onPointerDown: ({ x, y }, lineState) => {

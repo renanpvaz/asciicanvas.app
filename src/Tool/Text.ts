@@ -1,5 +1,6 @@
 import { Tool } from '../Tool'
 import { html } from '../util'
+import icon from '../../assets/text.png'
 
 type TextState = {
   active: boolean
@@ -7,7 +8,7 @@ type TextState = {
 
 export const Text: Tool<TextState> = {
   name: 'text',
-  icon: { x: 0, y: -108 },
+  icon,
   cursor: 'text',
   state: { active: false },
   onPointerUp: ({ x, y, state, canvas }, textState) => {

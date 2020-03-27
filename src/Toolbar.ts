@@ -14,23 +14,23 @@ const tools: Tool<any>[] = [Pencil, Eraser, Fill, Text, Line, Square, Ellipse]
 const renderToolbar = (state: State, ctx: CanvasRenderingContext2D) =>
   html('section', { className: 'toolbar' }, [
     ...tools.map(tool =>
-      html('button', {
-        className: 'tool',
-        style: {
-          '--icon-x': `${tool.icon.x}px`,
-          '--icon-y': `${tool.icon.y}px`,
-        },
-        onclick: e => {
-          const $el = <HTMLButtonElement>e.target
+      html(
+        'button',
+        {
+          className: 'tool',
+          onclick: e => {
+            const $el = <HTMLButtonElement>e.target
 
-          state.$toolRef?.classList.toggle('tool--active')
-          $el.classList.toggle('tool--active')
+            state.$toolRef?.classList.toggle('tool--active')
+            $el.classList.toggle('tool--active')
 
-          state.tool = tool
-          state.$toolRef = $el
-          ctx.canvas.style.cursor = tool.cursor || 'default'
+            state.tool = tool
+            state.$toolRef = $el
+            ctx.canvas.style.cursor = tool.cursor || 'default'
+          },
         },
-      }),
+        [html('img', { src: tool.icon, style: { pointerEvents: 'none' } })],
+      ),
     ),
     html('footer', { className: 'toolbar-options' }, [
       isMobile()

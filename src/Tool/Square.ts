@@ -1,5 +1,6 @@
 import { Tool } from '../Tool'
 import { Cell } from '../Cell'
+import icon from '../../assets/square.png'
 
 const walkUntilMeet = (p0: Cell, p1: Cell): Cell[] => {
   const cells: Cell[] = [p0, p1]
@@ -32,7 +33,7 @@ const walkUntilMeet = (p0: Cell, p1: Cell): Cell[] => {
 
 export const Square: Tool<{ start?: Cell }> = {
   name: 'square',
-  icon: { x: 0, y: -216 },
+  icon,
   state: {},
   cursor: 'crosshair',
   onPointerDown: ({ x, y, canvas }, squareState) => {
