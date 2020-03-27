@@ -27,8 +27,15 @@
         padding: 0;
       }
 
+      button {
+        background: 0;
+        border: 0;
+      }
+
       body {
         margin: 0;
+        font-family: 'Space Mono', monospace;
+        font-size: 14px;
       }
 
       main {
@@ -45,6 +52,47 @@
       .content {
         display: flex;
         flex: 1;
+      }
+
+      .box {
+        box-shadow: 2px 2px 0px 0px black;
+        border: 1px solid gray;
+      }
+
+      .dialog {
+        width: 300px;
+        position: fixed;
+        top: 50%;
+        right: 50%;
+        transform: translate(50%, -100%);
+        background: white;
+        padding: 10px 20px;
+      }
+
+      .dialog__content {
+        margin-bottom: 16px;
+      }
+
+      .button {
+        background: 0;
+        border: 0;
+        text-transform: uppercase;
+        line-height: 31px;
+      }
+
+      .field {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .field + .field {
+        margin-top: 8px;
+      }
+
+      .input {
+        font-family: inherit;
+        border: 0;
+        border-bottom: 1px solid;
       }
 
       .menu {

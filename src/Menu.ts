@@ -1,6 +1,6 @@
 import { html, htmlRaw } from './util'
 import { State } from './State'
-import { drawGrid, measureText, key } from './Canvas'
+import { drawGrid, measureText, key, initCanvas } from './Canvas'
 import { HistoryApi } from './History'
 
 const canvasToString = (state: State) => {
@@ -85,6 +85,58 @@ const renderCharInputOption = (option: string, state: State) =>
     [html('span', {}, [option])],
   )
 
+const newCanvas = ({
+  state,
+  ctx,
+}: {
+  state: State
+  ctx: CanvasRenderingContext2D
+}) => {
+  let width: number, height: number
+  const $el = html('div', { className: 'box dialog' }, [
+    html(
+      'form',
+      {
+        onsubmit: (e: Event) => {
+          e.preventDefault()
+          state.width = width * state.cellWidth + 1
+          state.height = height * state.cellHeight + 1
+          state.canvas = {}
+          state.dirtyCells = []
+          state.history.updated = true
+
+          const newCanvas = initCanvas(state)
+
+          document.querySelector('canvas')?.replaceWith(newCanvas)
+          drawGrid(state, newCanvas.getContext('2d')!)
+          document.body.removeChild($el)
+        },
+      },
+      [
+        html('div', { className: 'dialog__content' }, [
+          html('label', { className: 'field' }, [
+            'Row size',
+            html('input', {
+              className: 'input',
+              onchange: e => (width = +(<HTMLInputElement>e.target).value),
+            }),
+          ]),
+          html('label', { className: 'field' }, [
+            'Column size',
+            html('input', {
+              className: 'input',
+              onchange: e => (height = +(<HTMLInputElement>e.target).value),
+            }),
+          ]),
+        ]),
+        html('button', { className: 'button', type: 'submit' }, ['start']),
+      ],
+    ),
+  ])
+
+  document.body.appendChild($el)
+}
+
 const renderMenus = (
   state: State,
   ctx: CanvasRenderingContext2D,
@@ -94,10 +146,14 @@ const renderMenus = (
     html('button', { className: 'menu-button menu-container' }, [
       'file',
       html('ul', { className: 'menu-list' }, [
-        html('li', { className: 'menu-item' }, [
-          html('span', {}, ['New']),
-          html('small', {}, ['Cmd+N']),
-        ]),
+        html(
+          'li',
+          {
+            className: 'menu-item',
+            onclick: () => newCanvas({ state, ctx }),
+          },
+          [html('span', {}, ['New']), html('small', {}, ['Cmd+N'])],
+        ),
         html(
           'li',
           {
