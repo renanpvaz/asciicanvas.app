@@ -7,6 +7,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, minimal-ui"
     />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <title>aͣscͨiͥiͥcͨaͣnvͮaͣs</title>
     <link
       href="https://fonts.googleapis.com/css?family=Space+Mono&display=swap"
@@ -23,6 +24,7 @@
       button {
         outline: 0;
         cursor: pointer;
+        padding: 0;
       }
 
       body {
@@ -50,6 +52,11 @@
         height: 32px;
         width: 100vw;
         padding: 0 8px;
+      }
+
+      .menu-container {
+        position: relative;
+        padding: 0 4px;
       }
 
       .menu-list {
@@ -101,7 +108,16 @@
         border: 0;
         background: transparent;
         text-align: center;
-        font-size: 14px;
+        font-size: 20px;
+        font-family: monospace;
+        text-transform: none;
+      }
+
+      .char-input__option {
+        min-width: 32px;
+        height: 32px;
+        display: flex;
+        justify-content: center;
       }
 
       .color-picker {
@@ -234,6 +250,10 @@
 
         .size-handle-wrapper:hover > .size-handle {
           pointer-events: all;
+        }
+
+        .char-input-container {
+          margin-left: auto;
         }
       }
     </style>

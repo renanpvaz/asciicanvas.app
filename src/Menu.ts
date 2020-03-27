@@ -69,6 +69,22 @@ const copyContents = (state: State) => {
   document.body.removeChild(textArea)
 }
 
+const renderCharInputOption = (option: string, state: State) =>
+  html(
+    'li',
+    {
+      className: 'menu-item char-input__option',
+      onclick: () => {
+        state.char = option
+        ;(<HTMLInputElement>(
+          document.querySelector('.char-input')
+        )).value = option
+        document.body.click()
+      },
+    },
+    [html('span', {}, [option])],
+  )
+
 const renderMenus = (
   state: State,
   ctx: CanvasRenderingContext2D,
@@ -142,27 +158,34 @@ const renderMenus = (
         ),
       ]),
     ]),
-    html('input', {
-      className: 'menu-button char-input',
-      value: '14',
-      onchange: e => {
-        const fontSize = +(<HTMLInputElement>e.target).value
-        const { width, height } = measureText(fontSize)
+    // html('input', {
+    //   className: 'menu-button char-input',
+    //   value: '14',
+    //   onchange: e => {
+    //     const fontSize = +(<HTMLInputElement>e.target).value
+    //     const { width, height } = measureText(fontSize)
 
-        state.fontSize = fontSize
-        state.cellWidth = width
-        state.cellHeight = height
-        state.history.updated = true
+    //     state.fontSize = fontSize
+    //     state.cellWidth = width
+    //     state.cellHeight = height
+    //     state.history.updated = true
 
-        drawGrid(state, ctx)
-      },
-    }),
-    html('input', {
-      className: 'menu-button char-input',
-      maxLength: 1,
-      value: '$',
-      onchange: e => (state.char = (<HTMLInputElement>e.target).value),
-    }),
+    //     drawGrid(state, ctx)
+    //   },
+    // }),
+    html('button', { className: 'menu-container char-input-container' }, [
+      html('input', {
+        className: 'menu-button char-input',
+        maxLength: 1,
+        value: '$',
+        onchange: e => (state.char = (<HTMLInputElement>e.target).value),
+      }),
+      html('ul', { className: 'menu-list' }, [
+        ...['$', '@', '/', ';', '(', ')'].map(c =>
+          renderCharInputOption(c, state),
+        ),
+      ]),
+    ]),
     html('input', {
       className: 'menu-button color-picker',
       type: 'color',
