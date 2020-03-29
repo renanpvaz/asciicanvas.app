@@ -2,6 +2,7 @@ import { History } from './History'
 import { CellMap } from './Cell'
 import { Tool } from './Tool'
 import { Pencil } from './Tool/Pencil'
+import { key } from './Canvas'
 
 export type State = {
   pressing: boolean
@@ -28,6 +29,20 @@ export const getRealCoords = (x: number, y: number, state: State) => ({
   y: Math.floor(y / state.cellHeight),
 })
 
+export const canvasToString = (state: State) => {
+  let text = ''
+
+  for (let y = 0; y < state.height; y++) {
+    for (let x = 0; x < state.width; x++) {
+      const cell = state.canvas[key(x, y)]
+      text += cell?.value || ' '
+    }
+    text += '\n'
+  }
+
+  return text
+}
+
 export const initialState: State = {
   pressing: false,
   canvas: {},
@@ -47,7 +62,7 @@ export const initialState: State = {
   tool: Pencil,
   $toolRef: null,
   size: 1,
-  fontSize: 14,
-  width: 600,
-  height: 443,
+  fontSize: 12,
+  width: 800,
+  height: 643,
 }

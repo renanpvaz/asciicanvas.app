@@ -1,20 +1,31 @@
 import { initialState, getRealCoords, State } from './State'
-import { draw, initCanvas, makeApi, drawGrid, measureText } from './Canvas'
+import {
+  draw,
+  initCanvas,
+  makeApi,
+  drawGrid,
+  measureText,
+  Canvas,
+} from './Canvas'
 import { history } from './History'
 import { renderToolbar } from './Toolbar'
 import { renderMenus } from './Menu'
+import { Effect } from './Effect'
 import { html, isMobile, createSelection } from './util'
 
 const state = { ...initialState }
 const $canvas = initCanvas(state)
 const ctx = $canvas.getContext('2d')!
+const put = (eff: Effect) => {
+  eff({ state, canvas: makeApi(state), context: ctx })
+}
 
 let stopped = false
 
 const init = () => {
   document.body.appendChild(
     html('main', {}, [
-      renderMenus(state, ctx, history(state)),
+      renderMenus({ state, context: ctx, history: history(state), put }),
       html('div', { className: 'content' }, [
         renderToolbar(state, ctx),
         html('div', { className: 'canvas-container' }, [$canvas]),
@@ -100,7 +111,7 @@ const init = () => {
     state.keys[e.key] = false
   })
 
-  const { width, height } = measureText(14)
+  const { width, height } = measureText(state.fontSize)
   state.cellWidth = width
   state.cellHeight = height
 

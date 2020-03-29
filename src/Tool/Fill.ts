@@ -1,5 +1,4 @@
 import { Tool } from '../Tool'
-import { makeCursorFromSvg } from '../util'
 import icon from '../../assets/bucket.png'
 
 export const Fill: Tool = {

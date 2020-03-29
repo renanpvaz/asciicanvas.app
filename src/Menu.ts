@@ -1,73 +1,8 @@
 import { html, htmlRaw } from './util'
 import { State } from './State'
-import { drawGrid, measureText, key, initCanvas } from './Canvas'
+import { drawGrid, initCanvas } from './Canvas'
 import { HistoryApi } from './History'
-
-const canvasToString = (state: State) => {
-  let text = ''
-
-  for (let y = 0; y < state.height; y++) {
-    for (let x = 0; x < state.width; x++) {
-      const cell = state.canvas[key(x, y)]
-      text += cell?.value || ' '
-    }
-    text += '\n'
-  }
-
-  return text
-}
-
-const exportAsImg = () => {
-  const element = document.createElement('a')
-  element.setAttribute(
-    'href',
-    document.querySelector('canvas')!.toDataURL('image/png'),
-  )
-  element.setAttribute('download', 'untitled.png')
-
-  element.style.display = 'none'
-  document.body.appendChild(element)
-
-  element.click()
-
-  document.body.removeChild(element)
-}
-
-const exportAsText = (state: State) => {
-  var element = document.createElement('a')
-  element.setAttribute(
-    'href',
-    'data:text/plain;charset=utf-8,' +
-      encodeURIComponent(canvasToString(state)),
-  )
-  element.setAttribute('download', 'untitled.txt')
-
-  element.style.display = 'none'
-  document.body.appendChild(element)
-
-  element.click()
-
-  document.body.removeChild(element)
-}
-
-const copyContents = (state: State) => {
-  var textArea = document.createElement('textarea')
-  textArea.value = canvasToString(state)
-
-  textArea.style.top = '0'
-  textArea.style.left = '0'
-  textArea.style.position = 'fixed'
-
-  document.body.appendChild(textArea)
-  textArea.focus()
-  textArea.select()
-
-  try {
-    document.execCommand('copy')
-  } catch (err) {}
-
-  document.body.removeChild(textArea)
-}
+import { Effect, Export, CopyText, Share } from './Effect'
 
 const renderCharInputOption = (option: string, state: State) =>
   html(
@@ -87,10 +22,10 @@ const renderCharInputOption = (option: string, state: State) =>
 
 const newCanvas = ({
   state,
-  ctx,
+  context,
 }: {
   state: State
-  ctx: CanvasRenderingContext2D
+  context: CanvasRenderingContext2D
 }) => {
   let width: number, height: number
   const $el = html('div', { className: 'box dialog' }, [
@@ -137,83 +72,88 @@ const newCanvas = ({
   document.body.appendChild($el)
 }
 
-const renderMenus = (
-  state: State,
-  ctx: CanvasRenderingContext2D,
-  history: HistoryApi,
-) =>
-  html('header', { className: 'menu' }, [
-    html('button', { className: 'menu-button menu-container' }, [
-      'file',
-      html('ul', { className: 'menu-list' }, [
-        html(
-          'li',
-          {
-            className: 'menu-item',
-            onclick: () => newCanvas({ state, ctx }),
-          },
-          [html('span', {}, ['New']), html('small', {}, ['Cmd+N'])],
-        ),
-        html(
-          'li',
-          {
-            className: 'menu-item',
-            onclick: () => {
-              if (navigator.share)
-                navigator.share({
-                  title: 'My awesome post!',
-                  text:
-                    'This post may or may not contain the answer to the universe',
-                  url: window.location.href,
-                })
-            },
-          },
-          [html('span', {}, ['Share'])],
-        ),
-        html(
-          'li',
-          {
-            className: 'menu-item',
-            onclick: () => copyContents(state),
-          },
-          [html('span', {}, ['Copy'])],
-        ),
-        html('li', { className: 'menu-item menu-container' }, [
-          html('span', {}, ['Export']),
+type Menu = {
+  text: string
+  shortcut?: string
+  items?: Menu[]
+  onClick?: (e: MouseEvent) => void
+}
+
+const arrowIcon = htmlRaw(`
+<svg width="10" height="11" viewBox="0 0 10 11" style="display:inline-block;vertical-align:middle">
+  <path d="M7.5 4.33L0 8.66L0 0z"></path>
+</svg>
+`)
+
+const menuList = (items: Menu[]): HTMLUListElement =>
+  html('ul', { className: 'menu-list' }, [
+    ...items.map(item =>
+      html(
+        'li',
+        {
+          className: 'menu-item menu-container',
+          onclick: item.onClick,
+        },
+        [
+          html('span', {}, [item.text]),
           html('small', {}, [
-            htmlRaw(`
-              <svg width="10" height="11" viewBox="0 0 10 11" style="display:inline-block;vertical-align:middle">
-                <path d="M7.5 4.33L0 8.66L0 0z"></path>
-              </svg>
-            `),
+            item.shortcut || '',
+            item.items?.length ? arrowIcon : '',
           ]),
-          html('ul', { className: 'menu-list menu-list--right' }, [
-            html('li', { className: 'menu-item' }, [
-              html('span', { onclick: () => exportAsText(state) }, [
-                'Text (.txt)',
-              ]),
-            ]),
-            html('li', { className: 'menu-item' }, [
-              html('span', { onclick: exportAsImg }, ['Image (.png)']),
-            ]),
-          ]),
-        ]),
-      ]),
-    ]),
-    html('button', { className: 'menu-button menu-container' }, [
-      'edit',
-      html('ul', { className: 'menu-list' }, [
-        html('li', { className: 'menu-item', onclick: () => history.back() }, [
-          html('span', {}, ['Undo']),
-          html('small', {}, ['Cmd+Z']),
-        ]),
-        html(
-          'li',
-          { className: 'menu-item', onclick: () => history.forward() },
-          [html('span', {}, ['Redo']), html('small', {}, ['Cmd+Shift+Z'])],
-        ),
-      ]),
-    ]),
+          item.items?.length ? menuList(item.items) : '',
+        ],
+      ),
+    ),
+  ])
+
+const menuButton = ({ text, items = [] }: Menu) =>
+  html('button', { className: 'menu-button menu-container' }, [
+    text,
+    menuList(items),
+  ])
+
+const renderMenus = ({
+  state,
+  context,
+  history,
+  put,
+}: {
+  state: State
+  context: CanvasRenderingContext2D
+  history: HistoryApi
+  put: (eff: Effect) => void
+}) =>
+  html('header', { className: 'menu' }, [
+    menuButton({
+      text: 'file',
+      items: [
+        {
+          text: 'new',
+          shortcut: 'Cmd+N',
+          onClick: () => newCanvas({ state, context }),
+        },
+        { text: 'share', onClick: () => put(Share()) },
+        { text: 'copy', onClick: () => put(CopyText()) },
+        {
+          text: 'export',
+          items: [
+            { text: 'Text (.txt)', onClick: () => put(Export('text')) },
+            { text: 'Image (.png)', onClick: () => put(Export('img')) },
+          ],
+        },
+      ],
+    }),
+    menuButton({
+      text: 'edit',
+      items: [
+        { text: 'Undo', shortcut: 'Cmd+Z', onClick: () => history.back() },
+        {
+          text: 'Redo',
+          shortcut: 'Cmd+Shift+Z',
+          onClick: () => history.forward(),
+        },
+      ],
+    }),
     // html('input', {
     //   className: 'menu-button char-input',
     //   value: '14',
@@ -226,7 +166,7 @@ const renderMenus = (
     //     state.cellHeight = height
     //     state.history.updated = true
 
-    //     drawGrid(state, ctx)
+    //     drawGrid(state, context)
     //   },
     // }),
     html('button', { className: 'menu-container char-input-container' }, [

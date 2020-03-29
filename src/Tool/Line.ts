@@ -9,18 +9,18 @@ const walkGrid = (p0: Cell, p1: Cell) => {
   const nx = Math.abs(dx)
   const ny = Math.abs(dy)
 
-  const sign_x = dx > 0 ? 1 : -1
-  const sign_y = dy > 0 ? 1 : -1
+  const signX = dx > 0 ? 1 : -1
+  const signY = dy > 0 ? 1 : -1
 
   const p = { x: p0.x, y: p0.y }
   const points = [{ x: p.x, y: p.y }]
 
   for (let ix = 0, iy = 0; ix < nx || iy < ny; ) {
     if ((0.5 + ix) / nx < (0.5 + iy) / ny) {
-      p.x += sign_x
+      p.x += signX
       ix += 1
     } else {
-      p.y += sign_y
+      p.y += signY
       iy += 1
     }
     points.push({ x: p.x, y: p.y })
