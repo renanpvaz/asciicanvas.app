@@ -1,4 +1,4 @@
-import { State } from './State'
+import { State, getRealCoords } from './State'
 import { Canvas } from './Canvas'
 
 const html = <K extends keyof HTMLElementTagNameMap>(
@@ -33,54 +33,77 @@ const makeCursorFromSvg = (rawSvg: string) => {
 
 const isMobile = () => window.innerWidth < 767
 
-const createSelection = ({
-  x,
-  y,
-  text = '',
-  state,
-  canvas,
-}: {
-  x: number
-  y: number
-  text?: string
-  state: State
-  canvas: Canvas
-}) => {
-  const $el = html('pre', {
-    id: 'text-edit',
-    contentEditable: 'true',
-    style: {
-      position: 'absolute',
-      top: `${y * state.cellHeight + 32}px`,
-      left: `${x * state.cellWidth + 58}px`,
-      fontSize: `${state.fontSize}px`,
-      fontFamily: 'monospace',
-      zIndex: '1',
-      padding: '0',
-      background: 'white',
-      border: '0',
-      margin: '0',
-      lineHeight: '1',
-      outline: '2px dashed #03A9F4',
-    },
-    textContent: text,
-    onkeyup: e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault()
-        document.body.removeChild($el)
-        const text = $el.textContent || ''
+const makeDraggable = ($el: HTMLElement, state: State) => {
+  console.log('draggable')
+  let active = false
+  let currentX: number
+  let currentY: number
+  let initialX: number
+  let initialY: number
+  let xOffset = 0
+  let yOffset = 0
+  var container = document.querySelector('canvas')!
 
-        text.split('\n').forEach((line, yOffset) => {
-          line.split('').forEach((char, xOffset) => {
-            canvas.set(x + xOffset - 1, y + yOffset, char)
-          })
-        })
+  const isTouch = (e: TouchEvent | MouseEvent): e is TouchEvent =>
+    e.type === 'touchmove' || e.type === 'touchstart'
+
+  const dragStart = (e: TouchEvent | MouseEvent) => {
+    state.pressing = false
+
+    if (isTouch(e)) {
+      initialX = e.touches[0].clientX - xOffset
+      initialY = e.touches[0].clientY - yOffset
+    } else {
+      initialX = e.clientX - xOffset
+      initialY = e.clientY - yOffset
+    }
+
+    if (e.target === $el) {
+      active = true
+    }
+  }
+
+  const dragEnd = () => {
+    initialX = currentX
+    initialY = currentY
+    active = false
+  }
+
+  const drag = (e: TouchEvent | MouseEvent) => {
+    if (active) {
+      e.preventDefault()
+
+      if (isTouch(e)) {
+        currentX = e.touches[0].clientX - initialX
+        currentY = e.touches[0].clientY - initialY
+      } else {
+        currentX = e.clientX - initialX
+        currentY = e.clientY - initialY
       }
-    },
-  })
 
-  document.body.appendChild($el)
-  $el.focus()
+      xOffset = currentX
+      yOffset = currentY
+
+      const { x, y } = getRealCoords(currentX, currentY, state)
+
+      $el.dataset.x = `${x}`
+      $el.dataset.y = `${y}`
+      $el.style.transform =
+        'translate3d(' +
+        x * state.cellWidth +
+        'px, ' +
+        y * state.cellHeight +
+        'px, 0)'
+    }
+  }
+
+  container.addEventListener('touchstart', dragStart, false)
+  container.addEventListener('touchend', dragEnd, false)
+  container.addEventListener('touchmove', drag, false)
+
+  $el.addEventListener('mousedown', dragStart, false)
+  $el.addEventListener('mouseup', dragEnd, false)
+  container.addEventListener('mousemove', drag, false)
 }
 
-export { html, htmlRaw, makeCursorFromSvg, isMobile, createSelection }
+export { html, htmlRaw, makeCursorFromSvg, isMobile, makeDraggable }

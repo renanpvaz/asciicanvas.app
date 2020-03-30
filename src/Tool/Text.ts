@@ -1,22 +1,17 @@
 import { Tool } from '../Tool'
-import { createSelection } from '../util'
 import icon from '../../assets/text.png'
+import { CreateSelection } from '../Effect'
 
 export const Text: Tool = {
   name: 'text',
   icon,
   behavior: 'press',
   cursor: 'text',
-  onPointerUp: ({ x, y, state, canvas }) => {
+  onPointerUp: ({ x, y, put }) => {
     const $prev = document.querySelector('#text-edit')
 
     if ($prev) return $prev.remove()
 
-    createSelection({
-      x,
-      y,
-      state,
-      canvas,
-    })
+    put(CreateSelection({ x, y, editable: true, draggable: false }))
   },
 }

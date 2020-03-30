@@ -1,10 +1,12 @@
 import { State } from './State'
 import { Canvas } from './Canvas'
+import { Effect } from './Effect'
 
 type ToolEventHandler<T, S> = (
   context: {
     state: State
     canvas: Canvas
+    put: (eff: Effect) => void
   } & T,
   localState: S,
 ) => void

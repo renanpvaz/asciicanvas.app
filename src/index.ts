@@ -10,8 +10,8 @@ import {
 import { history } from './History'
 import { renderToolbar } from './Toolbar'
 import { renderMenus } from './Menu'
-import { Effect } from './Effect'
-import { html, isMobile, createSelection } from './util'
+import { Effect, CreateSelection } from './Effect'
+import { html, isMobile } from './util'
 
 const state = { ...initialState }
 const $canvas = initCanvas(state)
@@ -63,6 +63,7 @@ const init = () => {
           ...getRealCoords(coords.x - offsetX, coords.y - offsetY, state),
           state,
           canvas: makeApi(state),
+          put,
         },
         state.tool.state,
       )
@@ -155,13 +156,15 @@ document.addEventListener('paste', event => {
 
   let paste = (event.clipboardData || window.clipboardData)!.getData('text')
 
-  createSelection({
-    x: 0,
-    y: 0,
-    state,
-    text: paste,
-    canvas: makeApi(state),
-  })
+  put(
+    CreateSelection({
+      x: 0,
+      y: 0,
+      text: paste,
+      editable: false,
+      draggable: true,
+    }),
+  )
 
   event.preventDefault()
 })

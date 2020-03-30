@@ -1,6 +1,6 @@
-import { State, canvasToString } from './State'
+import { State, canvasToString, getRealCoords } from './State'
 import { Canvas } from './Canvas'
-import { html } from './util'
+import { html, makeDraggable } from './util'
 
 export type Context = {
   state: State
@@ -11,40 +11,52 @@ export type Effect = (context: Context) => void
 
 const Effect = <T = void>(fn: (args: T) => Effect) => fn
 
-const CreateSelection = Effect<{ x: number; y: number; text?: string }>(
-  ({ x, y, text = '' }) => ({ state, canvas }) => {
+const CreateSelection = Effect<{
+  x: number
+  y: number
+  text?: string
+  editable: boolean
+  draggable: boolean
+}>(
+  ({
+    x: startX,
+    y: startY,
+    text = '',
+    editable = true,
+    draggable = false,
+  }) => ({ state, canvas }) => {
     const $el = html('pre', {
       id: 'text-edit',
-      contentEditable: 'true',
+      className: 'selection',
+      contentEditable: editable ? 'true' : 'false',
       style: {
-        position: 'absolute',
-        top: `${y * state.cellHeight + 32}px`,
-        left: `${x * state.cellWidth + 58}px`,
+        transform: `translate(${startX * state.cellWidth}px, ${startY *
+          state.cellHeight}px)`,
         fontSize: `${state.fontSize}px`,
-        fontFamily: 'monospace',
-        zIndex: '1',
-        padding: '0',
-        background: 'white',
-        border: '0',
-        margin: '0',
-        lineHeight: '1',
-        outline: '2px dashed #03A9F4',
       },
       textContent: text,
-      onkeyup: e => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault()
-          document.body.removeChild($el)
-          const text = $el.textContent || ''
-
-          text.split('\n').forEach((line, yOffset) => {
-            line.split('').forEach((char, xOffset) => {
-              canvas.set(x + xOffset - 1, y + yOffset, char)
-            })
-          })
-        }
-      },
     })
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault()
+        document.body.removeChild($el)
+        const text = $el.textContent || ''
+
+        text.split('\n').forEach((line, yOffset) => {
+          line.split('').forEach((char, xOffset) => {
+            const x = +($el.dataset.x || 0)
+            const y = +($el.dataset.y || 0)
+            canvas.set(x + xOffset - 1, y + yOffset, char)
+          })
+        })
+        document.removeEventListener('keyup', handleKeyUp)
+      }
+    }
+
+    document.addEventListener('keyup', handleKeyUp)
+
+    if (draggable) makeDraggable($el, state)
 
     document.body.appendChild($el)
     $el.focus()
