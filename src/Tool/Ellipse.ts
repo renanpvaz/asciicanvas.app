@@ -8,6 +8,7 @@ export const Ellipse: Tool<{ start?: Cell }> = {
   name: 'ellipse',
   icon,
   state: {},
+  behavior: 'drag',
   cursor: 'crosshair',
   onPointerDown: ({ x, y, canvas }, squareState) => {
     squareState.start = <Cell>{ x, y }

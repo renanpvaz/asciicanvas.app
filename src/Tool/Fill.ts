@@ -4,6 +4,7 @@ import icon from '../../assets/bucket.png'
 export const Fill: Tool = {
   name: 'fill',
   icon,
+  behavior: 'press',
   cursor: `url('${icon}'), default`,
   onPaint: ({ x, y, state, canvas }) => {
     const target = canvas.get(x, y)

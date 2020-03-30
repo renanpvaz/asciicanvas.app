@@ -68,6 +68,9 @@ const init = () => {
       )
   }
 
+  const hasBehavior = (behavior: 'press' | 'drag') =>
+    state.tool.behavior === behavior || state.tool.behavior === 'both'
+
   const handleMouseDown = (coords: { x: number; y: number }) => {
     state.pressing = true
     useToolHandler('onPointerDown', coords)
@@ -76,10 +79,10 @@ const init = () => {
   const handleMouseUp = (coords: { x: number; y: number }) => {
     state.pressing = false
     useToolHandler('onPointerUp', coords)
-    useToolHandler('onPaint', coords)
+    if (hasBehavior('press')) useToolHandler('onPaint', coords)
   }
   const handleMouseMove = (coords: { x: number; y: number }) => {
-    if (state.pressing) useToolHandler('onPaint', coords)
+    if (state.pressing && hasBehavior('drag')) useToolHandler('onPaint', coords)
   }
 
   const getTouchCoords = (e: TouchEvent) => ({

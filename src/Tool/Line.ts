@@ -37,6 +37,7 @@ export const Line: Tool<LineState> = {
   name: 'line',
   icon,
   state: {},
+  behavior: 'drag',
   cursor: 'crosshair',
   onPointerDown: ({ x, y }, lineState) => {
     lineState.start = <Cell>{ x, y }

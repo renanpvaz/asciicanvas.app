@@ -152,6 +152,13 @@ const renderMenus = ({
           shortcut: 'Cmd+Shift+Z',
           onClick: () => history.forward(),
         },
+        {
+          text: 'Clear',
+          onClick: () => {
+            state.canvas = {}
+            state.history.updated = true
+          },
+        },
       ],
     }),
     // html('input', {

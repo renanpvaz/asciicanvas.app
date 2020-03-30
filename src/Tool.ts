@@ -1,6 +1,5 @@
 import { State } from './State'
 import { Canvas } from './Canvas'
-import { htmlRaw } from './util'
 
 type ToolEventHandler<T, S> = (
   context: {
@@ -20,6 +19,7 @@ type ToolOptions<S> = {
   onPaint?: ToolMouseEventHandler<S>
   onPointerUp?: ToolMouseEventHandler<S>
   onPointerDown?: ToolMouseEventHandler<S>
+  behavior: 'drag' | 'press' | 'both'
 }
 
 export type Tool<S = null> = ToolOptions<S> &

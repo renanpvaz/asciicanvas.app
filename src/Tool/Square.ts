@@ -35,6 +35,7 @@ export const Square: Tool<{ start?: Cell }> = {
   name: 'square',
   icon,
   state: {},
+  behavior: 'drag',
   cursor: 'crosshair',
   onPointerDown: ({ x, y, canvas }, squareState) => {
     squareState.start = <Cell>{ x, y }

@@ -63,6 +63,6 @@ export const initialState: State = {
   $toolRef: null,
   size: 1,
   fontSize: 12,
-  width: 800,
-  height: 643,
+  width: 1000,
+  height: 843,
 }
