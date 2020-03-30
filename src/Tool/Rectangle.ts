@@ -31,8 +31,8 @@ const walkUntilMeet = (p0: Cell, p1: Cell): Cell[] => {
   return cells
 }
 
-export const Square: Tool<{ start?: Cell }> = {
-  name: 'square',
+export const Rectangle: Tool<{ start?: Cell }> = {
+  name: 'rectangle',
   icon,
   state: {},
   behavior: 'drag',

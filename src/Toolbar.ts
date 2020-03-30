@@ -5,7 +5,7 @@ import { Pencil } from './Tool/Pencil'
 import { Line } from './Tool/Line'
 import { Eraser } from './Tool/Eraser'
 import { Fill } from './Tool/Fill'
-import { Square } from './Tool/Square'
+import { Square } from './Tool/Rectangle'
 import { Text } from './Tool/Text'
 import { Ellipse } from './Tool/Ellipse'
 
