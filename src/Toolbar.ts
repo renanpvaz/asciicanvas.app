@@ -5,11 +5,21 @@ import { Pencil } from './Tool/Pencil'
 import { Line } from './Tool/Line'
 import { Eraser } from './Tool/Eraser'
 import { Fill } from './Tool/Fill'
-import { Square } from './Tool/Rectangle'
+import { Rectangle } from './Tool/Rectangle'
 import { Text } from './Tool/Text'
+import { Selection } from './Tool/Selection'
 import { Ellipse } from './Tool/Ellipse'
 
-const tools: Tool<any>[] = [Pencil, Eraser, Fill, Text, Line, Square, Ellipse]
+const tools: Tool<any>[] = [
+  Pencil,
+  Eraser,
+  Fill,
+  Text,
+  Line,
+  Rectangle,
+  Ellipse,
+  Selection,
+]
 
 const renderToolbar = (state: State, ctx: CanvasRenderingContext2D) =>
   html('section', { className: 'toolbar' }, [

@@ -55,6 +55,8 @@ const init = () => {
     key: 'onPointerDown' | 'onPointerUp' | 'onPaint',
     coords: { x: number; y: number },
   ) => {
+    if (state.lockTool) return
+
     const handler = state.tool[key]
 
     if (handler)

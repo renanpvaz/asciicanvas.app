@@ -8,6 +8,8 @@ export type Canvas = {
   setPreview: (x: number, y: number, char?: string) => void
   clearPreview: () => void
   applyPreview: () => void
+  drawSelection: (start: Cell, end: Cell) => void
+  clearSelection: () => void
 }
 
 const createCanvas = (width: number, height: number) => {
@@ -134,6 +136,16 @@ const makeApi = (state: State): Canvas => {
     state.preview = {}
   }
 
+  const drawSelection = (start: Cell, end: Cell) => {
+    state.selection = { start, end }
+    state.history.updated = true
+  }
+
+  const clearSelection = () => {
+    state.selection = null
+    state.history.updated = true
+  }
+
   return {
     get,
     set,
@@ -141,6 +153,8 @@ const makeApi = (state: State): Canvas => {
     clearPreview,
     applyPreview,
     setAll,
+    drawSelection,
+    clearSelection,
   }
 }
 
@@ -191,8 +205,39 @@ const draw = (state: State, context: CanvasRenderingContext2D) => {
       )
   }
 
+  const makeRect = (start: Cell, end: Cell) => {
+    const x = start.x * state.cellWidth
+    const y = start.y * state.cellHeight
+
+    const endX = end.x * state.cellWidth
+    const endY = end.y * state.cellHeight
+
+    return {
+      x,
+      y,
+      width: endX - x,
+      height: endY - y,
+    }
+  }
+
   if (state.history.updated) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+
+    if (state.selection) {
+      const { start, end } = state.selection
+      const selection = makeRect(start, end)
+
+      context.setLineDash([5, 3])
+      context.strokeStyle = '#03a9f4'
+      context.lineWidth = 2
+      context.strokeRect(
+        selection.x,
+        selection.y,
+        selection.width,
+        selection.height,
+      )
+    }
+
     for (const key in state.canvas) {
       const cell = state.canvas[key]
       drawCell(cell)

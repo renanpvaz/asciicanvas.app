@@ -1,5 +1,5 @@
 import { History } from './History'
-import { CellMap } from './Cell'
+import { CellMap, Cell } from './Cell'
 import { Tool } from './Tool'
 import { Pencil } from './Tool/Pencil'
 import { key } from './Canvas'
@@ -22,6 +22,9 @@ export type State = {
   fontSize: number
   width: number
   height: number
+  selection: { start: Cell; end: Cell } | null
+  clear: { start: Cell; end: Cell } | null
+  lockTool: boolean
 }
 
 export const getRealCoords = (x: number, y: number, state: State) => ({
@@ -63,6 +66,9 @@ export const initialState: State = {
   $toolRef: null,
   size: 1,
   fontSize: 12,
-  width: 1000,
-  height: 843,
+  width: 600,
+  height: 443,
+  selection: null,
+  clear: null,
+  lockTool: false,
 }

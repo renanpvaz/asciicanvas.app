@@ -33,6 +33,8 @@ const CreateSelection = Effect<{
         transform: `translate(${startX * state.cellWidth}px, ${startY *
           state.cellHeight}px)`,
         fontSize: `${state.fontSize}px`,
+        lineHeight: `${state.cellHeight + 1}px`,
+        color: state.color,
       },
       textContent: text,
     })
@@ -40,23 +42,44 @@ const CreateSelection = Effect<{
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault()
-        document.body.removeChild($el)
-        const text = $el.textContent || ''
-
-        text.split('\n').forEach((line, yOffset) => {
-          line.split('').forEach((char, xOffset) => {
-            const x = +($el.dataset.x || 0)
-            const y = +($el.dataset.y || 0)
-            canvas.set(x + xOffset - 1, y + yOffset, char)
-          })
-        })
-        document.removeEventListener('keyup', handleKeyUp)
+        finishSelection()
       }
     }
 
-    document.addEventListener('keyup', handleKeyUp)
+    const handleClick = (e: MouseEvent) => {
+      if (e.target !== $el) {
+        finishSelection()
+      }
+    }
 
-    if (draggable) makeDraggable($el, state)
+    const finishSelection = () => {
+      document.body.removeChild($el)
+
+      const text = $el.textContent || ''
+
+      text.split('\n').forEach((line, yOffset) => {
+        line.split('').forEach((char, xOffset) => {
+          const x = +($el.dataset.x || 0)
+          const y = +($el.dataset.y || 0)
+          canvas.set(x + xOffset, y + yOffset, char)
+        })
+      })
+
+      document.removeEventListener('keyup', handleKeyUp)
+      document.removeEventListener('mousedown', handleClick)
+    }
+
+    document.addEventListener('keyup', handleKeyUp)
+    document.addEventListener('mousedown', handleClick)
+
+    if (draggable) {
+      makeDraggable(
+        $el,
+        state,
+        startX * state.cellWidth,
+        startY * state.cellHeight,
+      )
+    }
 
     document.body.appendChild($el)
     $el.focus()

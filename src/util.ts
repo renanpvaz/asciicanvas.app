@@ -33,23 +33,33 @@ const makeCursorFromSvg = (rawSvg: string) => {
 
 const isMobile = () => window.innerWidth < 767
 
-const makeDraggable = ($el: HTMLElement, state: State) => {
-  console.log('draggable')
+const makeDraggable = (
+  $el: HTMLElement,
+  state: State,
+  x?: number,
+  y?: number,
+) => {
   let active = false
-  let currentX: number
-  let currentY: number
+  let currentX: number = x || 0
+  let currentY: number = y || 0
   let initialX: number
   let initialY: number
-  let xOffset = 0
-  let yOffset = 0
-  var container = document.querySelector('canvas')!
+  let xOffset = x || 0
+  let yOffset = y || 0
 
   const isTouch = (e: TouchEvent | MouseEvent): e is TouchEvent =>
     e.type === 'touchmove' || e.type === 'touchstart'
 
-  const dragStart = (e: TouchEvent | MouseEvent) => {
-    state.pressing = false
+  const setPosition = () => {
+    const { x, y } = getRealCoords(currentX, currentY, state)
 
+    $el.dataset.x = `${x}`
+    $el.dataset.y = `${y}`
+    $el.style.transform = `translate3d(${x * state.cellWidth}px, ${y *
+      state.cellHeight}px, 0)`
+  }
+
+  const dragStart = (e: TouchEvent | MouseEvent) => {
     if (isTouch(e)) {
       initialX = e.touches[0].clientX - xOffset
       initialY = e.touches[0].clientY - yOffset
@@ -71,8 +81,6 @@ const makeDraggable = ($el: HTMLElement, state: State) => {
 
   const drag = (e: TouchEvent | MouseEvent) => {
     if (active) {
-      e.preventDefault()
-
       if (isTouch(e)) {
         currentX = e.touches[0].clientX - initialX
         currentY = e.touches[0].clientY - initialY
@@ -83,27 +91,19 @@ const makeDraggable = ($el: HTMLElement, state: State) => {
 
       xOffset = currentX
       yOffset = currentY
-
-      const { x, y } = getRealCoords(currentX, currentY, state)
-
-      $el.dataset.x = `${x}`
-      $el.dataset.y = `${y}`
-      $el.style.transform =
-        'translate3d(' +
-        x * state.cellWidth +
-        'px, ' +
-        y * state.cellHeight +
-        'px, 0)'
+      setPosition()
     }
   }
 
-  container.addEventListener('touchstart', dragStart, false)
-  container.addEventListener('touchend', dragEnd, false)
-  container.addEventListener('touchmove', drag, false)
+  setPosition()
+
+  $el.addEventListener('touchstart', dragStart, false)
+  $el.addEventListener('touchend', dragEnd, false)
+  document.addEventListener('touchmove', drag, false)
 
   $el.addEventListener('mousedown', dragStart, false)
   $el.addEventListener('mouseup', dragEnd, false)
-  container.addEventListener('mousemove', drag, false)
+  document.addEventListener('mousemove', drag, false)
 }
 
 export { html, htmlRaw, makeCursorFromSvg, isMobile, makeDraggable }
