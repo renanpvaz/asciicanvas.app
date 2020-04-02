@@ -129,8 +129,8 @@ const CopyText = Effect(() => ({ state }) => {
 const Share = Effect(() => ({ state }) => {
   if (navigator.share)
     navigator.share({
-      title: 'My awesome post!',
-      text: 'This post may or may not contain the answer to the universe',
+      title: 'My art on asciicanvas.app',
+      text: canvasToString(state),
       url: window.location.href,
     })
 })
