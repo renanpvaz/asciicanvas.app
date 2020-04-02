@@ -1,12 +1,5 @@
-import { initialState, getRealCoords, State } from './State'
-import {
-  draw,
-  initCanvas,
-  makeApi,
-  drawGrid,
-  measureText,
-  Canvas,
-} from './Canvas'
+import { initialState, getRealCoords } from './State'
+import { draw, initCanvas, makeApi, drawGrid, measureText } from './Canvas'
 import { history } from './History'
 import { renderToolbar } from './Toolbar'
 import { renderMenus } from './Menu'
@@ -111,6 +104,8 @@ const init = () => {
   }
 
   document.addEventListener('keydown', e => {
+    if (e.key === 'z' && e.metaKey) e.preventDefault()
+
     state.keys[e.key] = true
   })
   document.addEventListener('keyup', e => {
