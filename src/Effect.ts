@@ -126,12 +126,12 @@ const CopyText = Effect(() => ({ state }) => {
   document.body.removeChild(textArea)
 })
 
-const Share = Effect(() => ({ state }) => {
+const Share = Effect(() => ({ context }) => {
   if (navigator.share)
     navigator.share({
       title: 'My art on asciicanvas.app',
-      text: canvasToString(state),
-      url: window.location.href,
+      text: '',
+      url: context.canvas.toDataURL('image/png'),
     })
 })
 
