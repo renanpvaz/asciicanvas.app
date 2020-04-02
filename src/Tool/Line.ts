@@ -16,13 +16,19 @@ const walkGrid = (p0: Cell, p1: Cell) => {
   const points = [{ x: p.x, y: p.y }]
 
   for (let ix = 0, iy = 0; ix < nx || iy < ny; ) {
-    if ((0.5 + ix) / nx < (0.5 + iy) / ny) {
+    if ((0.5 + ix) / nx == (0.5 + iy) / ny) {
       p.x += signX
-      ix += 1
+      p.y += signY
+      ix++
+      iy++
+    } else if ((0.5 + ix) / nx < (0.5 + iy) / ny) {
+      p.x += signX
+      ix++
     } else {
       p.y += signY
-      iy += 1
+      iy++
     }
+
     points.push({ x: p.x, y: p.y })
   }
 
