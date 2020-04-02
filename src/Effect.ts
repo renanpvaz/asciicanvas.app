@@ -59,8 +59,8 @@ const CreateSelection = Effect<{
 
       text.split('\n').forEach((line, yOffset) => {
         line.split('').forEach((char, xOffset) => {
-          const x = +($el.dataset.x || 0)
-          const y = +($el.dataset.y || 0)
+          const x = +($el.dataset.x || startX)
+          const y = +($el.dataset.y || startY)
           canvas.set(x + xOffset, y + yOffset, char)
         })
       })
