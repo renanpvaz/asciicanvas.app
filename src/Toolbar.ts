@@ -9,6 +9,7 @@ import { Rectangle } from './Tool/Rectangle'
 import { Text } from './Tool/Text'
 import { Selection } from './Tool/Selection'
 import { Ellipse } from './Tool/Ellipse'
+import { Effect, SelectTool } from './Effect'
 
 const tools: Tool<any>[] = [
   Pencil,
@@ -21,7 +22,13 @@ const tools: Tool<any>[] = [
   Selection,
 ]
 
-const renderToolbar = (state: State, ctx: CanvasRenderingContext2D) =>
+const renderToolbar = ({
+  state,
+  put,
+}: {
+  state: State
+  put: (_: Effect) => void
+}) =>
   html('section', { className: 'toolbar' }, [
     ...tools.map(tool =>
       html(
@@ -29,14 +36,7 @@ const renderToolbar = (state: State, ctx: CanvasRenderingContext2D) =>
         {
           className: 'tool',
           onclick: e => {
-            const $el = <HTMLButtonElement>e.target
-
-            state.$toolRef?.classList.toggle('tool--active')
-            $el.classList.toggle('tool--active')
-
-            state.tool = tool
-            state.$toolRef = $el
-            ctx.canvas.style.cursor = tool.cursor || 'default'
+            put(SelectTool({ $el: <HTMLButtonElement>e.target, tool }))
           },
         },
         [html('img', { src: tool.icon, style: { pointerEvents: 'none' } })],

@@ -1,10 +1,10 @@
 import { State, canvasToString, getRealCoords } from './State'
 import { Canvas } from './Canvas'
 import { html, makeDraggable } from './util'
+import { Tool } from './Tool'
 
 export type Context = {
   state: State
-  context: CanvasRenderingContext2D
   canvas: Canvas
 }
 export type Effect = (context: Context) => void
@@ -86,10 +86,10 @@ const CreateSelection = Effect<{
   },
 )
 
-const Export = Effect<'img' | 'text'>(type => ({ context, state }) => {
+const Export = Effect<'img' | 'text'>(type => ({ state }) => {
   const dataUrl =
     type === 'img'
-      ? context.canvas.toDataURL('image/png')
+      ? state.context.canvas.toDataURL('image/png')
       : encodeURIComponent(canvasToString(state))
 
   const element = html('a', {
@@ -126,13 +126,24 @@ const CopyText = Effect(() => ({ state }) => {
   document.body.removeChild(textArea)
 })
 
-const Share = Effect(() => ({ context }) => {
+const Share = Effect(() => ({ state }) => {
   if (navigator.share)
     navigator.share({
       title: 'My art on asciicanvas.app',
       text: '',
-      url: context.canvas.toDataURL('image/png'),
+      url: state.context.canvas.toDataURL('image/png'),
     })
 })
 
-export { CreateSelection, Export, CopyText, Share }
+const SelectTool = Effect<{ $el: HTMLButtonElement; tool: Tool }>(
+  ({ $el, tool }) => ({ state }) => {
+    state.$toolRef?.classList.toggle('tool--active')
+    $el.classList.toggle('tool--active')
+
+    state.tool = tool
+    state.$toolRef = $el
+    state.context.canvas.style.cursor = tool.cursor || 'default'
+  },
+)
+
+export { CreateSelection, Export, CopyText, Share, SelectTool }

@@ -6,6 +6,7 @@ import { key } from './Canvas'
 
 export type State = {
   pressing: boolean
+  context: CanvasRenderingContext2D
   canvas: CellMap
   preview: CellMap
   cellWidth: number
@@ -46,8 +47,9 @@ export const canvasToString = (state: State) => {
   return text
 }
 
-export const initialState: State = {
+export const initialState = (context: CanvasRenderingContext2D): State => ({
   pressing: false,
+  context,
   canvas: {},
   preview: {},
   cellHeight: 0,
@@ -71,4 +73,4 @@ export const initialState: State = {
   selection: null,
   clear: null,
   lockTool: false,
-}
+})

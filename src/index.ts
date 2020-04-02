@@ -6,11 +6,10 @@ import { renderMenus } from './Menu'
 import { Effect, CreateSelection } from './Effect'
 import { html, isMobile } from './util'
 
-const state = { ...initialState }
-const $canvas = initCanvas(state)
-const ctx = $canvas.getContext('2d')!
+const $canvas = initCanvas(600, 443)
+const state = initialState($canvas.getContext('2d')!)
 const put = (eff: Effect) => {
-  eff({ state, canvas: makeApi(state), context: ctx })
+  eff({ state, canvas: makeApi(state) })
 }
 
 let stopped = false
@@ -18,9 +17,9 @@ let stopped = false
 const init = () => {
   document.body.appendChild(
     html('main', {}, [
-      renderMenus({ state, context: ctx, history: history(state), put }),
+      renderMenus({ state, history: history(state), put }),
       html('div', { className: 'content' }, [
-        renderToolbar(state, ctx),
+        renderToolbar({ state, put }),
         html('div', { className: 'canvas-container' }, [$canvas]),
         isMobile()
           ? html('div', { className: 'size-handle-wrapper' }, [
@@ -113,10 +112,11 @@ const init = () => {
   })
 
   const { width, height } = measureText(state.fontSize)
+
   state.cellWidth = width
   state.cellHeight = height
 
-  drawGrid(state, ctx)
+  drawGrid(state)
   loop()
 }
 
@@ -140,7 +140,7 @@ const loop = () => {
     )
   }
 
-  draw(state, ctx)
+  draw(state)
   if (!stopped) requestAnimationFrame(loop)
 }
 

@@ -20,13 +20,7 @@ const renderCharInputOption = (option: string, state: State) =>
     [html('span', {}, [option])],
   )
 
-const newCanvas = ({
-  state,
-  context,
-}: {
-  state: State
-  context: CanvasRenderingContext2D
-}) => {
+const newCanvas = ({ state }: { state: State }) => {
   let width: number, height: number
   const $el = html('div', { className: 'box dialog' }, [
     html(
@@ -40,10 +34,11 @@ const newCanvas = ({
           state.dirtyCells = []
           state.history.updated = true
 
-          const newCanvas = initCanvas(state)
+          const newCanvas = initCanvas(state.width, state.height)
+          state.context = newCanvas.getContext('2d')!
 
           document.querySelector('canvas')?.replaceWith(newCanvas)
-          drawGrid(state, newCanvas.getContext('2d')!)
+          drawGrid(state)
           document.body.removeChild($el)
         },
       },
@@ -114,12 +109,10 @@ const menuButton = ({ text, items = [] }: Menu) =>
 
 const renderMenus = ({
   state,
-  context,
   history,
   put,
 }: {
   state: State
-  context: CanvasRenderingContext2D
   history: HistoryApi
   put: (eff: Effect) => void
 }) =>
@@ -130,7 +123,7 @@ const renderMenus = ({
         {
           text: 'new',
           shortcut: 'Cmd+N',
-          onClick: () => newCanvas({ state, context }),
+          onClick: () => newCanvas({ state }),
         },
         { text: 'share', onClick: () => put(Share()) },
         { text: 'copy', onClick: () => put(CopyText()) },

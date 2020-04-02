@@ -26,11 +26,8 @@ const createCanvas = (width: number, height: number) => {
   return $canvas
 }
 
-const initCanvas = (state: State) => {
-  const $canvas = createCanvas(state.width, state.height)
-  const ctx = $canvas.getContext('2d')!
-
-  ctx.font = '14px monospace'
+const initCanvas = (width: number, height: number) => {
+  const $canvas = createCanvas(width, height)
 
   return $canvas
 }
@@ -158,9 +155,10 @@ const makeApi = (state: State): Canvas => {
   }
 }
 
-const drawGrid = (state: State, targetCtx: CanvasRenderingContext2D) => {
+const drawGrid = (state: State) => {
   const $gridCanvas = createCanvas(state.width, state.height)
   const ctx = $gridCanvas.getContext('2d')!
+  const { context: targetCtx } = state
 
   ctx.strokeStyle = '#7b7b7b'
   ctx.lineWidth = 0.5
@@ -181,7 +179,9 @@ const drawGrid = (state: State, targetCtx: CanvasRenderingContext2D) => {
   targetCtx.canvas.style.backgroundImage = `url('${$gridCanvas.toDataURL()}')`
 }
 
-const draw = (state: State, context: CanvasRenderingContext2D) => {
+const draw = (state: State) => {
+  const { context } = state
+
   context.textBaseline = 'top'
   context.font = `${state.fontSize}px monospace`
 
