@@ -1,10 +1,10 @@
-import { State, canvasToString, getRealCoords } from './State'
+import { State, canvasToString, StateReady } from './State'
 import { Canvas } from './Canvas'
 import { html, makeDraggable } from './util'
 import { Tool } from './Tool'
 
 export type Context = {
-  state: State
+  state: StateReady
   canvas: Canvas
 }
 export type Effect = (context: Context) => void

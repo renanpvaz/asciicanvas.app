@@ -1,5 +1,5 @@
 import { html, htmlRaw } from './util'
-import { State } from './State'
+import { State, StateReady } from './State'
 import { drawGrid, initCanvas } from './Canvas'
 import { HistoryApi } from './History'
 import { Effect, Export, CopyText, Share } from './Effect'
@@ -20,7 +20,13 @@ const renderCharInputOption = (option: string, state: State) =>
     [html('span', {}, [option])],
   )
 
-const newCanvas = ({ state }: { state: State }) => {
+const newCanvas = ({
+  state,
+  put,
+}: {
+  state: StateReady
+  put: (_: Effect) => void
+}) => {
   let width: number, height: number
   const $el = html('div', { className: 'box dialog' }, [
     html(
@@ -34,8 +40,7 @@ const newCanvas = ({ state }: { state: State }) => {
           state.dirtyCells = []
           state.history.updated = true
 
-          const newCanvas = initCanvas(state.width, state.height)
-          state.context = newCanvas.getContext('2d')!
+          const newCanvas = initCanvas({ state, put })
 
           document.querySelector('canvas')?.replaceWith(newCanvas)
           drawGrid(state)
@@ -112,7 +117,7 @@ const renderMenus = ({
   history,
   put,
 }: {
-  state: State
+  state: StateReady
   history: HistoryApi
   put: (eff: Effect) => void
 }) =>
@@ -123,7 +128,7 @@ const renderMenus = ({
         {
           text: 'new',
           shortcut: 'Cmd+N',
-          onClick: () => newCanvas({ state }),
+          onClick: () => newCanvas({ state, put }),
         },
         { text: 'share', onClick: () => put(Share()) },
         { text: 'copy', onClick: () => put(CopyText()) },

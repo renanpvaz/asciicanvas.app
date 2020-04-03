@@ -4,9 +4,9 @@ import { Tool } from './Tool'
 import { Pencil } from './Tool/Pencil'
 import { key } from './Canvas'
 
-export type State = {
+type StateData<T extends 'unstarted' | 'ready', S = {}> = {
+  state: T
   pressing: boolean
-  context: CanvasRenderingContext2D
   canvas: CellMap
   preview: CellMap
   cellWidth: number
@@ -26,7 +26,14 @@ export type State = {
   selection: { start: Cell; end: Cell } | null
   clear: { start: Cell; end: Cell } | null
   lockTool: boolean
-}
+} & S
+
+export type StateReady = StateData<
+  'ready',
+  { context: CanvasRenderingContext2D }
+>
+
+export type State = StateData<'unstarted'> | StateReady
 
 export const getRealCoords = (x: number, y: number, state: State) => ({
   x: Math.floor(x / state.cellWidth),
@@ -47,9 +54,9 @@ export const canvasToString = (state: State) => {
   return text
 }
 
-export const initialState = (context: CanvasRenderingContext2D): State => ({
+export const initialState: State = {
+  state: 'unstarted',
   pressing: false,
-  context,
   canvas: {},
   preview: {},
   cellHeight: 0,
@@ -73,4 +80,4 @@ export const initialState = (context: CanvasRenderingContext2D): State => ({
   selection: null,
   clear: null,
   lockTool: false,
-})
+}

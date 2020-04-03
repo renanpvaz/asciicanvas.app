@@ -1,5 +1,8 @@
-import { State } from './State'
+import { State, StateReady, getRealCoords } from './State'
 import { Cell } from './Cell'
+import { Effect } from './Effect'
+import { history } from './History'
+import { isMobile } from './util'
 
 export type Canvas = {
   get: (x: number, y: number) => Cell | undefined
@@ -26,8 +29,83 @@ const createCanvas = (width: number, height: number) => {
   return $canvas
 }
 
-const initCanvas = (width: number, height: number) => {
-  const $canvas = createCanvas(width, height)
+const initCanvas = ({
+  state: initialState,
+  put,
+}: {
+  state: State
+  put: (_: Effect) => void
+}) => {
+  const $canvas = createCanvas(initialState.width, initialState.height)
+  const context = $canvas.getContext('2d')!
+
+  const state: State = Object.assign(initialState, {
+    state: 'ready',
+    context,
+  })
+
+  const useToolHandler = (
+    key: 'onPointerDown' | 'onPointerUp' | 'onPaint',
+    coords: { x: number; y: number },
+  ) => {
+    if (state.lockTool) return
+
+    const handler = state.tool[key]
+
+    if (handler)
+      handler(
+        {
+          ...getRealCoords(
+            coords.x - $canvas.offsetLeft,
+            coords.y - $canvas.offsetTop,
+            state,
+          ),
+          state,
+          canvas: makeApi(state),
+          put,
+        },
+        state.tool.state,
+      )
+  }
+
+  const hasBehavior = (behavior: 'press' | 'drag') =>
+    state.tool.behavior === behavior || state.tool.behavior === 'both'
+
+  const handleMouseDown = (coords: { x: number; y: number }) => {
+    state.pressing = true
+    useToolHandler('onPointerDown', coords)
+    history(state).track()
+  }
+  const handleMouseUp = (coords: { x: number; y: number }) => {
+    state.pressing = false
+    useToolHandler('onPointerUp', coords)
+    if (hasBehavior('press')) useToolHandler('onPaint', coords)
+  }
+  const handleMouseMove = (coords: { x: number; y: number }) => {
+    if (state.pressing && hasBehavior('drag')) useToolHandler('onPaint', coords)
+  }
+
+  const getTouchCoords = (e: TouchEvent) => ({
+    x: e.changedTouches[0].pageX,
+    y: e.changedTouches[0].pageY,
+  })
+
+  if (isMobile()) {
+    $canvas.addEventListener('touchstart', e =>
+      handleMouseDown(getTouchCoords(e)),
+    )
+    $canvas.addEventListener('touchend', e => handleMouseUp(getTouchCoords(e)))
+    $canvas.addEventListener('touchmove', e =>
+      handleMouseMove(getTouchCoords(e)),
+    )
+  } else {
+    $canvas.addEventListener('mousedown', e => handleMouseDown(e))
+    $canvas.addEventListener('mouseup', e => handleMouseUp(e))
+    $canvas.addEventListener('mousemove', e => {
+      handleMouseMove(e)
+      e.stopPropagation()
+    })
+  }
 
   return $canvas
 }
@@ -155,7 +233,7 @@ const makeApi = (state: State): Canvas => {
   }
 }
 
-const drawGrid = (state: State) => {
+const drawGrid = (state: StateReady) => {
   const $gridCanvas = createCanvas(state.width, state.height)
   const ctx = $gridCanvas.getContext('2d')!
   const { context: targetCtx } = state
@@ -179,7 +257,7 @@ const drawGrid = (state: State) => {
   targetCtx.canvas.style.backgroundImage = `url('${$gridCanvas.toDataURL()}')`
 }
 
-const draw = (state: State) => {
+const draw = (state: StateReady) => {
   const { context } = state
 
   context.textBaseline = 'top'

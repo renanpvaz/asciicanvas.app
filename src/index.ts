@@ -6,15 +6,19 @@ import { renderMenus } from './Menu'
 import { Effect, CreateSelection } from './Effect'
 import { html, isMobile } from './util'
 
-const $canvas = initCanvas(600, 443)
-const state = initialState($canvas.getContext('2d')!)
+const state = initialState
+
 const put = (eff: Effect) => {
-  eff({ state, canvas: makeApi(state) })
+  if (state.state === 'ready') eff({ state, canvas: makeApi(state) })
 }
+
+const $canvas = initCanvas({ state, put })
 
 let stopped = false
 
 const init = () => {
+  if (state.state !== 'ready') return
+
   document.body.appendChild(
     html('main', {}, [
       renderMenus({ state, history: history(state), put }),
@@ -39,68 +43,6 @@ const init = () => {
     ]),
   )
   ;(<HTMLButtonElement>document.querySelector('.tool')).click()
-
-  const offsetX = $canvas.offsetLeft
-  const offsetY = $canvas.offsetTop
-
-  const useToolHandler = (
-    key: 'onPointerDown' | 'onPointerUp' | 'onPaint',
-    coords: { x: number; y: number },
-  ) => {
-    if (state.lockTool) return
-
-    const handler = state.tool[key]
-
-    if (handler)
-      handler(
-        {
-          ...getRealCoords(coords.x - offsetX, coords.y - offsetY, state),
-          state,
-          canvas: makeApi(state),
-          put,
-        },
-        state.tool.state,
-      )
-  }
-
-  const hasBehavior = (behavior: 'press' | 'drag') =>
-    state.tool.behavior === behavior || state.tool.behavior === 'both'
-
-  const handleMouseDown = (coords: { x: number; y: number }) => {
-    state.pressing = true
-    useToolHandler('onPointerDown', coords)
-    history(state).track()
-  }
-  const handleMouseUp = (coords: { x: number; y: number }) => {
-    state.pressing = false
-    useToolHandler('onPointerUp', coords)
-    if (hasBehavior('press')) useToolHandler('onPaint', coords)
-  }
-  const handleMouseMove = (coords: { x: number; y: number }) => {
-    if (state.pressing && hasBehavior('drag')) useToolHandler('onPaint', coords)
-  }
-
-  const getTouchCoords = (e: TouchEvent) => ({
-    x: e.changedTouches[0].pageX,
-    y: e.changedTouches[0].pageY,
-  })
-
-  if (isMobile()) {
-    $canvas.addEventListener('touchstart', e =>
-      handleMouseDown(getTouchCoords(e)),
-    )
-    $canvas.addEventListener('touchend', e => handleMouseUp(getTouchCoords(e)))
-    $canvas.addEventListener('touchmove', e =>
-      handleMouseMove(getTouchCoords(e)),
-    )
-  } else {
-    $canvas.addEventListener('mousedown', e => handleMouseDown(e))
-    $canvas.addEventListener('mouseup', e => handleMouseUp(e))
-    $canvas.addEventListener('mousemove', e => {
-      handleMouseMove(e)
-      e.stopPropagation()
-    })
-  }
 
   document.addEventListener('keydown', e => {
     if (e.key === 'z' && e.metaKey) e.preventDefault()
@@ -128,6 +70,8 @@ const shortcuts: [string, () => void][] = [
 const modifierKeys = ['Shift', 'Meta', 'Ctrl']
 
 const loop = () => {
+  if (state.state !== 'ready') return
+
   const shortcut = shortcuts.find(([keys]) =>
     keys.split('+').every(key => state.keys[key]),
   )
@@ -144,7 +88,6 @@ const loop = () => {
   if (!stopped) requestAnimationFrame(loop)
 }
 
-window.addEventListener('load', () => window.scrollTo(0, 0))
 document.addEventListener('DOMContentLoaded', init)
 document.addEventListener('paste', event => {
   const $prev = document.querySelector('#text-edit')
