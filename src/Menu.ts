@@ -2,7 +2,7 @@ import { html, htmlRaw } from './util'
 import { State, StateReady } from './State'
 import { drawGrid, initCanvas } from './Canvas'
 import { HistoryApi } from './History'
-import { Effect, Export, CopyText, Share } from './Effect'
+import { Effect, Export, CopyText, Share, OpenFile } from './Effect'
 
 const renderCharInputOption = (option: string, state: State) =>
   html(
@@ -126,14 +126,18 @@ const renderMenus = ({
       text: 'file',
       items: [
         {
-          text: 'new',
+          text: 'New',
           shortcut: 'Cmd+N',
           onClick: () => newCanvas({ state, put }),
         },
-        { text: 'share', onClick: () => put(Share()) },
-        { text: 'copy', onClick: () => put(CopyText()) },
         {
-          text: 'export',
+          text: 'Open',
+          onClick: () => put(OpenFile()),
+        },
+        { text: 'Share', onClick: () => put(Share()) },
+        { text: 'Copy', onClick: () => put(CopyText()) },
+        {
+          text: 'Export',
           items: [
             { text: 'Text (.txt)', onClick: () => put(Export('text')) },
             { text: 'Image (.png)', onClick: () => put(Export('img')) },

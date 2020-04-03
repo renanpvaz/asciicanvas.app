@@ -146,4 +146,31 @@ const SelectTool = Effect<{ $el: HTMLButtonElement; tool: Tool }>(
   },
 )
 
-export { CreateSelection, Export, CopyText, Share, SelectTool }
+const readFile = (file: File): Promise<string> =>
+  new Promise(resolve => {
+    const reader = new FileReader()
+
+    reader.addEventListener('load', () => resolve(<string>reader.result))
+    reader.readAsText(file)
+  })
+
+const OpenFile = Effect(() => ({ state, canvas }) => {
+  html('input', {
+    type: 'file',
+    accept: '.txt',
+    onchange: e => {
+      state.canvas = {}
+      state.history.updated = true
+
+      readFile((<HTMLInputElement>e.target).files![0]).then(text =>
+        text.split('\n').forEach((line, y) =>
+          line.split('').forEach((char, x) => {
+            if (char.trim()) canvas.set(x, y, char)
+          }),
+        ),
+      )
+    },
+  }).click()
+})
+
+export { CreateSelection, Export, CopyText, Share, SelectTool, OpenFile }
