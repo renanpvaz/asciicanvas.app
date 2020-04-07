@@ -1,35 +1,36 @@
 import { Tool } from '../Tool'
 import icon from '../../assets/bucket.png'
+import { isOutOfBounds } from '../Canvas'
+import { Cell } from '../Cell'
 
-export const Fill: Tool = {
+export const Fill: Tool<{ filling: boolean }> = {
   name: 'fill',
   icon,
+  state: { filling: false },
   behavior: 'press',
   cursor: `url('${icon}'), default`,
-  onPaint: ({ x, y, state, canvas }) => {
-    const target = canvas.get(x, y)
+  onPaint: ({ x: targetX, y: targetY, state, canvas }, innerState) => {
+    const target = canvas.get(targetX, targetY)
 
-    const fill = (color: string | null, x: number, y: number) => {
-      const cell = canvas.get(x, y)
+    if (!target) return
 
-      if (!cell || cell.color !== color) return
+    const cells: (Cell | undefined)[] = [target]
+    const { color } = target
 
-      canvas.set(x, y)
+    while (cells.length) {
+      const cell = cells.pop()!
 
-      const fillNeighbors = () => {
-        fill(color, x + 1, y)
-        fill(color, x - 1, y)
-        fill(color, x, y + 1)
-        fill(color, x, y - 1)
-      }
+      if (isOutOfBounds(cell, state)) continue
 
-      if (state.dirtyCells.length > 1000) {
-        requestAnimationFrame(fillNeighbors)
-      } else {
-        fillNeighbors()
+      if (cell.color === color) {
+        const { x, y } = cell
+
+        canvas.set(x, y)
+        cells.push(canvas.get(x + 1, y))
+        cells.push(canvas.get(x - 1, y))
+        cells.push(canvas.get(x, y + 1))
+        cells.push(canvas.get(x, y - 1))
       }
     }
-
-    if (target) fill(target.color, x, y)
   },
 }

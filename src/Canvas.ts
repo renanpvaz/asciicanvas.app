@@ -147,10 +147,10 @@ export const getNNeighbors = (radius: number, center: Cell, state: State) => {
   return cells
 }
 
-const isOutOfBounds = ({ x, y }: Cell, state: State): boolean =>
+export const isOutOfBounds = ({ x, y }: Cell, state: State): boolean =>
   x > state.width / state.cellWidth ||
   x < 0 ||
-  y > window.innerHeight / state.cellHeight ||
+  y > state.height / state.cellHeight ||
   y < 0
 
 const key = (x: number, y: number) => `${x},${y}`
@@ -159,19 +159,18 @@ const makeApi = (state: State): Canvas => {
   const getWithDefault = (x: number, y: number): Cell =>
     state.canvas[key(x, y)] || { x, y }
 
-  const get: Canvas['get'] = (x, y) =>
-    isOutOfBounds({ x, y, value: null, color: null }, state)
-      ? undefined
-      : getWithDefault(x, y)
+  const get: Canvas['get'] = (x, y) => state.canvas[key(x, y)] || { x, y }
 
   const set = (x: number, y: number, char: string = state.char) => {
-    const prevCell = get(x, y)
+    const k = key(x, y)
+    const prevCell = state.canvas[k] || { x, y }
     const equal =
       prevCell && prevCell.value === char && prevCell.color === state.color
 
     if (!equal) {
-      const k = key(x, y)
-      state.canvas[k] = { value: char, color: state.color, x, y }
+      prevCell.color = state.color
+      prevCell.value = char
+      state.canvas[k] = prevCell
       state.dirtyCells.push(k)
     }
   }
