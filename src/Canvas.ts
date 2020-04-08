@@ -15,7 +15,7 @@ export type Canvas = {
   clearSelection: () => void
 }
 
-const createCanvas = (width: number, height: number) => {
+const createCanvasElement = (width: number, height: number) => {
   const $canvas = document.createElement('canvas')
   const ctx = $canvas.getContext('2d')!
   const dpr = window.devicePixelRatio || 1
@@ -36,7 +36,7 @@ const initCanvas = ({
   state: State
   put: (_: Effect) => void
 }) => {
-  const $canvas = createCanvas(initialState.width, initialState.height)
+  const $canvas = createCanvasElement(initialState.width, initialState.height)
   const context = $canvas.getContext('2d')!
 
   const state: State = Object.assign(initialState, {
@@ -48,8 +48,6 @@ const initCanvas = ({
     key: 'onPointerDown' | 'onPointerUp' | 'onPaint',
     coords: { x: number; y: number },
   ) => {
-    if (state.lockTool) return
-
     state.tool[key](
       {
         ...getRealCoords(
@@ -58,7 +56,7 @@ const initCanvas = ({
           state,
         ),
         state,
-        canvas: makeApi(state),
+        canvas: makeCanvas(state),
         put,
       },
       state.tool.state,
@@ -107,7 +105,7 @@ const initCanvas = ({
   return $canvas
 }
 
-export const measureText = (fontSize: number) => {
+const measureText = (fontSize: number) => {
   const context = document.createElement('canvas').getContext('2d')!
 
   context.font = `${fontSize}px monospace`
@@ -120,19 +118,19 @@ export const measureText = (fontSize: number) => {
   }
 }
 
-export const isOutOfBounds = ({ x, y }: Cell, state: State): boolean =>
+const isOutOfBounds = ({ x, y }: Cell, state: State): boolean =>
   x > state.width / state.cellWidth ||
   x < 0 ||
   y > state.height / state.cellHeight ||
   y < 0
 
-const makeApi = (state: State): Canvas => {
-  const set = (x: number, y: number, char: string = state.char) => {
+const makeCanvas = (state: State): Canvas => ({
+  get: (x, y) => CellMap.get(x, y, state.canvas),
+  set: (x: number, y: number, char: string = state.char) => {
     CellMap.set({ x, y, color: state.color, value: char }, state.canvas)
     state.dirtyCells.push(CellMap.key(x, y))
-  }
-
-  const setPreview = (x: number, y: number, char: string = state.char) => {
+  },
+  setPreview: (x: number, y: number, char: string = state.char) => {
     if (!isOutOfBounds({ x, y }, state))
       CellMap.set(
         {
@@ -143,9 +141,8 @@ const makeApi = (state: State): Canvas => {
         },
         state.preview,
       )
-  }
-
-  const clearPreview = () => {
+  },
+  clearPreview: () => {
     const cells = state.preview
 
     for (const k in cells) {
@@ -153,9 +150,8 @@ const makeApi = (state: State): Canvas => {
       const prevCell = CellMap.get(x, y, state.canvas)
       cells[k] = prevCell!
     }
-  }
-
-  const applyPreview = () => {
+  },
+  applyPreview: () => {
     const cells = state.preview
 
     for (const k in cells) {
@@ -164,31 +160,19 @@ const makeApi = (state: State): Canvas => {
     }
 
     state.preview = {}
-  }
-
-  const drawSelection = (start: Cell, end: Cell) => {
+  },
+  drawSelection: (start: Cell, end: Cell) => {
     state.selection = { start, end }
     state.history.updated = true
-  }
-
-  const clearSelection = () => {
+  },
+  clearSelection: () => {
     state.selection = null
     state.history.updated = true
-  }
-
-  return {
-    get: (x, y) => CellMap.get(x, y, state.canvas),
-    set,
-    setPreview,
-    clearPreview,
-    applyPreview,
-    drawSelection,
-    clearSelection,
-  }
-}
+  },
+})
 
 const drawGrid = (state: StateReady) => {
-  const $gridCanvas = createCanvas(state.width, state.height)
+  const $gridCanvas = createCanvasElement(state.width, state.height)
   const ctx = $gridCanvas.getContext('2d')!
   const { context: targetCtx } = state
 
@@ -293,4 +277,11 @@ const draw = (state: StateReady) => {
   state.dirtyCells = []
 }
 
-export { initCanvas, makeApi, draw, drawGrid }
+export {
+  initCanvas,
+  makeCanvas as makeApi,
+  draw,
+  drawGrid,
+  measureText,
+  isOutOfBounds,
+}

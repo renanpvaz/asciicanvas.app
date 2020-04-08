@@ -14,8 +14,6 @@ const put = (eff: Effect) => {
 
 const $canvas = initCanvas({ state, put })
 
-let stopped = false
-
 const init = () => {
   if (state.state !== 'ready') return
 
@@ -85,7 +83,7 @@ const loop = () => {
   }
 
   draw(state)
-  if (!stopped) requestAnimationFrame(loop)
+  requestAnimationFrame(loop)
 }
 
 document.addEventListener('DOMContentLoaded', init)

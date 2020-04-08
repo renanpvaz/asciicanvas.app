@@ -13,7 +13,6 @@ type StateData<T extends 'unstarted' | 'ready', S = {}> = {
   cellHeight: number
   char: string
   color: string
-  selectedTool: string
   dirtyCells: string[]
   history: History
   keys: { [key: string]: boolean }
@@ -24,8 +23,6 @@ type StateData<T extends 'unstarted' | 'ready', S = {}> = {
   width: number
   height: number
   selection: { start: Cell; end: Cell } | null
-  clear: { start: Cell; end: Cell } | null
-  lockTool: boolean
 } & S
 
 export type StateReady = StateData<
@@ -63,7 +60,6 @@ export const initialState: State = {
   cellWidth: 0,
   char: '$',
   color: '#d238a8',
-  selectedTool: 'pencil',
   dirtyCells: [],
   history: {
     undo: [],
@@ -78,6 +74,4 @@ export const initialState: State = {
   width: 600,
   height: 443,
   selection: null,
-  clear: null,
-  lockTool: false,
 }
