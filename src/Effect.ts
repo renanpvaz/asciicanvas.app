@@ -2,6 +2,7 @@ import { State, canvasToString, StateReady } from './State'
 import { Canvas } from './Canvas'
 import { html, makeDraggable } from './util'
 import { Tool } from './Tool'
+import * as History from './History'
 
 export type Context = {
   state: StateReady
@@ -135,6 +136,14 @@ const Share = Effect(() => ({ state }) => {
     })
 })
 
+const HistoryBack = Effect(() => ({ state }) => {
+  History.back(state)
+})
+
+const HistoryForward = Effect(() => ({ state }) => {
+  History.forward(state)
+})
+
 const SelectTool = Effect<{ $el: HTMLButtonElement; tool: Tool }>(
   ({ $el, tool }) => ({ state }) => {
     state.$toolRef?.classList.toggle('tool--active')
@@ -173,4 +182,13 @@ const OpenFile = Effect(() => ({ state, canvas }) => {
   }).click()
 })
 
-export { CreateSelection, Export, CopyText, Share, SelectTool, OpenFile }
+export {
+  CreateSelection,
+  Export,
+  CopyText,
+  Share,
+  SelectTool,
+  OpenFile,
+  HistoryBack,
+  HistoryForward,
+}

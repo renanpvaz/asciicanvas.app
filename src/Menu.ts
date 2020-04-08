@@ -1,7 +1,6 @@
 import { html, htmlRaw } from './util'
 import { State, StateReady } from './State'
 import { drawGrid, initCanvas } from './Canvas'
-import { HistoryApi } from './History'
 import { Effect, Export, CopyText, Share, OpenFile } from './Effect'
 
 const renderCharInputOption = (option: string, state: State) =>
@@ -114,11 +113,9 @@ const menuButton = ({ text, items = [] }: Menu) =>
 
 const renderMenus = ({
   state,
-  history,
   put,
 }: {
   state: StateReady
-  history: HistoryApi
   put: (eff: Effect) => void
 }) =>
   html('header', { className: 'menu' }, [

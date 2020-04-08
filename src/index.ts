@@ -1,10 +1,10 @@
-import { initialState, getRealCoords } from './State'
+import { initialState } from './State'
 import { draw, initCanvas, makeApi, drawGrid, measureText } from './Canvas'
-import { history } from './History'
 import { renderToolbar } from './Toolbar'
 import { renderMenus } from './Menu'
-import { Effect, CreateSelection } from './Effect'
+import { Effect } from './Effect'
 import { html, isMobile } from './util'
+import { registerShortcuts } from './Shortcut'
 
 const state = initialState
 
@@ -19,7 +19,7 @@ const init = () => {
 
   document.body.appendChild(
     html('main', {}, [
-      renderMenus({ state, history: history(state), put }),
+      renderMenus({ state, put }),
       html('div', { className: 'content' }, [
         renderToolbar({ state, put }),
         html('div', { className: 'canvas-container' }, [$canvas]),
@@ -42,14 +42,7 @@ const init = () => {
   )
   ;(<HTMLButtonElement>document.querySelector('.tool')).click()
 
-  document.addEventListener('keydown', e => {
-    if (e.key === 'z' && e.metaKey) e.preventDefault()
-
-    state.keys[e.key] = true
-  })
-  document.addEventListener('keyup', e => {
-    state.keys[e.key] = false
-  })
+  registerShortcuts({ put })
 
   const { width, height } = measureText(state.fontSize)
 
@@ -60,49 +53,11 @@ const init = () => {
   loop()
 }
 
-const shortcuts: [string, () => void][] = [
-  ['Meta+Shift+z', () => history(state).forward()],
-  ['Meta+z', () => history(state).back()],
-]
-
-const modifierKeys = ['Shift', 'Meta', 'Ctrl']
-
 const loop = () => {
   if (state.state !== 'ready') return
-
-  const shortcut = shortcuts.find(([keys]) =>
-    keys.split('+').every(key => state.keys[key]),
-  )
-
-  if (shortcut) {
-    shortcut[1]()
-    state.keys = modifierKeys.reduce(
-      (acc, key) => ({ ...acc, [key]: state.keys[key] }),
-      {},
-    )
-  }
 
   draw(state)
   requestAnimationFrame(loop)
 }
 
 document.addEventListener('DOMContentLoaded', init)
-document.addEventListener('paste', event => {
-  const $prev = document.querySelector('#text-edit')
-
-  if ($prev) $prev.remove()
-
-  let paste = (event.clipboardData || window.clipboardData)!.getData('text')
-
-  put(
-    CreateSelection({
-      x: 0,
-      y: 0,
-      text: paste,
-      editable: false,
-      draggable: true,
-    }),
-  )
-
-  event.preventDefault()
-})

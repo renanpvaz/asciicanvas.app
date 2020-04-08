@@ -2,8 +2,8 @@ import { State, StateReady, getRealCoords } from './State'
 import * as CellMap from './CellMap'
 import { Cell } from './CellMap'
 import { Effect } from './Effect'
-import { history } from './History'
 import { isMobile } from './util'
+import * as History from './History'
 
 export type Canvas = {
   get: (x: number, y: number) => Cell | undefined
@@ -69,7 +69,7 @@ const initCanvas = ({
   const handleMouseDown = (coords: { x: number; y: number }) => {
     state.pressing = true
     useToolHandler('onPointerDown', coords)
-    history(state).track()
+    History.push(state)
   }
   const handleMouseUp = (coords: { x: number; y: number }) => {
     state.pressing = false

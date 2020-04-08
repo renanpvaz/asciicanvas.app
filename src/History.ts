@@ -9,39 +9,28 @@ export type History = {
 
 type EntryType = 'undo' | 'redo'
 
-export type HistoryApi = {
-  track: () => void
-  back: () => void
-  forward: () => void
-}
+const commit = (type: EntryType, state: State): void => {
+  const entries = state.history[type]
 
-const history = (state: State): HistoryApi => {
-  const save = (type: EntryType) => {
-    const entries = state.history[type]
-    if (entries.length) {
-      track(type === 'undo' ? 'redo' : 'undo')
-      const entry = entries.pop()
-      state.canvas = entry || {}
-      state.history.updated = true
-    }
-  }
-
-  const track = (type: EntryType) => {
-    state.history[type].push({ ...state.canvas })
-    state.history.updated = false
-  }
-
-  const back = () => save('undo')
-  const forward = () => save('redo')
-
-  return {
-    track: () => {
-      state.history.redo = []
-      track('undo')
-    },
-    back,
-    forward,
+  if (entries.length) {
+    track(type === 'undo' ? 'redo' : 'undo', state)
+    const entry = entries.pop()
+    state.history.updated = true
+    state.canvas = entry || state.canvas
   }
 }
 
-export { history }
+const track = (type: EntryType, state: State) => {
+  state.history[type].push({ ...state.canvas })
+  state.history.updated = false
+}
+
+const back = (state: State) => commit('undo', state)
+const forward = (state: State) => commit('redo', state)
+
+const push = (state: State) => {
+  state.history.redo = []
+  track('undo', state)
+}
+
+export { back, forward, push }
