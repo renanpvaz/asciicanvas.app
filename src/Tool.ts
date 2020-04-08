@@ -2,27 +2,24 @@ import { State } from './State'
 import { Canvas } from './Canvas'
 import { Effect } from './Effect'
 
-type ToolEventHandler<T, S> = (
+type ToolEventHandler<T> = (
   context: {
     state: State
     canvas: Canvas
     put: (eff: Effect) => void
   } & T,
-  localState: S,
 ) => void
 
-type ToolMouseEventHandler<S> = ToolEventHandler<{ x: number; y: number }, S>
+type ToolMouseEventHandler = ToolEventHandler<{ x: number; y: number }>
 
-type ToolOptions<S> = {
+export type Tool<S = {}> = Readonly<{
   name: string
   icon: string
   cursor?: string
   sizeable?: boolean
-  onPaint?: ToolMouseEventHandler<S>
-  onPointerUp?: ToolMouseEventHandler<S>
-  onPointerDown?: ToolMouseEventHandler<S>
+  onPaint: ToolMouseEventHandler
+  onPointerUp: ToolMouseEventHandler
+  onPointerDown: ToolMouseEventHandler
   behavior: 'drag' | 'press' | 'both'
-}
-
-export type Tool<S = null> = ToolOptions<S> &
-  (S extends null ? { state?: null } : { state: S })
+}> &
+  S

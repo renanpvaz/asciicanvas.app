@@ -35,28 +35,25 @@ const walkGrid = (p0: Cell, p1: Cell) => {
   return points
 }
 
-type LineState = {
-  start?: Cell
-}
-
-export const Line: Tool<LineState> = {
+export const Line: Tool<{ start?: Cell }> = {
   name: 'line',
   icon,
-  state: {},
   behavior: 'drag',
   cursor: 'crosshair',
-  onPointerDown: ({ x, y }, lineState) => {
-    lineState.start = { x, y }
+  onPointerDown({ x, y }) {
+    this.start = { x, y }
   },
-  onPointerUp: ({ canvas }) => {
+  onPointerUp({ canvas }) {
     canvas.applyPreview()
   },
-  onPaint: ({ x, y, canvas }, { start }) => {
+  onPaint({ x, y, canvas }) {
     const end = { x, y }
 
-    if (start) {
+    if (this.start) {
       canvas.clearPreview()
-      walkGrid(start, end).forEach(point => canvas.setPreview(point.x, point.y))
+      walkGrid(this.start, end).forEach(point =>
+        canvas.setPreview(point.x, point.y),
+      )
     }
   },
 }

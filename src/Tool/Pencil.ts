@@ -9,9 +9,11 @@ export const Pencil: Tool = {
   behavior: 'both',
   cursor: `url('${icon}') 7 35, default`,
   sizeable: true,
-  onPaint: ({ x, y, canvas, state }) => {
+  onPaint({ x, y, canvas, state }) {
     for (const cell of getNNeighbors(state.size || 0, { x, y })) {
       canvas.set(cell.x, cell.y)
     }
   },
+  onPointerDown() {},
+  onPointerUp() {},
 }

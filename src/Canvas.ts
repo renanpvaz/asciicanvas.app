@@ -50,22 +50,19 @@ const initCanvas = ({
   ) => {
     if (state.lockTool) return
 
-    const handler = state.tool[key]
-
-    if (handler)
-      handler(
-        {
-          ...getRealCoords(
-            coords.x - $canvas.offsetLeft,
-            coords.y - $canvas.offsetTop,
-            state,
-          ),
+    state.tool[key](
+      {
+        ...getRealCoords(
+          coords.x - $canvas.offsetLeft,
+          coords.y - $canvas.offsetTop,
           state,
-          canvas: makeApi(state),
-          put,
-        },
-        state.tool.state,
-      )
+        ),
+        state,
+        canvas: makeApi(state),
+        put,
+      },
+      state.tool.state,
+    )
   }
 
   const hasBehavior = (behavior: 'press' | 'drag') =>

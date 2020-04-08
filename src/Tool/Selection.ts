@@ -11,14 +11,13 @@ const getSortedVertices = (c1: Cell, c2: Cell) =>
 export const Selection: Tool<{ first?: Cell; last?: Cell }> = {
   name: 'selection',
   icon,
-  state: {},
   behavior: 'drag',
   cursor: 'crosshair',
-  onPointerDown: ({ x, y }, squareState) => {
-    squareState.first = { x, y }
+  onPointerDown({ x, y }) {
+    this.first = { x, y }
   },
-  onPointerUp: ({ canvas, put }, squareState) => {
-    const { first, last } = squareState
+  onPointerUp({ canvas, put }) {
+    const { first, last } = this
 
     if (!first || !last) return
 
@@ -44,14 +43,14 @@ export const Selection: Tool<{ first?: Cell; last?: Cell }> = {
       }),
     )
     canvas.clearSelection()
-    squareState.first = undefined
-    squareState.last = undefined
+    this.first = undefined
+    this.last = undefined
   },
-  onPaint: ({ x, y, canvas }, selectionState) => {
-    selectionState.last = { x, y }
+  onPaint({ x, y, canvas }) {
+    this.last = { x, y }
 
-    if (selectionState.first) {
-      const { first, last } = selectionState
+    if (this.first) {
+      const { first, last } = this
       canvas.drawSelection(first, last)
     }
   },

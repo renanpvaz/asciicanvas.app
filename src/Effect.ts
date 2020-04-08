@@ -140,7 +140,7 @@ const SelectTool = Effect<{ $el: HTMLButtonElement; tool: Tool }>(
     state.$toolRef?.classList.toggle('tool--active')
     $el.classList.toggle('tool--active')
 
-    state.tool = tool
+    state.tool = Object.assign({}, tool)
     state.$toolRef = $el
     state.context.canvas.style.cursor = tool.cursor || 'default'
   },

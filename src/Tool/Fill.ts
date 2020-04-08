@@ -3,13 +3,12 @@ import icon from '../../assets/bucket.png'
 import { isOutOfBounds } from '../Canvas'
 import { Cell } from '../CellMap'
 
-export const Fill: Tool<{ filling: boolean }> = {
+export const Fill: Tool = {
   name: 'fill',
   icon,
-  state: { filling: false },
   behavior: 'press',
   cursor: `url('${icon}'), default`,
-  onPaint: ({ x: targetX, y: targetY, state, canvas }, innerState) => {
+  onPaint: ({ x: targetX, y: targetY, state, canvas }) => {
     const target = canvas.get(targetX, targetY)
 
     if (!target) return
@@ -33,4 +32,6 @@ export const Fill: Tool<{ filling: boolean }> = {
       }
     }
   },
+  onPointerDown() {},
+  onPointerUp() {},
 }

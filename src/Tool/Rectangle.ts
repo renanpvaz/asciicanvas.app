@@ -34,21 +34,20 @@ const walkUntilMeet = (p0: Cell, p1: Cell): Cell[] => {
 export const Rectangle: Tool<{ start?: Cell }> = {
   name: 'rectangle',
   icon,
-  state: {},
   behavior: 'drag',
   cursor: 'crosshair',
-  onPointerDown: ({ x, y, canvas }, squareState) => {
-    squareState.start = { x, y }
+  onPointerDown({ x, y, canvas }) {
+    this.start = { x, y }
     canvas.setPreview(x, y)
   },
-  onPointerUp: ({ canvas }) => {
+  onPointerUp({ canvas }) {
     canvas.applyPreview()
   },
-  onPaint: ({ x, y, canvas }, squareState) => {
+  onPaint({ x, y, canvas }) {
     const end = { x, y }
     canvas.clearPreview()
 
-    for (const cell of walkUntilMeet(squareState.start!, end)) {
+    for (const cell of walkUntilMeet(this.start!, end)) {
       canvas.setPreview(cell.x, cell.y)
     }
   },
