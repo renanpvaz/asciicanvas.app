@@ -1,5 +1,5 @@
 import { Tool } from '../Tool'
-import { Cell } from '../Cell'
+import { Cell } from '../CellMap'
 import icon from '../../assets/line.png'
 
 const walkGrid = (p0: Cell, p1: Cell) => {
@@ -46,13 +46,13 @@ export const Line: Tool<LineState> = {
   behavior: 'drag',
   cursor: 'crosshair',
   onPointerDown: ({ x, y }, lineState) => {
-    lineState.start = <Cell>{ x, y }
+    lineState.start = { x, y }
   },
   onPointerUp: ({ canvas }) => {
     canvas.applyPreview()
   },
   onPaint: ({ x, y, canvas }, { start }) => {
-    const end = <Cell>{ x, y }
+    const end = { x, y }
 
     if (start) {
       canvas.clearPreview()

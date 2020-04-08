@@ -1,5 +1,6 @@
 import { State, StateReady, getRealCoords } from './State'
-import { Cell } from './Cell'
+import * as CellMap from './CellMap'
+import { Cell } from './CellMap'
 import { Effect } from './Effect'
 import { history } from './History'
 import { isMobile } from './util'
@@ -7,7 +8,6 @@ import { isMobile } from './util'
 export type Canvas = {
   get: (x: number, y: number) => Cell | undefined
   set: (x: number, y: number, char?: string) => void
-  setAll: (cells: Cell[], char?: string) => void
   setPreview: (x: number, y: number, char?: string) => void
   clearPreview: () => void
   applyPreview: () => void
@@ -123,78 +123,37 @@ export const measureText = (fontSize: number) => {
   }
 }
 
-export const neighbors = ({ x, y }: Cell, state: State): Cell[] => [
-  <Cell>{ x: x + 1, y },
-  <Cell>{ x: x - 1, y },
-  <Cell>{ x, y: y + 1 },
-  <Cell>{ x, y: y - 1 },
-]
-
-export const getNNeighbors = (radius: number, center: Cell, state: State) => {
-  if (radius === 1) return [center]
-  if (radius === 2) return [center, ...neighbors(center, state)]
-
-  const cells: Cell[] = []
-  const { sin, acos } = Math
-
-  for (let x = center.x - radius; x < center.x + radius; x++) {
-    const yspan = radius * sin(acos((center.x - x) / radius)) * 0.5
-    for (let y = center.y - yspan; y < center.y + yspan; y++) {
-      cells.push(<Cell>{ x, y: Math.round(y) })
-    }
-  }
-
-  return cells
-}
-
 export const isOutOfBounds = ({ x, y }: Cell, state: State): boolean =>
   x > state.width / state.cellWidth ||
   x < 0 ||
   y > state.height / state.cellHeight ||
   y < 0
 
-const key = (x: number, y: number) => `${x},${y}`
-
 const makeApi = (state: State): Canvas => {
-  const getWithDefault = (x: number, y: number): Cell =>
-    state.canvas[key(x, y)] || { x, y }
-
-  const get: Canvas['get'] = (x, y) => state.canvas[key(x, y)] || { x, y }
-
   const set = (x: number, y: number, char: string = state.char) => {
-    const k = key(x, y)
-    const prevCell = state.canvas[k] || { x, y }
-    const equal =
-      prevCell && prevCell.value === char && prevCell.color === state.color
-
-    if (!equal) {
-      prevCell.color = state.color
-      prevCell.value = char
-      state.canvas[k] = prevCell
-      state.dirtyCells.push(k)
-    }
+    CellMap.set({ x, y, color: state.color, value: char }, state.canvas)
+    state.dirtyCells.push(CellMap.key(x, y))
   }
 
-  const setAll = (cells: Cell[], char?: string) =>
-    cells.forEach(c => set(c.x, c.y, char))
-
   const setPreview = (x: number, y: number, char: string = state.char) => {
-    const k = key(x, y)
-
-    if (!isOutOfBounds(<Cell>{ x, y }, state))
-      state.preview[k] = {
-        value: char,
-        color: state.color,
-        x,
-        y,
-      }
+    if (!isOutOfBounds({ x, y }, state))
+      CellMap.set(
+        {
+          value: char,
+          color: state.color,
+          x,
+          y,
+        },
+        state.preview,
+      )
   }
 
   const clearPreview = () => {
     const cells = state.preview
 
     for (const k in cells) {
-      const prevCell = get(cells[k].x, cells[k].y)
+      const { x, y } = cells[k]
+      const prevCell = CellMap.get(x, y, state.canvas)
       cells[k] = prevCell!
     }
   }
@@ -221,12 +180,11 @@ const makeApi = (state: State): Canvas => {
   }
 
   return {
-    get,
+    get: (x, y) => CellMap.get(x, y, state.canvas),
     set,
     setPreview,
     clearPreview,
     applyPreview,
-    setAll,
     drawSelection,
     clearSelection,
   }
@@ -264,7 +222,8 @@ const draw = (state: StateReady) => {
 
   const drawCell = (cell: Cell) => {
     if (!cell.value) return
-    context.fillStyle = cell.color
+
+    context.fillStyle = cell.color!
     context.fillText(
       cell.value,
       cell.x * state.cellWidth,
@@ -337,4 +296,4 @@ const draw = (state: StateReady) => {
   state.dirtyCells = []
 }
 
-export { initCanvas, makeApi, draw, drawGrid, key }
+export { initCanvas, makeApi, draw, drawGrid }

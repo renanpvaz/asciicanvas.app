@@ -1,8 +1,8 @@
 import { History } from './History'
-import { CellMap, Cell } from './Cell'
+import { CellMap, Cell } from './CellMap'
 import { Tool } from './Tool'
 import { Pencil } from './Tool/Pencil'
-import { key } from './Canvas'
+import { key } from './CellMap'
 
 type StateData<T extends 'unstarted' | 'ready', S = {}> = {
   state: T

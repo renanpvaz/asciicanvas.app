@@ -1,7 +1,7 @@
 import { Tool } from '../Tool'
 import icon from '../../assets/bucket.png'
 import { isOutOfBounds } from '../Canvas'
-import { Cell } from '../Cell'
+import { Cell } from '../CellMap'
 
 export const Fill: Tool<{ filling: boolean }> = {
   name: 'fill',

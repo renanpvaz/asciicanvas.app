@@ -1,10 +1,10 @@
 import { Tool } from '../Tool'
-import { Cell } from '../Cell'
+import { Cell } from '../CellMap'
 import icon from '../../assets/selection.png'
 import { CreateSelection } from '../Effect'
 
 const getSortedVertices = (c1: Cell, c2: Cell) =>
-  [<Cell>{ x: c1.x, y: c2.y }, <Cell>{ x: c2.x, y: c1.y }, c1, c2].sort(
+  [{ x: c1.x, y: c2.y }, { x: c2.x, y: c1.y }, c1, c2].sort(
     (a, b) => a.x - b.x + a.y - b.y,
   )
 
@@ -15,7 +15,7 @@ export const Selection: Tool<{ first?: Cell; last?: Cell }> = {
   behavior: 'drag',
   cursor: 'crosshair',
   onPointerDown: ({ x, y }, squareState) => {
-    squareState.first = <Cell>{ x, y }
+    squareState.first = { x, y }
   },
   onPointerUp: ({ canvas, put }, squareState) => {
     const { first, last } = squareState
@@ -48,7 +48,7 @@ export const Selection: Tool<{ first?: Cell; last?: Cell }> = {
     squareState.last = undefined
   },
   onPaint: ({ x, y, canvas }, selectionState) => {
-    selectionState.last = <Cell>{ x, y }
+    selectionState.last = { x, y }
 
     if (selectionState.first) {
       const { first, last } = selectionState

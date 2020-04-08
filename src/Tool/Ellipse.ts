@@ -1,5 +1,5 @@
 import { Tool } from '../Tool'
-import { Cell } from '../Cell'
+import { Cell } from '../CellMap'
 import icon from '../../assets/ellipse.png'
 
 const { sqrt, PI, round, min, abs, cos, sin } = Math
@@ -11,7 +11,7 @@ export const Ellipse: Tool<{ start?: Cell }> = {
   behavior: 'drag',
   cursor: 'crosshair',
   onPointerDown: ({ x, y, canvas }, squareState) => {
-    squareState.start = <Cell>{ x, y }
+    squareState.start = { x, y }
     canvas.setPreview(x, y)
   },
   onPointerUp: ({ canvas }) => {
@@ -19,7 +19,7 @@ export const Ellipse: Tool<{ start?: Cell }> = {
   },
   onPaint: ({ x, y, canvas }, { start }) => {
     if (!start) return
-    const end = <Cell>{ x, y }
+    const end = { x, y }
     canvas.clearPreview()
 
     const distX = start.x - end.x
