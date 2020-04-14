@@ -4,7 +4,7 @@ import { Effect } from './Effect'
 
 type ToolEventHandler<T> = (
   context: {
-    state: State
+    state: Readonly<State>
     canvas: Canvas
     put: (eff: Effect) => void
   } & T,

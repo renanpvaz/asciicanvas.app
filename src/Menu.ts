@@ -1,6 +1,5 @@
 import { html, htmlRaw } from './util'
 import { State, StateReady } from './State'
-import { drawGrid, initCanvas } from './Canvas'
 import {
   Effect,
   Export,
@@ -158,34 +157,43 @@ const renderMenus = ({
         },
       ],
     }),
-    html('input', {
-      className: 'menu-button char-input',
-      type: 'number',
-      value: '14',
-      onchange: e => {
-        const fontSize = +(<HTMLInputElement>e.target).value
-        put(UpdateFontSize(fontSize))
-      },
-    }),
-    html('button', { className: 'menu-container char-input-container' }, [
+    html('div', { className: 'menu-options' }, [
       html('input', {
         className: 'menu-button char-input',
-        maxLength: 1,
-        value: '$',
-        onchange: e => (state.char = (<HTMLInputElement>e.target).value),
+        style: {
+          width: '40px',
+        },
+        type: 'number',
+        value: '14',
+        onchange: e => {
+          const fontSize = +(<HTMLInputElement>e.target).value
+          put(UpdateFontSize(fontSize))
+        },
       }),
-      html('ul', { className: 'menu-list' }, [
-        ...['$', '@', '/', ';', '(', ')'].map(c =>
-          renderCharInputOption(c, state),
-        ),
-      ]),
+      html(
+        'button',
+        { className: 'menu-button menu-container char-input-container' },
+        [
+          html('input', {
+            className: 'menu-button char-input',
+            maxLength: 1,
+            value: '$',
+            onchange: e => (state.char = (<HTMLInputElement>e.target).value),
+          }),
+          html('ul', { className: 'menu-list' }, [
+            ...['$', '@', '/', ';', '(', ')'].map(c =>
+              renderCharInputOption(c, state),
+            ),
+          ]),
+        ],
+      ),
+      html('input', {
+        className: 'menu-button color-picker',
+        type: 'color',
+        value: '#d238a8',
+        onchange: e => (state.color = (<HTMLInputElement>e.target).value),
+      }),
     ]),
-    html('input', {
-      className: 'menu-button color-picker',
-      type: 'color',
-      value: '#d238a8',
-      onchange: e => (state.color = (<HTMLInputElement>e.target).value),
-    }),
   ])
 
 export { renderMenus }

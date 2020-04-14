@@ -2,7 +2,7 @@ import { initialState } from './State'
 import { draw, initCanvas, makeApi, drawGrid, measureText } from './Canvas'
 import { renderToolbar } from './Toolbar'
 import { renderMenus } from './Menu'
-import { Effect } from './Effect'
+import { Effect, NewCanvas } from './Effect'
 import { html, isMobile } from './util'
 import { registerShortcuts } from './Shortcut'
 

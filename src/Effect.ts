@@ -193,7 +193,7 @@ const NewCanvas = Effect<{ width: number; height: number }>(
 
     const newCanvas = initCanvas({ state, put })
 
-    state.context.canvas.replaceWith(newCanvas)
+    document.querySelector('canvas')!.replaceWith(newCanvas)
     drawGrid(state)
   },
 )

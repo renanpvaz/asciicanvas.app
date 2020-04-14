@@ -71,7 +71,7 @@ export const initialState: State = {
   $toolRef: null,
   size: 1,
   fontSize: 12,
-  width: 600,
-  height: 443,
+  width: 577.09375,
+  height: 480.53125,
   selection: null,
 }

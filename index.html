@@ -41,6 +41,7 @@
       main {
         display: flex;
         flex-direction: column;
+        width: min-content;
       }
 
       canvas {
@@ -98,8 +99,7 @@
       .menu {
         display: flex;
         height: 32px;
-        width: 100vw;
-        padding: 0 8px;
+        padding: 0 8px 0 58px;
       }
 
       .menu-container {
@@ -279,10 +279,19 @@
         background: white;
       }
 
+      .menu-options {
+        display: flex;
+        margin-left: auto;
+      }
+
       @media (max-width: 767px) {
         html,
         body {
           overflow: hidden;
+        }
+
+        .menu {
+          padding-left: 8px;
         }
 
         .toolbar {
@@ -315,10 +324,6 @@
 
         .size-handle-wrapper:hover > .size-handle {
           pointer-events: all;
-        }
-
-        .char-input-container {
-          margin-left: auto;
         }
 
         .selection {
