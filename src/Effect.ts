@@ -1,5 +1,5 @@
 import { State, canvasToString, StateReady } from './State'
-import { Canvas, initCanvas, drawGrid } from './Canvas'
+import { Canvas, initCanvas, drawGrid, measureText } from './Canvas'
 import { html, makeDraggable } from './util'
 import { Tool } from './Tool'
 import * as History from './History'
@@ -198,6 +198,17 @@ const NewCanvas = Effect<{ width: number; height: number }>(
   },
 )
 
+const UpdateFontSize = Effect<number>(fontSize => ({ state }) => {
+  const { width, height } = measureText(fontSize)
+
+  state.fontSize = fontSize
+  state.cellWidth = width
+  state.cellHeight = height
+  state.history.updated = true
+
+  drawGrid(state)
+})
+
 export {
   CreateSelection,
   Export,
@@ -208,4 +219,5 @@ export {
   HistoryBack,
   HistoryForward,
   NewCanvas,
+  UpdateFontSize,
 }

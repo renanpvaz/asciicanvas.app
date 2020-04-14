@@ -1,7 +1,15 @@
 import { html, htmlRaw } from './util'
 import { State, StateReady } from './State'
 import { drawGrid, initCanvas } from './Canvas'
-import { Effect, Export, CopyText, Share, OpenFile, NewCanvas } from './Effect'
+import {
+  Effect,
+  Export,
+  CopyText,
+  Share,
+  OpenFile,
+  NewCanvas,
+  UpdateFontSize,
+} from './Effect'
 
 const renderCharInputOption = (option: string, state: State) =>
   html(
@@ -150,21 +158,15 @@ const renderMenus = ({
         },
       ],
     }),
-    // html('input', {
-    //   className: 'menu-button char-input',
-    //   value: '14',
-    //   onchange: e => {
-    //     const fontSize = +(<HTMLInputElement>e.target).value
-    //     const { width, height } = measureText(fontSize)
-
-    //     state.fontSize = fontSize
-    //     state.cellWidth = width
-    //     state.cellHeight = height
-    //     state.history.updated = true
-
-    //     drawGrid(state, context)
-    //   },
-    // }),
+    html('input', {
+      className: 'menu-button char-input',
+      type: 'number',
+      value: '14',
+      onchange: e => {
+        const fontSize = +(<HTMLInputElement>e.target).value
+        put(UpdateFontSize(fontSize))
+      },
+    }),
     html('button', { className: 'menu-container char-input-container' }, [
       html('input', {
         className: 'menu-button char-input',
