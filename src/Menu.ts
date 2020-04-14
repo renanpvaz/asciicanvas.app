@@ -1,7 +1,7 @@
 import { html, htmlRaw } from './util'
 import { State, StateReady } from './State'
 import { drawGrid, initCanvas } from './Canvas'
-import { Effect, Export, CopyText, Share, OpenFile } from './Effect'
+import { Effect, Export, CopyText, Share, OpenFile, NewCanvas } from './Effect'
 
 const renderCharInputOption = (option: string, state: State) =>
   html(
@@ -19,8 +19,7 @@ const renderCharInputOption = (option: string, state: State) =>
     [html('span', {}, [option])],
   )
 
-const newCanvas = ({
-  state,
+const newCanvasDialog = ({
   put,
 }: {
   state: StateReady
@@ -33,16 +32,7 @@ const newCanvas = ({
       {
         onsubmit: (e: Event) => {
           e.preventDefault()
-          state.width = width * state.cellWidth + 1
-          state.height = height * state.cellHeight + 1
-          state.canvas = {}
-          state.dirtyCells = []
-          state.history.updated = true
-
-          const newCanvas = initCanvas({ state, put })
-
-          document.querySelector('canvas')?.replaceWith(newCanvas)
-          drawGrid(state)
+          put(NewCanvas({ width, height }))
           document.body.removeChild($el)
         },
       },
@@ -125,7 +115,7 @@ const renderMenus = ({
         {
           text: 'New',
           shortcut: 'Cmd+N',
-          onClick: () => newCanvas({ state, put }),
+          onClick: () => newCanvasDialog({ state, put }),
         },
         {
           text: 'Open',

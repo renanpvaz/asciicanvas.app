@@ -1,5 +1,5 @@
 import { State, canvasToString, StateReady } from './State'
-import { Canvas } from './Canvas'
+import { Canvas, initCanvas, drawGrid } from './Canvas'
 import { html, makeDraggable } from './util'
 import { Tool } from './Tool'
 import * as History from './History'
@@ -7,6 +7,7 @@ import * as History from './History'
 export type Context = {
   state: StateReady
   canvas: Canvas
+  put: (_: Effect) => void
 }
 export type Effect = (context: Context) => void
 
@@ -182,6 +183,21 @@ const OpenFile = Effect(() => ({ state, canvas }) => {
   }).click()
 })
 
+const NewCanvas = Effect<{ width: number; height: number }>(
+  ({ width, height }) => ({ state, put }) => {
+    state.width = width * state.cellWidth + 1
+    state.height = height * state.cellHeight + 1
+    state.canvas = {}
+    state.dirtyCells = []
+    state.history.updated = true
+
+    const newCanvas = initCanvas({ state, put })
+
+    state.context.canvas.replaceWith(newCanvas)
+    drawGrid(state)
+  },
+)
+
 export {
   CreateSelection,
   Export,
@@ -191,4 +207,5 @@ export {
   OpenFile,
   HistoryBack,
   HistoryForward,
+  NewCanvas,
 }

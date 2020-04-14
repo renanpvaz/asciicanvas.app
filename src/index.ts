@@ -9,7 +9,7 @@ import { registerShortcuts } from './Shortcut'
 const state = initialState
 
 const put = (eff: Effect) => {
-  if (state.state === 'ready') eff({ state, canvas: makeApi(state) })
+  if (state.state === 'ready') eff({ state, canvas: makeApi(state), put })
 }
 
 const $canvas = initCanvas({ state, put })
