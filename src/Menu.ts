@@ -1,4 +1,4 @@
-import { html, htmlRaw } from './util'
+import { html, htmlRaw, query } from './util'
 import { State, StateReady } from './State'
 import {
   Effect,
@@ -17,9 +17,7 @@ const renderCharInputOption = (option: string, state: State) =>
       className: 'menu-item char-input__option',
       onclick: () => {
         state.char = option
-        ;(<HTMLInputElement>(
-          document.querySelector('.char-input')
-        )).value = option
+        ;(<HTMLInputElement>query('font-size-input')).value = option
         document.body.click()
       },
     },
@@ -175,13 +173,13 @@ const renderMenus = ({
         { className: 'menu-button menu-container char-input-container' },
         [
           html('input', {
-            className: 'menu-button char-input',
+            className: 'menu-button char-input js-font-size-input',
             maxLength: 1,
             value: '$',
             onchange: e => (state.char = (<HTMLInputElement>e.target).value),
           }),
           html('ul', { className: 'menu-list' }, [
-            ...['$', '@', '/', ';', '(', ')'].map(c =>
+            ...['M', 'K', '$', '@', '/', ';', '('].map(c =>
               renderCharInputOption(c, state),
             ),
           ]),
