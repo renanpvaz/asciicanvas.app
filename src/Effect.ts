@@ -1,6 +1,6 @@
 import { State, canvasToString, StateReady } from './State'
 import { Canvas, initCanvas, drawGrid, measureText } from './Canvas'
-import { html, makeDraggable } from './util'
+import { html, makeDraggable, query } from './util'
 import { Tool } from './Tool'
 import * as History from './History'
 
@@ -145,16 +145,13 @@ const HistoryForward = Effect(() => ({ state }) => {
   History.forward(state)
 })
 
-const SelectTool = Effect<{ $el: HTMLButtonElement; tool: Tool }>(
-  ({ $el, tool }) => ({ state }) => {
-    state.$toolRef?.classList.toggle('tool--active')
-    $el.classList.toggle('tool--active')
+const SelectTool = Effect<Tool>(tool => ({ state }) => {
+  query(state.tool.name)?.classList.remove('tool--active')
+  query(tool.name)?.classList.add('tool--active')
 
-    state.tool = Object.assign({}, tool)
-    state.$toolRef = $el
-    state.context.canvas.style.cursor = tool.cursor || 'default'
-  },
-)
+  state.tool = Object.assign({}, tool)
+  state.context.canvas.style.cursor = tool.cursor || 'default'
+})
 
 const readFile = (file: File): Promise<string> =>
   new Promise(resolve => {
@@ -198,15 +195,18 @@ const NewCanvas = Effect<{ width: number; height: number }>(
   },
 )
 
-const UpdateFontSize = Effect<number>(fontSize => ({ state }) => {
-  const { width, height } = measureText(fontSize)
+const MeasureCell = Effect(() => ({ state }) => {
+  const { width, height } = measureText(state.fontSize)
 
-  state.fontSize = fontSize
   state.cellWidth = width
   state.cellHeight = height
-  state.history.updated = true
-
   drawGrid(state)
+})
+
+const UpdateFontSize = Effect<number>(fontSize => ({ state, put }) => {
+  state.fontSize = fontSize
+  state.history.updated = true
+  put(MeasureCell())
 })
 
 export {
@@ -220,4 +220,5 @@ export {
   HistoryForward,
   NewCanvas,
   UpdateFontSize,
+  MeasureCell,
 }

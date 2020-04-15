@@ -9,9 +9,10 @@ const html = <K extends keyof HTMLElementTagNameMap>(
   children?: (HTMLElement | string)[],
 ): HTMLElementTagNameMap[K] => {
   const $el = document.createElement(tag)
-  const { style = {}, ...attrs } = attributes
+  const { style = {}, dataset = {}, ...attrs } = attributes
 
   Object.assign($el.style, style)
+  Object.assign($el.dataset, dataset)
   Object.assign($el, attrs)
   children?.forEach(c =>
     $el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c),
@@ -32,6 +33,8 @@ const makeCursorFromSvg = (rawSvg: string) => {
 }
 
 const isMobile = () => window.innerWidth < 767
+
+const query = (className: string) => document.querySelector(`.js-${className}`)
 
 const makeDraggable = (
   $el: HTMLElement,
@@ -106,4 +109,4 @@ const makeDraggable = (
   document.addEventListener('mousemove', drag, false)
 }
 
-export { html, htmlRaw, makeCursorFromSvg, isMobile, makeDraggable }
+export { html, htmlRaw, makeCursorFromSvg, isMobile, makeDraggable, query }

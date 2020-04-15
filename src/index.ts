@@ -2,19 +2,20 @@ import { initialState } from './State'
 import { draw, initCanvas, makeApi, drawGrid, measureText } from './Canvas'
 import { renderToolbar } from './Toolbar'
 import { renderMenus } from './Menu'
-import { Effect, NewCanvas } from './Effect'
+import { Effect, NewCanvas, MeasureCell, SelectTool } from './Effect'
 import { html, isMobile } from './util'
 import { registerShortcuts } from './Shortcut'
-
-const state = initialState
-
-const put = (eff: Effect) => {
-  if (state.state === 'ready') eff({ state, canvas: makeApi(state), put })
-}
-
-const $canvas = initCanvas({ state, put })
+import { Pencil } from './Tool/Pencil'
 
 const init = () => {
+  const state = initialState
+
+  const put = (eff: Effect) => {
+    if (state.state === 'ready') eff({ state, canvas: makeApi(state), put })
+  }
+
+  const $canvas = initCanvas({ state, put })
+
   if (state.state !== 'ready') return
 
   document.body.appendChild(
@@ -40,24 +41,20 @@ const init = () => {
       ]),
     ]),
   )
-  ;(<HTMLButtonElement>document.querySelector('.tool')).click()
+
+  const loop = () => {
+    if (state.state !== 'ready') return
+
+    draw(state)
+    requestAnimationFrame(loop)
+  }
 
   registerShortcuts({ put })
-
-  const { width, height } = measureText(state.fontSize)
-
-  state.cellWidth = width
-  state.cellHeight = height
+  put(MeasureCell())
+  put(SelectTool(Pencil))
 
   drawGrid(state)
   loop()
-}
-
-const loop = () => {
-  if (state.state !== 'ready') return
-
-  draw(state)
-  requestAnimationFrame(loop)
 }
 
 document.addEventListener('DOMContentLoaded', init)

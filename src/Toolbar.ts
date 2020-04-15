@@ -34,10 +34,8 @@ const renderToolbar = ({
       html(
         'button',
         {
-          className: 'tool',
-          onclick: e => {
-            put(SelectTool({ $el: <HTMLButtonElement>e.target, tool }))
-          },
+          className: `tool js-${tool.name}`,
+          onclick: e => put(SelectTool(tool)),
         },
         [html('img', { src: tool.icon, style: { pointerEvents: 'none' } })],
       ),

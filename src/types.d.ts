@@ -3,11 +3,6 @@ declare module '*.png' {
   export default value
 }
 
-interface CSSStyleDeclaration {
-  '--icon-x'?: string
-  '--icon-y'?: string
-}
-
 interface Navigator {
   share?: (opts: any) => void
 }
