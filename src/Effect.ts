@@ -89,6 +89,7 @@ const CreateSelection = Effect<{
 )
 
 const Export = Effect<'img' | 'text'>(type => ({ state }) => {
+  const ext = type === 'img' ? 'png' : 'txt'
   const dataUrl =
     type === 'img'
       ? state.context.canvas.toDataURL('image/png')
@@ -96,7 +97,7 @@ const Export = Effect<'img' | 'text'>(type => ({ state }) => {
 
   const element = html('a', {
     href: dataUrl,
-    download: 'untitled.png',
+    download: `untitled.${ext}`,
     style: {
       display: 'none',
     },
