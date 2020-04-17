@@ -1,7 +1,7 @@
 <div align="center">
   <br> 
   <h1>
-    ![](assets/pencil.png)
+    <img src="assets/pencil.png" />
     <br>
      aͣscͨiͥiͥcͨaͣnvͮaͣs
     <br>
