@@ -1,7 +1,6 @@
 <div align="center">
   <br> 
   <h1>
-    <img src="favicon.ico" />
     <br>
      aͣscͨiͥiͥcͨaͣnvͮaͣs
     <br>
