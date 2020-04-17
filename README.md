@@ -1,13 +1,13 @@
 <div align="center">
   <br> 
   <h1>
-    <img src="assets/pencil.png" />
+    <img src="favicon.ico" />
     <br>
      aͣscͨiͥiͥcͨaͣnvͮaͣs
     <br>
     <br>
   </h1>
-  <sub>Web-based tool to create [ASCII art](https://pt.wikipedia.org/wiki/ASCII_art)</sub>
+  <sub>Web-based tool to create <a href="https://pt.wikipedia.org/wiki/ASCII_art">ASCII art</a></sub>
   <br />
   <br />
 </div>
