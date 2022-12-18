@@ -10,6 +10,9 @@ import {
   UpdateFontSize,
 } from './Effect'
 
+const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+const leaderKey = isMac ? '⌘' : 'Ctrl'
+
 const renderCharInputOption = (option: string, state: State) =>
   html(
     'li',
@@ -47,14 +50,14 @@ const newCanvasDialog = ({
             'Row size',
             html('input', {
               className: 'input',
-              onchange: (e) => (width = +(<HTMLInputElement>e.target).value),
+              onchange: e => (width = +(<HTMLInputElement>e.target).value),
             }),
           ]),
           html('label', { className: 'field' }, [
             'Column size',
             html('input', {
               className: 'input',
-              onchange: (e) => (height = +(<HTMLInputElement>e.target).value),
+              onchange: e => (height = +(<HTMLInputElement>e.target).value),
             }),
           ]),
         ]),
@@ -81,7 +84,7 @@ const arrowIcon = htmlRaw(`
 
 const menuList = (items: Menu[]): HTMLUListElement =>
   html('ul', { className: 'menu-list' }, [
-    ...items.map((item) =>
+    ...items.map(item =>
       html(
         'li',
         {
@@ -90,7 +93,7 @@ const menuList = (items: Menu[]): HTMLUListElement =>
         },
         [
           html('span', {}, [item.text]),
-          html('small', {}, [
+          html('kbd', { className: 'menu-item__shortcut' }, [
             item.shortcut || '',
             item.items?.length ? arrowIcon : '',
           ]),
@@ -119,7 +122,7 @@ const renderMenus = ({
       items: [
         {
           text: 'New',
-          shortcut: 'Cmd+N',
+          shortcut: `${leaderKey}+n`,
           onClick: () => newCanvasDialog({ state, put }),
         },
         {
@@ -127,9 +130,9 @@ const renderMenus = ({
           onClick: () => put(OpenFile()),
         },
         { text: 'Share', onClick: () => put(Share()) },
-        { text: 'Copy', onClick: () => put(CopyText()) },
+        { text: 'Copy to clipboard', onClick: () => put(CopyText()) },
         {
-          text: 'Export',
+          text: 'Export file',
           items: [
             { text: 'Text (.txt)', onClick: () => put(Export('text')) },
             { text: 'Image (.png)', onClick: () => put(Export('img')) },
@@ -140,11 +143,23 @@ const renderMenus = ({
     menuButton({
       text: 'edit',
       items: [
-        { text: 'Undo', shortcut: 'Cmd+Z', onClick: () => history.back() },
+        {
+          text: 'Undo',
+          shortcut: `${leaderKey}+z`,
+          onClick: () => history.back(),
+        },
         {
           text: 'Redo',
-          shortcut: 'Cmd+Shift+Z',
+          shortcut: `${leaderKey}+Shift+z`,
           onClick: () => history.forward(),
+        },
+        {
+          text: 'Paste',
+          shortcut: `${leaderKey}+v`,
+          onClick: () => {
+            state.canvas = {}
+            state.history.updated = true
+          },
         },
         {
           text: 'Clear',
@@ -163,7 +178,7 @@ const renderMenus = ({
         },
         type: 'number',
         value: '14',
-        onchange: (e) => {
+        onchange: e => {
           const fontSize = +(<HTMLInputElement>e.target).value
           put(UpdateFontSize(fontSize))
         },
@@ -176,10 +191,10 @@ const renderMenus = ({
             className: 'menu-button char-input js-font-size-input',
             maxLength: 1,
             value: '$',
-            onchange: (e) => (state.char = (<HTMLInputElement>e.target).value),
+            onchange: e => (state.char = (<HTMLInputElement>e.target).value),
           }),
           html('ul', { className: 'menu-list' }, [
-            ...['@', 'K', 'O', '(', ':', "'", '.', '_'].map((c) =>
+            ...['@', 'K', 'O', '(', ':', "'", '.', '_'].map(c =>
               renderCharInputOption(c, state),
             ),
           ]),
@@ -189,7 +204,7 @@ const renderMenus = ({
         className: 'menu-button color-picker',
         type: 'color',
         value: '#d238a8',
-        onchange: (e) => (state.color = (<HTMLInputElement>e.target).value),
+        onchange: e => (state.color = (<HTMLInputElement>e.target).value),
       }),
     ]),
   ])
