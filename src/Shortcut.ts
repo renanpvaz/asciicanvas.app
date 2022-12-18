@@ -1,4 +1,4 @@
-import { Effect, HistoryBack, HistoryForward, CreateSelection } from './Effect'
+import { Effect, HistoryBack, HistoryForward, PasteText } from './Effect'
 
 type Shortcut = {
   shift: boolean
@@ -25,23 +25,7 @@ const registerShortcuts = ({ put }: { put: (_: Effect) => void }) => {
   })
 
   document.addEventListener('paste', event => {
-    const $prev = document.querySelector('#text-edit')
-
-    if ($prev) $prev.remove()
-
-    let paste = (event.clipboardData || window.clipboardData)!.getData('text')
-
-    put(
-      CreateSelection({
-        x: 0,
-        y: 0,
-        text: paste,
-        editable: false,
-        draggable: true,
-      }),
-    )
-
-    event.preventDefault()
+    put(PasteText(event))
   })
 }
 

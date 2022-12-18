@@ -129,6 +129,26 @@ const CopyText = Effect(() => ({ state }) => {
   document.body.removeChild(textArea)
 })
 
+const PasteText = Effect((event: ClipboardEvent) => ({ put }) => {
+  const $prev = document.querySelector('#text-edit')
+
+  if ($prev) $prev.remove()
+
+  let paste = (event.clipboardData || window.clipboardData)!.getData('text')
+
+  put(
+    CreateSelection({
+      x: 0,
+      y: 0,
+      text: paste,
+      editable: false,
+      draggable: true,
+    }),
+  )
+
+  event.preventDefault()
+})
+
 const Share = Effect(() => ({ state }) => {
   if (navigator.share)
     navigator.share({
@@ -222,4 +242,5 @@ export {
   NewCanvas,
   UpdateFontSize,
   MeasureCell,
+  PasteText,
 }
