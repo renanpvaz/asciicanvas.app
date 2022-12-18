@@ -93,7 +93,7 @@ const Export = Effect<'img' | 'text'>(type => ({ state }) => {
   const dataUrl =
     type === 'img'
       ? state.context.canvas.toDataURL('image/png')
-      : encodeURIComponent(canvasToString(state))
+      : `data:text;charset=utf-8,${encodeURIComponent(canvasToString(state))}`
 
   const element = html('a', {
     href: dataUrl,
