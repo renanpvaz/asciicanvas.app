@@ -58,7 +58,7 @@ export const initialState: State = {
   preview: {},
   cellHeight: 0,
   cellWidth: 0,
-  char: '$',
+  char: '@',
   color: '#d238a8',
   dirtyCells: [],
   history: {
