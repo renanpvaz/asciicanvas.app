@@ -1,5 +1,6 @@
-
-<img align="right" src="https://user-images.githubusercontent.com/14297772/208327588-c0d405ef-8861-4c66-8ea9-67690d4c12e7.png">
+<p align="center">
+ <img align="center" src="https://user-images.githubusercontent.com/14297772/208327588-c0d405ef-8861-4c66-8ea9-67690d4c12e7.png">
+</p>
 
 # ASCII Canvas
 
